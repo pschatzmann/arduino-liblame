@@ -1,0 +1,3 @@
+/Users/pschatzmann/Documents/Arduino/libraries/arduino-liblame/build/_deps/arduino_emulator-subbuild/CMakeFiles/rebuild_cache.dir
+/Users/pschatzmann/Documents/Arduino/libraries/arduino-liblame/build/_deps/arduino_emulator-subbuild/CMakeFiles/edit_cache.dir
+/Users/pschatzmann/Documents/Arduino/libraries/arduino-liblame/build/_deps/arduino_emulator-subbuild/CMakeFiles/arduino_emulator-populate.dir

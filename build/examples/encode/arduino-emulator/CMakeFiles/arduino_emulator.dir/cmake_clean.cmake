@@ -1,0 +1,43 @@
+file(REMOVE_RECURSE
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/Common.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/Common.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/IPAddress.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/IPAddress.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/PluggableUSB.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/PluggableUSB.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/Print.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/Print.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/Stream.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/Stream.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/WString.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-API/api/WString.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Arduino.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Arduino.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/HardwareGPIO.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/HardwareGPIO.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/HardwareI2CEx.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/HardwareI2CEx.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/HardwareSPI.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/HardwareSPI.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Main.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Main.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/SocketImpl.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/SocketImpl.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Test.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Test.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Unsupported.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/Unsupported.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/WiFiUdp.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/WiFiUdp.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/itoa.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/itoa.cpp.o.d"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/serialib.cpp.o"
+  "CMakeFiles/arduino_emulator.dir/ArduinoCore-Linux/cores/arduino/serialib.cpp.o.d"
+  "libarduino_emulator.dylib"
+  "libarduino_emulator.pdb"
+)
+
+# Per-language clean rules from dependency scanning.
+foreach(lang CXX)
+  include(CMakeFiles/arduino_emulator.dir/cmake_clean_${lang}.cmake OPTIONAL)
+endforeach()
