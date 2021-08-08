@@ -8,33 +8,36 @@
 #define HAVE_BCOPY 0
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
-#define HAVE_DLFCN_H 1
+#define HAVE_DLFCN_H 0
 
 /* Define to 1 if you have the <fcntl.h> header file. */
-#define HAVE_FCNTL_H 1
+#define HAVE_FCNTL_H 0
 
 /* Define to 1 if you have the `getpagesize' function. */
-#define HAVE_GETPAGESIZE 1
+#define HAVE_GETPAGESIZE 0
 
 /* Define to 1 if you have the <inttypes.h> header file. */
-#define HAVE_INTTYPES_H 1
+#define HAVE_INTTYPES_H 0
 
 /* Define to 1 if you have the `memmove' function. */
 #define HAVE_MEMMOVE 1
 
 /* Define to 1 if you have the <memory.h> header file. */
-#define HAVE_MEMORY_H 1
+#define HAVE_MEMORY_H 0
 
 /* Define to 1 if you have a working `mmap' system call. */
 #define HAVE_MMAP 0
 
-#define HAVE_ERRNO_H 1
+#define HAVE_ERRNO_H 0
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
 
 /* Define to 1 if you have the <stdlib.h> header file. */
-#define HAVE_STDLIB_H 1
+#define HAVE_STDLIB_H 0
+
+/* Define to 1 if you have the <stdio.h> header file. */
+#define HAVE_STDIO_H 0
 
 /* Define to 1 if you have the <strings.h> header file. */
 #define HAVE_STRINGS_H 1
@@ -52,12 +55,13 @@
 #define HAVE_SYS_TYPES_H 0
 
 /* Define to 1 if you have the <unistd.h> header file. */
-#define HAVE_UNISTD_H 1
+#define HAVE_UNISTD_H 0
 
 /* Define to the sub-directory in which libtool stores uninstalled libraries.
    */
 #define LT_OBJDIR ".libs/"
 
+//#define DEPRECATED_OR_OBSOLETE_CODE_REMOVED 1
 
 /* Define to 1 if you have the ANSI C header files. */
 #define STDC_HEADERS 1

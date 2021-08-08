@@ -29,7 +29,7 @@
 #undef NDEBUG
 #endif
 
-#include <stdio.h>
+//#include <stdio.h>
 #include <assert.h>
 
 #ifdef STDC_HEADERS

@@ -750,7 +750,7 @@ checkScalefactor(const gr_info * cod_info, const int vbrsfmin[SFBMAX])
                fprintf( stdout, "scale %d\n", (cod_info->scalefac_scale + 1) );
                fprintf( stdout, "subgain %d\n", cod_info->subblock_gain[cod_info->window[sfb]] * 8 );
                fflush( stdout );
-               exit(-1);
+               lame_abort();
              */
             return 0;
         }
@@ -991,7 +991,7 @@ bitcount(const algo_t * that)
     }
     /*  this should not happen due to the way the scalefactors are selected  */
     ERRORF(that->gfc, "INTERNAL ERROR IN VBR NEW CODE (986), please send bug report\n");
-    exit(-1);
+    lame_abort();
 }
 
 
@@ -1576,5 +1576,6 @@ VBR_encode_frame(lame_internal_flags * gfc, const FLOAT xr34orig[2][2][576],
 
     ERRORF(gfc, "INTERNAL ERROR IN VBR NEW CODE (1313), please send bug report\n"
            "maxbits=%d usedbits=%d\n", max_nbits_fr, use_nbits_fr);
-    exit(-1);
+    lame_abort();
+    return 0;
 }

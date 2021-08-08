@@ -38,9 +38,13 @@
 # include <machine/floatingpoint.h>
 #endif
 
-// #include <ieeefp.h>
-// #include <fenv.h>
+//#include <ieeefp.h>
+#include <fenv.h>
 
+// Ugly hack for Arduino to prevent an unresolved _impure_ptr
+#if defined(ESP32) && defined(ARDUINO) 
+struct _reent *_impure_ptr __ATTRIBUTE_IMPURE_PTR__;
+#endif
 
 /***********************************************************************
 *

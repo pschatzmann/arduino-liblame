@@ -861,6 +861,8 @@ PutLameVBR(lame_global_flags const *gfp, size_t nMusicLength, uint8_t * pbtStrea
     return nBytesWritten;
 }
 
+#ifdef USE_STDIO_LIB
+
 static long
 skipId3v2(FILE * fpStream)
 {
@@ -894,7 +896,7 @@ skipId3v2(FILE * fpStream)
     return id3v2TagSize;
 }
 
-
+#endif
 
 size_t
 lame_get_lametag_frame(lame_global_flags const *gfp, unsigned char *buffer, size_t size)
@@ -1017,6 +1019,8 @@ lame_get_lametag_frame(lame_global_flags const *gfp, unsigned char *buffer, size
     return gfc->VBR_seek_table.TotalFrameSize;
 }
 
+#ifdef USE_STDIO_LIB
+
 /***********************************************************************
  *
  * PutVbrTag: Write final VBR tag to the file
@@ -1080,3 +1084,5 @@ PutVbrTag(lame_global_flags const *gfp, FILE * fpStream)
 
     return 0;           /* success */
 }
+
+#endif

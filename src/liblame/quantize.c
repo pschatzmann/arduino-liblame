@@ -1746,7 +1746,7 @@ VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
         /* SHOULD NOT HAPPEN INTERNAL ERROR
          */
         ERRORF(gfc, "INTERNAL ERROR IN VBR NEW CODE, please send bug report\n");
-        exit(-1);
+        lame_abort();
     }
 }
 

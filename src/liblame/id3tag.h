@@ -1,7 +1,7 @@
 
 #include "config.h"
 #include <stdint.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include <string.h>
 
 #ifndef LAME_ID3_H

@@ -24,13 +24,17 @@
 #ifndef LAME_LAME_H
 #define LAME_LAME_H
 
+#include "config.h"
+
 /* for size_t typedef */
 #include <stddef.h>
 /* for va_list typedef */
 #include <stdarg.h>
-/* for FILE typedef, TODO: remove when removing lame_mp3_tags_fid */
-#include <stdio.h>
 #include <string.h>
+
+#if defined(HAVE_STDIO_H)
+#include <stdio.h>
+#endif
 
 #if defined(__cplusplus)
 extern "C" {
@@ -624,11 +628,6 @@ int CDECL lame_get_noclipGainChange(const lame_global_flags *);
 float CDECL lame_get_noclipScale(const lame_global_flags *);
 
 
-
-
-
-
-
 /*
  * REQUIRED:
  * sets more internal configuration based on data provided above.
@@ -948,7 +947,7 @@ void CDECL lame_bitrate_block_type_hist (
  * You can call lame_get_lametag_frame instead, if you want to insert
  * the lametag yourself.
 */
-void CDECL lame_mp3_tags_fid(lame_global_flags *, FILE* fid);
+//void CDECL lame_mp3_tags_fid(lame_global_flags *, FILE* fid);
 #endif
 
 /*
@@ -1317,6 +1316,10 @@ typedef enum {
     FRONTEND_FILETOOLARGE = -82
 
 } lame_errorcodes_t;
+
+// abort
+void CDECL lame_abort();
+
 
 #if defined(__cplusplus)
 }

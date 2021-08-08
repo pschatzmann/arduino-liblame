@@ -2,7 +2,7 @@
 
 #include <stdint.h>
 #include <unistd.h>
-#include <stdlib.h>
+//#include <stdlib.h>
 #include "lame_log.h"
 #include "liblame/lame.h"
 
@@ -83,9 +83,9 @@ public:
 	 * @param info 
 	 * @return int 
 	 */
-	 void begin(AudioInfo  info) {
+	 void begin(AudioInfo  in) {
 		LOG(Debug,__FUNCTION__);
-		setAudioInfo(info);
+		setAudioInfo(in);
 		setup();
 	}
 
@@ -108,8 +108,8 @@ public:
 	}
 
 	/// Defines the audio information
-	void setAudioInfo(AudioInfo info){
-		this->info = info;
+	void setAudioInfo(AudioInfo in){
+		this->info = in;
 	}
 
 	/// Provides the audio information
