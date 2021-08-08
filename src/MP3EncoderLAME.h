@@ -264,17 +264,17 @@ protected:
 
 
 	/// return the result PWM data
-	void provideResult(uint8_t *data, size_t len){
-		if (len>0){
-			LOG(Debug, "provideResult: %zu samples",len);
+	void provideResult(uint8_t *data, size_t bytes){
+		if (bytes>0){
+			LOG(Debug, "provideResult: %zu samples",bytes);
 			// provide result
 			if(MP3Callback!=nullptr){
 				// output via callback
-				MP3Callback(data, len);
+				MP3Callback(data, bytes);
 			} 
 #ifdef ARDUINO
 			if (out!=nullptr){
-				out->write((uint8_t*)pwm_buffer, data, len*sizeof(INT_PCM));
+				out->write((uint8_t*)data,  bytes);
 			}
 #endif
 		}

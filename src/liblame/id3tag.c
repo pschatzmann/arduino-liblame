@@ -31,9 +31,7 @@
 
 /* $Id: id3tag.c,v 1.75.2.2 2012/01/08 23:49:58 robert Exp $ */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "config.h"
 
 #ifdef STDC_HEADERS
 # include <stddef.h>

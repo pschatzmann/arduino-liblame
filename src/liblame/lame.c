@@ -48,7 +48,7 @@
 #include "tables.h"
 
 #ifdef ESP32
-#include "esp_heap_alloc_caps.h"
+#include "esp_heap_caps.h"
 #endif
 
 #if defined(__FreeBSD__) && !defined(__alpha__)
@@ -598,10 +598,10 @@ lame_init_params(lame_global_flags * gfp)
     }
 
 #ifdef ESP32
-    gfc->sv_rpg.rgdata->A = pvPortMallocCaps(STEPS_per_dB * MAX_dB*sizeof(uint32_t), MALLOC_CAP_32BIT);
+    gfc->sv_rpg.rgdata->A = heap_caps_malloc(STEPS_per_dB * MAX_dB*sizeof(uint32_t), MALLOC_CAP_32BIT);
     memset(gfc->sv_rpg.rgdata->A, 0, STEPS_per_dB * MAX_dB*sizeof(uint32_t));
 
-    gfc->sv_rpg.rgdata->B = pvPortMallocCaps(STEPS_per_dB * MAX_dB*sizeof(uint32_t), MALLOC_CAP_32BIT);
+    gfc->sv_rpg.rgdata->B = heap_caps_malloc(STEPS_per_dB * MAX_dB*sizeof(uint32_t), MALLOC_CAP_32BIT);
     memset(gfc->sv_rpg.rgdata->B, 0, STEPS_per_dB * MAX_dB*sizeof(uint32_t));
 #else
     gfc->sv_rpg.rgdata->A = malloc(STEPS_per_dB * MAX_dB*sizeof(uint32_t));

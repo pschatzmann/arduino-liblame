@@ -28,6 +28,8 @@
 #ifndef GAIN_ANALYSIS_H
 #define GAIN_ANALYSIS_H
 
+#include "config.h"
+
 #ifdef HAVE_INTTYPES_H
 # include <inttypes.h>
 #else
@@ -35,7 +37,6 @@
 #  include <stdint.h>
 # endif
 #endif
-
 #ifdef __cplusplus
 extern  "C" {
 #endif

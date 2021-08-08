@@ -5,7 +5,7 @@
 #define BYTEORDER 1234
 
 /* Define to 1 if you have the `bcopy' function. */
-#define HAVE_BCOPY 1
+#define HAVE_BCOPY 0
 
 /* Define to 1 if you have the <dlfcn.h> header file. */
 #define HAVE_DLFCN_H 1
@@ -26,7 +26,7 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have a working `mmap' system call. */
-#define HAVE_MMAP 1
+#define HAVE_MMAP 0
 
 #define HAVE_ERRNO_H 1
 
@@ -43,13 +43,13 @@
 #define HAVE_STRING_H 1
 
 /* Define to 1 if you have the <sys/param.h> header file. */
-#define HAVE_SYS_PARAM_H 1
+#define HAVE_SYS_PARAM_H 0
 
 /* Define to 1 if you have the <sys/stat.h> header file. */
-#define HAVE_SYS_STAT_H 1
+#define HAVE_SYS_STAT_H 0
 
 /* Define to 1 if you have the <sys/types.h> header file. */
-#define HAVE_SYS_TYPES_H 1
+#define HAVE_SYS_TYPES_H 0
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
@@ -64,7 +64,6 @@
 
 /* whether byteorder is bigendian */
 /* #undef WORDS_BIGENDIAN */
-
 
 
 /* Define to __FUNCTION__ or "" if `__func__' does not conform to ANSI C. */

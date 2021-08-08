@@ -22,6 +22,7 @@
 #ifndef LAME_MACHINE_H
 #define LAME_MACHINE_H
 
+#include "config.h"
 #include "version.h"
 
 #if (LAME_RELEASE_VERSION == 0)
