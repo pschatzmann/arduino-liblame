@@ -20,7 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* $Id: takehiro.c,v 1.79 2011/05/07 16:05:17 rbrito Exp $ */
+/* $Id: takehiro.c,v 1.80 2017/09/06 15:07:30 robert Exp $ */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -130,7 +130,7 @@ quantize_lines_xrpow_01(unsigned int l, FLOAT istep, const FLOAT * xr, int *ix)
 
 
 
-#ifdef TAKEHIRO_IEEE754_HACK
+#if USE_HIRO_IEEE754_HACK
 
 typedef union {
     float   f;
@@ -211,7 +211,7 @@ quantize_lines_xrpow(unsigned int l, FLOAT istep, const FLOAT * xp, int *pi)
  *                                   ROUNDFAC=0.4054
  *
  * Note: using floor() or (int) is extremely slow. On machines where
- * the TAKEHIRO_IEEE754_HACK code above does not work, it is worthwile
+ * the USE_HIRO_IEEE754_HACK code above does not work, it is worthwile
  * to write some ASM for XRPOW_FTOI().  
  *********************************************************************/
 #define XRPOW_FTOI(src,dest) ((dest) = (int)(src))
@@ -596,7 +596,7 @@ static int count_bit_null(const int* ix, const int* end, int max, unsigned int* 
 
 typedef int (*count_fnc)(const int* ix, const int* end, int max, unsigned int* s);
   
-static count_fnc count_fncs[] = 
+static const count_fnc count_fncs[] = 
 { &count_bit_null
 , &count_bit_noESC
 , &count_bit_noESC_from2
@@ -1300,7 +1300,7 @@ mpeg2_scale_bitcount(const lame_internal_flags * gfc, gr_info * const cod_info)
             break;
         }
     }
-#ifdef DEBUG
+#if USE_DEBUG
     if (over)
         ERRORF(gfc, "---WARNING !! Amplification of some bands over limits\n");
 #endif

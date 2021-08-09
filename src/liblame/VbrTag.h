@@ -72,9 +72,7 @@ typedef struct {
 int     GetVbrTag(VBRTAGDATA * pTagData, const unsigned char *buf);
 
 int     InitVbrTag(lame_global_flags * gfp);
-#ifdef USE_STDIO_LIB
 int     PutVbrTag(lame_global_flags const *gfp, FILE * fid);
-#endif
 void    AddVbrFrame(lame_internal_flags * gfc);
 void    UpdateMusicCRC(uint16_t * crc, const unsigned char *buffer, int size);
 

@@ -25,24 +25,20 @@
 #include "config.h"
 #include "version.h"
 
-#if (LAME_RELEASE_VERSION == 0)
-#undef NDEBUG
-#endif
-
-//#include <stdio.h>
+#include <stdio.h>
 #include <assert.h>
 
-#ifdef STDC_HEADERS
+#if STDC_HEADERS
 # include <stdlib.h>
+#if HAVE_STRING_H
 # include <string.h>
+#endif
 #else
 # ifndef HAVE_STRCHR
 #  define strchr index
 #  define strrchr rindex
 # endif
 char   *strchr(), *strrchr();
-
-
 # ifndef HAVE_MEMCPY
 #  define memcpy(d, s, n) bcopy ((s), (d), (n))
 #  define memmove(d, s, n) bcopy ((s), (d), (n))
@@ -61,6 +57,7 @@ char   *strchr(), *strrchr();
 #ifdef HAVE_ERRNO_H
 # include <errno.h>
 #endif
+
 #ifdef HAVE_FCNTL_H
 # include <fcntl.h>
 #endif
@@ -81,7 +78,7 @@ char   *strchr(), *strrchr();
 # endif
 #endif
 
-#ifdef WITH_DMALLOC
+#if WITH_DMALLOC
 #include <dmalloc.h>
 #endif
 
@@ -164,7 +161,17 @@ typedef FLOAT sample_t;
 
 #define dimension_of(array) (sizeof(array)/sizeof(array[0]))
 #define beyond(array) (array+dimension_of(array))
-#define compiletime_assert(expression) extern char static_assert_##FILE##_##LINE[expression?1:0]
+#define compiletime_assert(expression) enum{static_assert_##FILE##_##LINE = 1/((expression)?1:0)}
+#if USE_DEBUG_ALLOC
+#define lame_calloc(TYPE, COUNT) ((TYPE*)debug_calloc(COUNT, sizeof(TYPE)))
+#else
+#define lame_calloc(TYPE, COUNT) ((TYPE*)calloc(COUNT, sizeof(TYPE)))
+#endif
+#define multiple_of(CHUNK, COUNT) (\
+  ( (COUNT) < 1 || (CHUNK) < 1 || (COUNT) % (CHUNK) == 0 ) \
+  ? (COUNT) \
+  : ((COUNT) + (CHUNK) - (COUNT) % (CHUNK)) \
+  )
 
 #if 1
 #define EQ(a,b) (\
@@ -177,8 +184,6 @@ typedef FLOAT sample_t;
 
 #define NEQ(a,b) (!EQ(a,b))
 
-#endif
-
 #ifdef _MSC_VER
 #  if _MSC_VER < 1400
 #  define fabsf fabs
@@ -187,5 +192,6 @@ typedef FLOAT sample_t;
 #  endif
 #endif
 
+#endif
 
 /* end of machine.h */

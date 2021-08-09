@@ -31,8 +31,7 @@
 #include "lame_intrin.h"
 
 
-
-#ifdef HAVE_XMMINTRIN_H
+#if HAVE_XMMINTRIN_H
 
 #include <xmmintrin.h>
 

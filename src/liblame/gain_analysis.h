@@ -28,15 +28,14 @@
 #ifndef GAIN_ANALYSIS_H
 #define GAIN_ANALYSIS_H
 
-#include "config.h"
-
-#ifdef HAVE_INTTYPES_H
+#if HAVE_INTTYPES_H
 # include <inttypes.h>
 #else
-# ifdef HAVE_STDINT_H
+# if HAVE_STDINT_H
 #  include <stdint.h>
 # endif
 #endif
+
 #ifdef __cplusplus
 extern  "C" {
 #endif
@@ -53,7 +52,7 @@ extern  "C" {
 #define YULE_FILTER     filterYule
 #define BUTTER_FILTER   filterButter
 #define RMS_PERCENTILE      0.95 /* percentile which is louder than the proposed level */
-#define MAX_SAMP_FREQ  48000L /* maximum allowed sample frequency [Hz] */
+#define MAX_SAMP_FREQ   48000L /* maximum allowed sample frequency [Hz] */
 #define RMS_WINDOW_TIME_NUMERATOR    1L
 #define RMS_WINDOW_TIME_DENOMINATOR 20L /* numerator / denominator = time slice size [s] */
 #define STEPS_per_dB      100 /* Table entries per dB */
@@ -86,12 +85,17 @@ extern  "C" {
         double  rsum;
         int     freqindex;
         int     first;
-    //    uint32_t A[STEPS_per_dB * MAX_dB];
-    //    uint32_t B[STEPS_per_dB * MAX_dB];
 
-            uint32_t *A;
-            uint32_t *B;
-
+// ps
+#if USE_MEMORY_HACK
+        uint32_t *A;
+        uint32_t *B;
+        int size_A;
+        int size_B;
+#else
+      uint32_t A[STEPS_per_dB * MAX_dB];
+      uint32_t B[STEPS_per_dB * MAX_dB];
+#endif
 
     };
 #ifndef replaygain_data_defined

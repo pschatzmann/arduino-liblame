@@ -22,8 +22,6 @@
 #ifndef LAME_TABLES_H
 #define LAME_TABLES_H
 
-#include <stdint.h>
-
 #if 0
 typedef struct {
     unsigned char no;

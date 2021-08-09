@@ -19,7 +19,7 @@ endif()
 
 # build sketch as executable  
 add_executable (encode  encode.cpp)
-target_compile_options(encode  PRIVATE -DEMULATOR)
+target_compile_options(encode PUBLIC -DEMULATOR)
 
 # specify libraries
 target_link_libraries(encode  arduino_liblame arduino_emulator)

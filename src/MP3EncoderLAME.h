@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <unistd.h>
-//#include <stdlib.h>
 #include "lame_log.h"
 #include "liblame/lame.h"
 
@@ -76,7 +75,6 @@ public:
 
 	 }
 
-
 	/**
 	 * @brief Opens the encoder  
 	 * 
@@ -86,7 +84,7 @@ public:
 	 void begin(AudioInfo  in) {
 		LOG(Debug,__FUNCTION__);
 		setAudioInfo(in);
-		setup();
+		active = setup();
 	}
 
 	/**
@@ -104,7 +102,7 @@ public:
 		ai.sample_rate = input_sample_rate;
 		ai.bits_per_sample = input_bits_per_sample;
 		setAudioInfo(ai);
-		setup();
+		active = setup();
 	}
 
 	/// Defines the audio information
@@ -119,34 +117,37 @@ public:
 
 	/// write PCM data to be converted to MP3 - The size is in bytes
 	int32_t write(void *pcm_samples, int bytes){
-		LOG(Debug,"write %d bytes", bytes);
+		int32_t result = 0;
+		if (active){
+			LOG(Debug,"write %d bytes", bytes);
 
-		// convert to required input format
-		short *buffer = convertToShort(pcm_samples, bytes);
-		if (buffer==nullptr){
-			return 0;
-		}
+			// convert to required input format
+			short *buffer = convertToShort(pcm_samples, bytes);
+			if (buffer==nullptr){
+				return 0;
+			}
 
-		// setup output buffer if necessary
-		int nsamples = bytes / (info.bits_per_sample/8) / info.channels;
-		int outbuf_size = 7200 + (1.25*nsamples);
-		if (!setupOutputBuffer(outbuf_size)){
-			return 0;
-		}
+			// setup output buffer if necessary
+			int nsamples = bytes / (info.bits_per_sample/8) / info.channels;
+			int outbuf_size = 7200 + (1.25*nsamples);
+			if (!setupOutputBuffer(outbuf_size)){
+				return 0;
+			}
 
-		// encode based on the number of channels
-		int mp3_len = 0;
-		if (info.channels == 1) {
-			mp3_len = lame_encode_buffer(lame, buffer, NULL, nsamples, mp3_buffer, 0);
-		} else {
-			mp3_len = lame_encode_buffer_interleaved(lame, buffer, nsamples, mp3_buffer, 0);
-		}
+			// encode based on the number of channels
+			int mp3_len = 0;
+			if (info.channels == 1) {
+				mp3_len = lame_encode_buffer(lame, buffer, NULL, nsamples, mp3_buffer, 0);
+			} else {
+				mp3_len = lame_encode_buffer_interleaved(lame, buffer, nsamples, mp3_buffer, 0);
+			}
 
-		if (mp3_len>0){
-			provideResult((uint8_t*)mp3_buffer, mp3_len);
+			if (mp3_len>0){
+				provideResult((uint8_t*)mp3_buffer, mp3_len);
+			}
+			result = bytes;
 		}
-		
-		return bytes;
+		return result;
 	}
 
 	/// closes the processing and release resources
@@ -174,6 +175,7 @@ protected:
 
 	bool setupOutputBuffer(int size) {
 		if (size>mp3_buffer_size){
+			LOG(Debug,__FUNCTION__);
 			if (mp3_buffer!=nullptr)
 				delete[] mp3_buffer;
 			mp3_buffer = new uint8_t[size];
@@ -183,8 +185,10 @@ protected:
 	}
 
 	bool setup(){
+		LOG(Debug,__FUNCTION__);
 		 lame = lame_init();
 		 if (lame==nullptr){
+			 LOG(Error,"lame_init failed");
 			 return false;
 		 }
 

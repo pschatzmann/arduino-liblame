@@ -9,23 +9,39 @@
  * 
  */
 #pragma once
+#include "liblame/log.h"
 
 // User Settings: Activate/Deactivate logging
 #ifndef LAME_LOGGING_ACTIVE
 #define LAME_LOGGING_ACTIVE true
 #endif
 #ifndef LAME_LOG_LEVEL
-#define LAME_LOG_LEVEL Warning
+#define LAME_LOG_LEVEL Debug
 #endif
 
 // Logging Implementation
 #if LAME_LOGGING_ACTIVE == true
-static char log_buffer[512];
+
 enum LogLevel {Debug, Info, Warning, Error};
-static LogLevel minLogLevel = LAME_LOG_LEVEL;
+static int minLogLevel = Warning;
+
+static const char* levelName(LogLevel level) {
+    switch(level){
+        case Debug:
+            return "D";
+        case Info:
+            return "I";
+        case Warning:
+            return "W";
+        case Error:
+            return "E";
+    }
+    return "";
+}
+
 // We print the log based on the log level
-#define LOG(level,...) { if(level>=minLogLevel) { int l = snprintf(log_buffer,512, __VA_ARGS__);  Serial.write(log_buffer,l); Serial.println(); } }
+#define LOG(level,...) { if(level>=minLogLevel) {  snprintf(log_msg, MAX_LOG_LEN, __VA_ARGS__);  print_log(__FILE__,__LINE__, levelName(level)); } }
 #else
 // Remove all log statments from the code
-#define LOG(Debug, ...) 
+#define LOG(level, ...) 
 #endif

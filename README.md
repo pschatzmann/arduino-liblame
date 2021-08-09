@@ -1,7 +1,7 @@
 # MP3 Encoding with LAME
 
 [Lame](https://lame.sourceforge.io/about.php) is a open source implementation of a MP3 encoder.
-This project is just a port from the https://github.com/commarmi76/libmp3lame_for_esp32, reorganized to follow Arduino Library conventions, so that you can use it in Arduino and PlatformIO. 
+This project just reorganized the code to follow Arduino Library conventions, so that you can use it in Arduino and PlatformIO. 
 
 I have also added a simple Arduino style C++ API which allows to output the resulting MP3 via to a Arduino Stream or to receive it via a callback. 
 

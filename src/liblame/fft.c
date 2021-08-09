@@ -32,7 +32,7 @@
 **           Takehiro  - some dirty hack for speed up
 */
 
-/* $Id: fft.c,v 1.38 2009/04/20 21:48:00 robert Exp $ */
+/* $Id: fft.c,v 1.39 2017/09/06 15:07:29 robert Exp $ */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -51,7 +51,10 @@
 #define TRI_SIZE (5-1)  /* 1024 =  4**5 */
 
 /* fft.c    */
+//ps: allocate out of struct replaygain_data
+#if USE_MEMORY_HACK
 static FLOAT window[BLKSIZE], window_s[BLKSIZE_s / 2];
+#endif
 
 static const FLOAT costab[TRI_SIZE * 2] = {
     9.238795325112867e-01, 3.826834323650898e-01,
@@ -189,7 +192,6 @@ static const unsigned char rv_tbl[] = {
 #define ms21(f) (window_s[i + 0x41] * f(i + k + 0x41))
 #define ms31(f) (window_s[0x3e - i] * f(i + k + 0xc1))
 
-
 void
 fft_short(lame_internal_flags const *const gfc,
           FLOAT x_real[3][BLKSIZE_s], int chn, const sample_t *const buffer[2])
@@ -197,6 +199,12 @@ fft_short(lame_internal_flags const *const gfc,
     int     i;
     int     j;
     int     b;
+
+// ps
+#if !USE_MEMORY_HACK
+    #define window_s gfc->cd_psy->window_s
+    #define window gfc->cd_psy->window
+#endif
 
     for (b = 0; b < 3; b++) {
         FLOAT  *x = &x_real[b][BLKSIZE_s / 2];
@@ -237,6 +245,9 @@ fft_short(lame_internal_flags const *const gfc,
             x[BLKSIZE_s / 2 + 3] = f1 - f3;
         } while (--j >= 0);
 
+#undef window
+#undef window_s
+
         gfc->fft_fht(x, BLKSIZE_s / 2);
         /* BLKSIZE_s/2 because of 3DNow! ASM routine */
     }
@@ -249,6 +260,12 @@ fft_long(lame_internal_flags const *const gfc,
     int     i;
     int     jj = BLKSIZE / 8 - 1;
     x += BLKSIZE / 2;
+
+// ps
+#if !USE_MEMORY_HACK
+    #define window_s gfc->cd_psy->window_s
+    #define window gfc->cd_psy->window
+#endif
 
     do {
         FLOAT   f0, f1, f2, f3, w;
@@ -284,11 +301,14 @@ fft_long(lame_internal_flags const *const gfc,
         x[BLKSIZE / 2 + 3] = f1 - f3;
     } while (--jj >= 0);
 
+#undef window
+#undef window_s
+
     gfc->fft_fht(x, BLKSIZE / 2);
     /* BLKSIZE/2 because of 3DNow! ASM routine */
 }
 
-#ifdef HAVE_NASM
+#if HAVE_NASM
 extern void fht_3DN(FLOAT * fz, int n);
 extern void fht_SSE(FLOAT * fz, int n);
 #endif
@@ -297,6 +317,12 @@ void
 init_fft(lame_internal_flags * const gfc)
 {
     int     i;
+
+#if !USE_MEMORY_HACK
+    #define window_s gfc->cd_psy->window_s
+    #define window gfc->cd_psy->window
+#endif
+
 
     /* The type of window used here will make no real difference, but */
     /* in the interest of merging nspsytune stuff - switch to blackman window */
@@ -309,7 +335,7 @@ init_fft(lame_internal_flags * const gfc)
         window_s[i] = 0.5 * (1.0 - cos(2.0 * PI * (i + 0.5) / BLKSIZE_s));
 
     gfc->fft_fht = fht;
-#ifdef HAVE_NASM
+#if HAVE_NASM
     if (gfc->CPU_features.AMD_3DNow) {
         gfc->fft_fht = fht_3DN;
     }
@@ -320,10 +346,15 @@ init_fft(lame_internal_flags * const gfc)
         gfc->fft_fht = fht;
     }
 #else
-#ifdef HAVE_XMMINTRIN_H
+#if HAVE_XMMINTRIN_H
 #ifdef MIN_ARCH_SSE
     gfc->fft_fht = fht_SSE2;
 #endif
 #endif
 #endif
+
+#undef window
+#undef window_s
+
+
 }

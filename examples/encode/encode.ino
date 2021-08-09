@@ -32,14 +32,15 @@ void setup() {
     info.sample_rate = 16000;
     mp3.begin(info);
 
-    Serial.println("writing...");
+    Serial.println("starting...");
 
 }
 
 void loop() {
-    Serial.println("writing 512 samples of random data");
     for (int j=0;j<512;j++){
         buffer[j] = (rand() % 100) - 50;         
     }
-    mp3.write(buffer, 512);
+    if (mp3.write(buffer, 512)){
+        Serial.println("512 samples of random data written");
+    }
 }

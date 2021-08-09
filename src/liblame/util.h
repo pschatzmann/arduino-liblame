@@ -23,14 +23,17 @@
 #ifndef LAME_UTIL_H
 #define LAME_UTIL_H
 
+// ps
+#include "log.h"
+
 #include "l3side.h"
 #include "id3tag.h"
 #include "lame_global_flags.h"
+#include "gain_analysis.h"
 
 #ifdef __cplusplus
 extern  "C" {
 #endif
-
 
 /***********************************************************************
 *
@@ -93,7 +96,7 @@ extern  "C" {
 #define         Max(A, B)       ((A) > (B) ? (A) : (B))
 
 /* log/log10 approximations */
-#ifdef USE_FAST_LOG
+#if USE_FAST_LOG
 #define         FAST_LOG10(x)       (fast_log2(x)*(LOG2/LOG10))
 #define         FAST_LOG(x)         (fast_log2(x)*LOG2)
 #define         FAST_LOG10_X(x,y)   (fast_log2(x)*(LOG2/LOG10*(y)))
@@ -128,12 +131,8 @@ extern  "C" {
         void   *pointer;     /* to use with malloc/free */
     } aligned_pointer_t;
 
-    void    malloc_aligned(aligned_pointer_t * ptr, unsigned int size, unsigned int bytes);
+    void    calloc_aligned(aligned_pointer_t * ptr, unsigned int size, unsigned int bytes);
     void    free_aligned(aligned_pointer_t * ptr);
-
-
-    typedef void (*iteration_loop_t) (lame_internal_flags * gfc, const FLOAT pe[2][2],
-                                      const FLOAT ms_ratio[2], const III_psy_ratio ratio[2][2]);
 
 
     /* "bit_stream.h" Type Definitions */
@@ -212,6 +211,10 @@ extern  "C" {
      *  global data constants
      */
     typedef struct {
+// ps
+#if !USE_MEMORY_HACK
+        FLOAT window[BLKSIZE], window_s[BLKSIZE_s / 2];
+#endif
         PsyConst_CB2SB_t l;
         PsyConst_CB2SB_t s;
         PsyConst_CB2SB_t l_to_s;
@@ -487,6 +490,7 @@ extern  "C" {
 #  define  LAME_ID   0xFFF88E3B
         unsigned long class_id;
 
+        int     lame_init_params_successful;
         int     lame_encode_frame_init;
         int     iteration_init_init;
         int     fill_buffer_resample_init;
@@ -535,8 +539,6 @@ extern  "C" {
         plotting_data *pinfo;
         hip_t hip;
 
-        iteration_loop_t iteration_loop;
-
         /* functions to replace with CPU feature optimized versions in takehiro.c */
         int     (*choose_table) (const int *ix, const int *const end, int *const s);
         void    (*fft_fht) (FLOAT *, int);
@@ -570,11 +572,10 @@ extern  "C" {
     extern FLOAT freq2bark(FLOAT freq);
     void    disable_FPE(void);
 
+
 /* log/log10 approximations */
     extern void init_log_table(void);
- //   extern ieee754_float32_t fast_log2(ieee754_float32_t x);
-      extern float fast_log2(float x);
-
+    extern float fast_log2(float x);
 
     int     isResamplingNecessary(SessionConfig_t const* cfg);
 
@@ -606,12 +607,15 @@ extern  "C" {
 
     extern void lame_report_def(const char* format, va_list args);
     extern void lame_report_fnc(lame_report_function print_f, const char *, ...);
-    extern void lame_errorf(const lame_internal_flags * gfc, const char *, ...);
-    extern void lame_debugf(const lame_internal_flags * gfc, const char *, ...);
-    extern void lame_msgf(const lame_internal_flags * gfc, const char *, ...);
-#define DEBUGF  lame_debugf
-#define ERRORF  lame_errorf
-#define MSGF    lame_msgf
+
+#if USE_LOGGING_HACK==0
+extern void lame_errorf(const lame_internal_flags * gfc, const char *, ...);
+extern void lame_debugf(const lame_internal_flags * gfc, const char *, ...);
+extern void lame_msgf(const lame_internal_flags * gfc, const char *, ...);
+ #define DEBUGF  lame_debugf 
+ #define ERRORF  lame_errorf
+ #define MSGF    lame_msgf
+#endif
 
     int     is_lame_internal_flags_valid(const lame_internal_flags * gfp);
     

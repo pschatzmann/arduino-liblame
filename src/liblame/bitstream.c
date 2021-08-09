@@ -19,16 +19,16 @@
  * Free Software Foundation, Inc., 59 Temple Place - Suite 330,
  * Boston, MA 02111-1307, USA.
  *
- * $Id: bitstream.c,v 1.97 2011/05/07 16:05:17 rbrito Exp $
+ * $Id: bitstream.c,v 1.99 2017/08/31 14:14:46 robert Exp $
  */
-#include <string.h>
+
 
 #ifdef HAVE_CONFIG_H
 #include <config.h>
 #endif
 
-//#include <stdlib.h>
-//#include <stdio.h>
+#include <stdlib.h>
+#include <stdio.h>
 
 #include "lame.h"
 #include "machine.h"
@@ -51,7 +51,7 @@
 
 
 
-#ifdef DEBUG
+#if USE_DEBUG
 static int hogege;
 #endif
 
@@ -135,7 +135,7 @@ putheader_bits(lame_internal_flags * gfc)
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     Bit_stream_struc *bs = &gfc->bs;
-#ifdef DEBUG
+#if USE_DEBUG
     hogege += cfg->sideinfo_len * 8;
 #endif
     memcpy(&bs->buf[bs->buf_byte_idx], esv->header[esv->w_ptr].buf, cfg->sideinfo_len);
@@ -493,7 +493,7 @@ huffman_coder_count1(lame_internal_flags * gfc, gr_info const *gi)
     /* Write count1 area */
     struct huffcodetab const *const h = &ht[gi->count1table_select + 32];
     int     i, bits = 0;
-#ifdef DEBUG
+#if USE_DEBUG
     int     gegebo = gfc->bs.totbit;
 #endif
 
@@ -545,7 +545,7 @@ huffman_coder_count1(lame_internal_flags * gfc, gr_info const *gi)
         putbits2(gfc, huffbits + h->table[p], h->hlen[p]);
         bits += h->hlen[p];
     }
-#ifdef DEBUG
+#if USE_DEBUG
     DEBUGF(gfc, "count1: real: %ld counted:%d (bigv %d count1len %d)\n",
            gfc->bs.totbit - gegebo, gi->count1bits, gi->big_values, gi->count1);
 #endif
@@ -697,7 +697,7 @@ writeMainData(lame_internal_flags * const gfc)
                 int const slen1 = slen1_tab[gi->scalefac_compress];
                 int const slen2 = slen2_tab[gi->scalefac_compress];
                 data_bits = 0;
-#ifdef DEBUG
+#if USE_DEBUG
                 hogege = gfc->bs.totbit;
 #endif
                 for (sfb = 0; sfb < gi->sfbdivide; sfb++) {
@@ -721,7 +721,7 @@ writeMainData(lame_internal_flags * const gfc)
                     data_bits += LongHuffmancodebits(gfc, gi);
                 }
                 data_bits += huffman_coder_count1(gfc, gi);
-#ifdef DEBUG
+#if USE_DEBUG
                 DEBUGF(gfc, "<%ld> ", gfc->bs.totbit - hogege);
 #endif
                 /* does bitcount in quantize.c agree with actual bit count? */
@@ -738,7 +738,7 @@ writeMainData(lame_internal_flags * const gfc)
             int     i, sfb_partition, scale_bits = 0;
             assert(gi->sfb_partition_table);
             data_bits = 0;
-#ifdef DEBUG
+#if USE_DEBUG
             hogege = gfc->bs.totbit;
 #endif
             sfb = 0;
@@ -769,7 +769,7 @@ writeMainData(lame_internal_flags * const gfc)
                 data_bits += LongHuffmancodebits(gfc, gi);
             }
             data_bits += huffman_coder_count1(gfc, gi);
-#ifdef DEBUG
+#if USE_DEBUG
             DEBUGF(gfc, "<%ld> ", gfc->bs.totbit - hogege);
 #endif
             /* does bitcount in quantize.c agree with actual bit count? */
@@ -987,11 +987,10 @@ format_bitstream(lame_internal_flags * gfc)
 static int
 do_gain_analysis(lame_internal_flags * gfc, unsigned char* buffer, int minimum)
 {
-#ifdef DECODE_ON_THE_FLY
     SessionConfig_t const *const cfg = &gfc->cfg;
     RpgStateVar_t const *const rsv = &gfc->sv_rpg;
     RpgResult_t *const rov = &gfc->ov_rpg;
-
+#if DECODE_ON_THE_FLY
     if (cfg->decode_on_the_fly) { /* decode the frame */
         sample_t pcm_buf[2][1152];
         int     mp3_in = minimum;
@@ -1060,7 +1059,7 @@ do_copy_buffer(lame_internal_flags * gfc, unsigned char *buffer, int size)
     int const minimum = bs->buf_byte_idx + 1;
     if (minimum <= 0)
         return 0;
-    if (size != 0 && minimum > size)
+    if (minimum > size)
         return -1;      /* buffer is too small */
     memcpy(buffer, bs->buf, minimum);
     bs->buf_byte_idx = -1;
@@ -1102,7 +1101,7 @@ init_bit_stream_w(lame_internal_flags * gfc)
     esv->h_ptr = esv->w_ptr = 0;
     esv->header[esv->h_ptr].write_timing = 0;
 
-    gfc->bs.buf = (unsigned char *) malloc(BUFFER_SIZE);
+    gfc->bs.buf = lame_calloc(unsigned char, BUFFER_SIZE);
     gfc->bs.buf_size = BUFFER_SIZE;
     gfc->bs.buf_byte_idx = -1;
     gfc->bs.buf_bit_idx = 0;

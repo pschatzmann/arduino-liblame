@@ -22,7 +22,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* $Id: quantize.c,v 1.216.2.1 2012/01/08 23:49:58 robert Exp $ */
+/* $Id: quantize.c,v 1.219 2017/08/02 19:48:05 robert Exp $ */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
@@ -37,7 +37,7 @@
 #include "bitstream.h"
 #include "vbrquantize.h"
 #include "quantize.h"
-#ifdef HAVE_XMMINTRIN_H
+#if HAVE_XMMINTRIN_H
 #include "vector/lame_intrin.h"
 #endif
 
@@ -94,7 +94,7 @@ init_xrpow_core_init(lame_internal_flags * const gfc)
 {
     gfc->init_xrpow_core = init_xrpow_core_c;
 
-#if defined(HAVE_XMMINTRIN_H)
+#if HAVE_XMMINTRIN_H
     if (gfc->CPU_features.SSE)
         gfc->init_xrpow_core = init_xrpow_core_sse;
 #endif

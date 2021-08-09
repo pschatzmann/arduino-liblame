@@ -20,30 +20,27 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* $Id: util.c,v 1.154.2.1 2012/01/08 23:49:58 robert Exp $ */
+/* $Id: util.c,v 1.159 2017/09/06 15:07:30 robert Exp $ */
 
 #ifdef HAVE_CONFIG_H
 # include <config.h>
 #endif
 
+#include <float.h>
 #include "lame.h"
 #include "machine.h"
 #include "encoder.h"
 #include "util.h"
 #include "tables.h"
-#include "gain_analysis.h"
 
 #define PRECOMPUTE
 #if defined(__FreeBSD__) && !defined(__alpha__)
 # include <machine/floatingpoint.h>
 #endif
 
-//#include <ieeefp.h>
-#include <fenv.h>
-
-// Ugly hack for Arduino to prevent an unresolved _impure_ptr
-#if defined(ESP32) && defined(ARDUINO) 
-struct _reent *_impure_ptr __ATTRIBUTE_IMPURE_PTR__;
+// Ugliy hack to get rid of linker error 
+#if defined(ARDUINO) && defined(ESP32) 
+struct _reent *_impure_ptr __ATTRIBUTE_IMPURE_PTR__ = NULL;
 #endif
 
 /***********************************************************************
@@ -56,6 +53,7 @@ struct _reent *_impure_ptr __ATTRIBUTE_IMPURE_PTR__;
 void
 free_id3tag(lame_internal_flags * const gfc)
 {
+    gfc->tag_spec.language[0] = 0;
     if (gfc->tag_spec.title != 0) {
         free(gfc->tag_spec.title);
         gfc->tag_spec.title = 0;
@@ -119,6 +117,7 @@ freegfc(lame_internal_flags * const gfc)
 {                       /* bit stream structure */
     int     i;
 
+    if (gfc == 0) return;
 
     for (i = 0; i <= 2 * BPC; i++)
         if (gfc->sv_enc.blackfilt[i] != NULL) {
@@ -148,8 +147,11 @@ freegfc(lame_internal_flags * const gfc)
         free(gfc->ATH);
     }
     if (gfc->sv_rpg.rgdata) {
+        // ps
+#if USE_MEMORY_HACK
     	free(gfc->sv_rpg.rgdata->A);
     	free(gfc->sv_rpg.rgdata->B);
+#endif
         free(gfc->sv_rpg.rgdata);
     }
     if (gfc->sv_enc.in_buffer_0) {
@@ -160,7 +162,7 @@ freegfc(lame_internal_flags * const gfc)
     }
     free_id3tag(gfc);
 
-#ifdef DECODE_ON_THE_FLY
+#if DECODE_ON_THE_FLY
     if (gfc->hip) {
         hip_decode_exit(gfc->hip);
         gfc->hip = 0;
@@ -173,16 +175,22 @@ freegfc(lame_internal_flags * const gfc)
 }
 
 void
-malloc_aligned(aligned_pointer_t * ptr, unsigned int size, unsigned int bytes)
+calloc_aligned(aligned_pointer_t * ptr, unsigned int size, unsigned int bytes)
 {
     if (ptr) {
         if (!ptr->pointer) {
             ptr->pointer = malloc(size + bytes);
-            if (bytes > 0) {
-                ptr->aligned = (void *) ((((size_t) ptr->pointer + bytes - 1) / bytes) * bytes);
+            if (ptr->pointer != 0) {
+                memset(ptr->pointer, 0, size + bytes);
+                if (bytes > 0) {
+                    ptr->aligned = (void *) ((((size_t) ptr->pointer + bytes - 1) / bytes) * bytes);
+                }
+                else {
+                    ptr->aligned = ptr->pointer;
+                }
             }
             else {
-                ptr->aligned = ptr->pointer;
+                ptr->aligned = 0;
             }
         }
     }
@@ -554,7 +562,7 @@ fill_buffer_resample(lame_internal_flags * gfc,
     if (bpc > BPC)
         bpc = BPC;
 
-    intratio = (fabs(resample_ratio - floor(.5 + resample_ratio)) < .0001);
+    intratio = (fabs(resample_ratio - floor(.5 + resample_ratio)) < FLT_EPSILON);
     fcn = 1.00 / resample_ratio;
     if (fcn > 1.00)
         fcn = 1.00;
@@ -565,10 +573,10 @@ fill_buffer_resample(lame_internal_flags * gfc,
     BLACKSIZE = filter_l + 1; /* size of data needed for FIR */
 
     if (gfc->fill_buffer_resample_init == 0) {
-        esv->inbuf_old[0] = calloc(BLACKSIZE, sizeof(esv->inbuf_old[0][0]));
-        esv->inbuf_old[1] = calloc(BLACKSIZE, sizeof(esv->inbuf_old[0][0]));
+        esv->inbuf_old[0] = lame_calloc(sample_t, BLACKSIZE);
+        esv->inbuf_old[1] = lame_calloc(sample_t, BLACKSIZE);
         for (i = 0; i <= 2 * bpc; ++i)
-            esv->blackfilt[i] = calloc(BLACKSIZE, sizeof(esv->blackfilt[0][0]));
+            esv->blackfilt[i] = lame_calloc(sample_t, BLACKSIZE);
 
         esv->itime[0] = 0;
         esv->itime[1] = 0;
@@ -710,6 +718,7 @@ fill_buffer(lame_internal_flags * gfc,
 *  Message Output
 *
 ***********************************************************************/
+#if USE_LOGGING_HACK==0
 
 void
 lame_report_def(const char *format, va_list args)
@@ -765,7 +774,7 @@ lame_errorf(const lame_internal_flags* gfc, const char *format, ...)
     }
 }
 
-
+#endif
 
 /***********************************************************************
  *
@@ -776,7 +785,7 @@ lame_errorf(const lame_internal_flags* gfc, const char *format, ...)
  *
  ***********************************************************************/
 
-#ifdef HAVE_NASM
+#if HAVE_NASM
 extern int has_MMX_nasm(void);
 extern int has_3DNow_nasm(void);
 extern int has_SSE_nasm(void);
@@ -786,7 +795,7 @@ extern int has_SSE2_nasm(void);
 int
 has_MMX(void)
 {
-#ifdef HAVE_NASM
+#if HAVE_NASM
     return has_MMX_nasm();
 #else
     return 0;           /* don't know, assume not */
@@ -796,7 +805,7 @@ has_MMX(void)
 int
 has_3DNow(void)
 {
-#ifdef HAVE_NASM
+#if HAVE_NASM
     return has_3DNow_nasm();
 #else
     return 0;           /* don't know, assume not */
@@ -806,7 +815,7 @@ has_3DNow(void)
 int
 has_SSE(void)
 {
-#ifdef HAVE_NASM
+#if HAVE_NASM
     return has_SSE_nasm();
 #else
 #if defined( _M_X64 ) || defined( MIN_ARCH_SSE )
@@ -820,7 +829,7 @@ has_SSE(void)
 int
 has_SSE2(void)
 {
-#ifdef HAVE_NASM
+#if HAVE_NASM
     return has_SSE2_nasm();
 #else
 #if defined( _M_X64 ) || defined( MIN_ARCH_SSE )
@@ -845,15 +854,14 @@ disable_FPE(void)
 
 
 
-	//fedisableexcept(FE_DIVBYZERO | FE_INVALID);
 
 #if defined(__FreeBSD__) && !defined(__alpha__)
     {
         /* seet floating point mask to the Linux default */
-        fp_except mask;
+        fp_except_t mask;
         mask = fpgetmask();
         /* if bit is set, we get SIGFPE on that error! */
-        fpsetmask(mask & ~(FP_X_INV | FP_X_DX)); // Invalid operation and  Divide by zero*/
+        fpsetmask(mask & ~(FP_X_INV | FP_X_DZ));
         /*  DEBUGF("FreeBSD mask is 0x%x\n",mask); */
     }
 #endif
@@ -940,10 +948,7 @@ disable_FPE(void)
 }
 
 
-
-
-
-#ifdef USE_FAST_LOG
+#if USE_FAST_LOG
 /***********************************************************************
  *
  * Fast Log Approximation for log2, used to approximate every other log
@@ -960,12 +965,17 @@ disable_FPE(void)
 #define LOG2_SIZE       (512)
 #define LOG2_SIZE_L2    (9)
 
-static ieee754_float32_t log_table[LOG2_SIZE + 1];
+// We use a precalculated static const array
+#if USE_FAST_LOG_CONST
 
+const static float log_table[] = { 0, 0.00281502, 0.00562455, 0.00842862, 0.0112273, 0.0140205, 0.0168083, 0.0195907, 0.0223678, 0.0251396, 0.027906, 0.0306671, 0.033423, 0.0361736, 0.038919, 0.0416592, 0.0443941, 0.0471239, 0.0498485, 0.0525681, 0.0552824, 0.0579917, 0.0606959, 0.0633951, 0.0660892, 0.0687783, 0.0714624, 0.0741415, 0.0768156, 0.0794848, 0.082149, 0.0848084, 0.0874628, 0.0901124, 0.0927571, 0.095397, 0.0980321, 0.100662, 0.103288, 0.105909, 0.108524, 0.111136, 0.113742, 0.116344, 0.118941, 0.121534, 0.124121, 0.126704, 0.129283, 0.131857, 0.134426, 0.136991, 0.139551, 0.142107, 0.144658, 0.147205, 0.149747, 0.152285, 0.154818, 0.157347, 0.159871, 0.162391, 0.164907, 0.167418, 0.169925, 0.172428, 0.174926, 0.17742, 0.179909, 0.182394, 0.184875, 0.187352, 0.189825, 0.192293, 0.194757, 0.197217, 0.199672, 0.202124, 0.204571, 0.207014, 0.209453, 0.211888, 0.214319, 0.216746, 0.219169, 0.221587, 0.224002, 0.226412, 0.228819, 0.231221, 0.23362, 0.236014, 0.238405, 0.240791, 0.243174, 0.245553, 0.247928, 0.250298, 0.252665, 0.255029, 0.257388, 0.259743, 0.262095, 0.264443, 0.266787, 0.269127, 0.271463, 0.273796, 0.276124, 0.278449, 0.280771, 0.283088, 0.285402, 0.287712, 0.290019, 0.292322, 0.294621, 0.296916, 0.299208, 0.301496, 0.303781, 0.306062, 0.308339, 0.310613, 0.312883, 0.31515, 0.317413, 0.319672, 0.321928, 0.324181, 0.326429, 0.328675, 0.330917, 0.333155, 0.33539, 0.337622, 0.33985, 0.342075, 0.344296, 0.346514, 0.348728, 0.350939, 0.353147, 0.355351, 0.357552, 0.35975, 0.361944, 0.364135, 0.366322, 0.368506, 0.370687, 0.372865, 0.375039, 0.377211, 0.379378, 0.381543, 0.383704, 0.385862, 0.388017, 0.390169, 0.392317, 0.394463, 0.396605, 0.398744, 0.400879, 0.403012, 0.405141, 0.407268, 0.409391, 0.411511, 0.413628, 0.415742, 0.417853, 0.41996, 0.422065, 0.424166, 0.426265, 0.42836, 0.430453, 0.432542, 0.434628, 0.436712, 0.438792, 0.440869, 0.442943, 0.445015, 0.447083, 0.449149, 0.451211, 0.453271, 0.455327, 0.457381, 0.459432, 0.461479, 0.463524, 0.465566, 0.467606, 0.469642, 0.471675, 0.473706, 0.475733, 0.477758, 0.47978, 0.481799, 0.483816, 0.485829, 0.48784, 0.489848, 0.491853, 0.493855, 0.495855, 0.497852, 0.499846, 0.501837, 0.503826, 0.505812, 0.507795, 0.509775, 0.511753, 0.513728, 0.5157, 0.517669, 0.519636, 0.5216, 0.523562, 0.525521, 0.527477, 0.529431, 0.531381, 0.53333, 0.535275, 0.537218, 0.539159, 0.541097, 0.543032, 0.544964, 0.546894, 0.548822, 0.550747, 0.552669, 0.554589, 0.556506, 0.558421, 0.560333, 0.562242, 0.564149, 0.566054, 0.567956, 0.569856, 0.571753, 0.573647, 0.575539, 0.577429, 0.579316, 0.581201, 0.583083, 0.584963, 0.58684, 0.588715, 0.590587, 0.592457, 0.594325, 0.59619, 0.598053, 0.599913, 0.601771, 0.603626, 0.60548, 0.60733, 0.609179, 0.611025, 0.612868, 0.61471, 0.616549, 0.618386, 0.62022, 0.622052, 0.623881, 0.625709, 0.627534, 0.629357, 0.631177, 0.632995, 0.634811, 0.636625, 0.638436, 0.640245, 0.642052, 0.643856, 0.645658, 0.647458, 0.649256, 0.651052, 0.652845, 0.654636, 0.656425, 0.658211, 0.659996, 0.661778, 0.663558, 0.665336, 0.667112, 0.668885, 0.670656, 0.672425, 0.674192, 0.675957, 0.67772, 0.67948, 0.681238, 0.682995, 0.684749, 0.686501, 0.68825, 0.689998, 0.691744, 0.693487, 0.695228, 0.696968, 0.698705, 0.70044, 0.702173, 0.703904, 0.705632, 0.707359, 0.709084, 0.710806, 0.712527, 0.714246, 0.715962, 0.717676, 0.719389, 0.721099, 0.722808, 0.724514, 0.726218, 0.72792, 0.729621, 0.731319, 0.733015, 0.73471, 0.736402, 0.738092, 0.739781, 0.741467, 0.743151, 0.744834, 0.746514, 0.748193, 0.749869, 0.751544, 0.753217, 0.754888, 0.756556, 0.758223, 0.759888, 0.761551, 0.763212, 0.764872, 0.766529, 0.768184, 0.769838, 0.771489, 0.773139, 0.774787, 0.776433, 0.778077, 0.779719, 0.78136, 0.782998, 0.784635, 0.78627, 0.787903, 0.789534, 0.791163, 0.79279, 0.794416, 0.79604, 0.797662, 0.799282, 0.8009, 0.802516, 0.804131, 0.805744, 0.807355, 0.808964, 0.810572, 0.812177, 0.813781, 0.815383, 0.816984, 0.818582, 0.820179, 0.821774, 0.823367, 0.824959, 0.826548, 0.828136, 0.829723, 0.831307, 0.83289, 0.834471, 0.83605, 0.837628, 0.839204, 0.840778, 0.84235, 0.843921, 0.84549, 0.847057, 0.848623, 0.850187, 0.851749, 0.85331, 0.854868, 0.856426, 0.857981, 0.859535, 0.861087, 0.862637, 0.864186, 0.865733, 0.867279, 0.868823, 0.870365, 0.871905, 0.873444, 0.874981, 0.876517, 0.878051, 0.879583, 0.881114, 0.882643, 0.884171, 0.885696, 0.887221, 0.888743, 0.890264, 0.891784, 0.893302, 0.894818, 0.896332, 0.897845, 0.899357, 0.900867, 0.902375, 0.903882, 0.905387, 0.906891, 0.908393, 0.909893, 0.911392, 0.912889, 0.914385, 0.915879, 0.917372, 0.918863, 0.920353, 0.921841, 0.923327, 0.924813, 0.926296, 0.927778, 0.929258, 0.930737, 0.932215, 0.933691, 0.935165, 0.936638, 0.938109, 0.939579, 0.941048, 0.942515, 0.94398, 0.945444, 0.946906, 0.948367, 0.949827, 0.951285, 0.952741, 0.954196, 0.95565, 0.957102, 0.958553, 0.960002, 0.96145, 0.962896, 0.964341, 0.965784, 0.967226, 0.968667, 0.970106, 0.971544, 0.97298, 0.974415, 0.975848, 0.97728, 0.97871, 0.98014, 0.981567, 0.982994, 0.984418, 0.985842, 0.987264, 0.988685, 0.990104, 0.991522, 0.992938, 0.994353, 0.995767, 0.997179, 0.99859, 1 }; 
+void init_log_table(void) {}
 
+#else 
+// We calculate the array on the fly
+static float log_table[LOG2_SIZE + 1];
 
-void
-init_log_table(void)
+void init_log_table(void)
 {
     int     j;
     static int init = 0;
@@ -975,19 +985,18 @@ init_log_table(void)
 
     if (!init) {
         for (j = 0; j < LOG2_SIZE + 1; j++)
-            log_table[j] = log(1.0f + j / (ieee754_float32_t) LOG2_SIZE) / log(2.0f);
+            log_table[j] = log(1.0f + j / (float) LOG2_SIZE) / log(2.0f);
     }
     init = 1;
 }
 
+#endif
 
-
-ieee754_float32_t
-fast_log2(ieee754_float32_t x)
+float fast_log2(float x)
 {
-    ieee754_float32_t log2val, partial;
+    float log2val, partial;
     union {
-        ieee754_float32_t f;
+        float f;
         int     i;
     } fi;
     int     mantisse;
@@ -1005,15 +1014,11 @@ fast_log2(ieee754_float32_t x)
 
     return log2val;
 }
-
 #else /* Don't use FAST_LOG */
 
 
-void
-init_log_table(void)
-{
+void init_log_table(void) {
 }
-
 
 #endif
 

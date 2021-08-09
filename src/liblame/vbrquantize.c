@@ -20,7 +20,7 @@
  * Boston, MA 02111-1307, USA.
  */
 
-/* $Id: vbrquantize.c,v 1.141.2.1 2012/02/07 13:40:37 robert Exp $ */
+/* $Id: vbrquantize.c,v 1.142 2012/02/07 13:36:35 robert Exp $ */
 
 #ifdef HAVE_CONFIG_H
 #  include <config.h>
@@ -81,7 +81,7 @@ typedef VOLATILE union {
 
 
 
-#ifdef TAKEHIRO_IEEE754_HACK
+#if USE_HIRO_IEEE754_HACK
 #define DOUBLEX double
 #else
 #define DOUBLEX FLOAT
@@ -90,7 +90,7 @@ typedef VOLATILE union {
 #define MAGIC_FLOAT_def (65536*(128))
 #define MAGIC_INT_def    0x4b000000
 
-#ifdef TAKEHIRO_IEEE754_HACK
+#if USE_HIRO_IEEE754_HACK
 #else
 /*********************************************************************
  * XRPOW_FTOI is a macro to convert floats to ints.
@@ -106,7 +106,7 @@ typedef VOLATILE union {
 #endif
 
 static int const MAGIC_INT = MAGIC_INT_def;
-#ifndef TAKEHIRO_IEEE754_HACK
+#ifndef USE_HIRO_IEEE754_HACK
 static DOUBLEX const ROUNDFAC = ROUNDFAC_def;
 #endif
 static DOUBLEX const MAGIC_FLOAT = MAGIC_FLOAT_def;
@@ -169,7 +169,7 @@ find_lowest_scalefac(const FLOAT xr34)
 inline static void
 k_34_4(DOUBLEX x[4], int l3[4])
 {
-#ifdef TAKEHIRO_IEEE754_HACK
+#if USE_HIRO_IEEE754_HACK
     fi_union fi[4];
 
     assert(x[0] <= IXMAX_VAL && x[1] <= IXMAX_VAL && x[2] <= IXMAX_VAL && x[3] <= IXMAX_VAL);

@@ -25,15 +25,21 @@
 #define LAME_LAME_H
 
 #include "config.h"
-
 /* for size_t typedef */
 #include <stddef.h>
 /* for va_list typedef */
 #include <stdarg.h>
-#include <string.h>
 
-#if defined(HAVE_STDIO_H)
+#if HAVE_STRING_H
+#include <string.h>
+#endif
+
+#if HAVE_STDIO_H
 #include <stdio.h>
+#endif
+
+#if HAVE_STDINT_H
+#include <stdint.h>
 #endif
 
 #if defined(__cplusplus)
@@ -49,7 +55,7 @@ typedef void (*lame_report_function)(const char *format, va_list ap);
 #define CDECL
 #endif
 
-#define DEPRECATED_OR_OBSOLETE_CODE_REMOVED 1
+//#define DEPRECATED_OR_OBSOLETE_CODE_REMOVED 1
 
 typedef enum vbr_mode_e {
   vbr_off=0,
@@ -1320,6 +1326,8 @@ typedef enum {
 // abort
 void CDECL lame_abort();
 
+CDECL void* debug_calloc(int count, int size);
+CDECL int getFreeHeap();
 
 #if defined(__cplusplus)
 }
