@@ -86,7 +86,7 @@ extern  "C" {
         int     freqindex;
         int     first;
 
-// ps
+// ps - allocate A and B separately to avoid huge allocation
 #if USE_MEMORY_HACK
         uint32_t *A;
         uint32_t *B;

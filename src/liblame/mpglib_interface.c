@@ -340,7 +340,7 @@ int hip_decode_exit(hip_t hip)
 {
     if (hip) {
         ExitMP3(hip);
-        free(hip);
+        lame_free(hip);
     }
     return 0;
 }

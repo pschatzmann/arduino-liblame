@@ -1327,6 +1327,7 @@ typedef enum {
 void CDECL lame_abort();
 
 CDECL void* debug_calloc(int count, int size);
+CDECL void debug_free(void*);
 CDECL int getFreeHeap();
 
 #if defined(__cplusplus)

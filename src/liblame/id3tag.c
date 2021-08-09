@@ -411,7 +411,7 @@ local_strdup(char **dst, const char *src)
     if (dst == 0) {
         return 0;
     }
-    free(*dst);
+    lame_free(*dst);
     *dst = 0;
     if (src != 0) {
         size_t  n;
@@ -436,7 +436,7 @@ local_ucs2_strdup(unsigned short **dst, unsigned short const *src)
     if (dst == 0) {
         return 0;
     }
-    free(*dst);         /* free old string pointer */
+    lame_free(*dst);         /* free old string pointer */
     *dst = 0;
     if (src != 0) {
         size_t  n;
@@ -583,7 +583,7 @@ id3tag_set_genre_utf16(lame_t gfp, unsigned short const* text)
     if (maybeLatin1(text)) {
         char*   latin1 = local_strdup_utf16_to_latin1(text);
         int     num = lookupGenre(latin1);
-        free(latin1);
+        lame_free(latin1);
         if (num == -1) return -1; /* number out of range */
         if (num >= 0) {           /* common genre found  */
             gfc->tag_spec.flags |= CHANGED_FLAG;
@@ -639,7 +639,7 @@ id3tag_set_albumart(lame_t gfp, const char *image, size_t size)
         }
     }
     if (gfc->tag_spec.albumart != 0) {
-        free(gfc->tag_spec.albumart);
+        lame_free(gfc->tag_spec.albumart);
         gfc->tag_spec.albumart = 0;
         gfc->tag_spec.albumart_size = 0;
         gfc->tag_spec.albumart_mimetype = MIMETYPE_NONE;
@@ -967,7 +967,7 @@ id3tag_set_userinfo_latin1(lame_t gfp, uint32_t id, char const *fieldvalue)
         local_strdup(&dup, fieldvalue);
         dup[a] = 0;
         rc = id3v2_add_latin1_lng(gfp, id, dup, dup+a+1);
-        free(dup);
+        lame_free(dup);
     }
     return rc;
 }
@@ -984,8 +984,8 @@ id3tag_set_userinfo_ucs2(lame_t gfp, uint32_t id, unsigned short const *fieldval
         local_ucs2_substr(&dsc, fieldvalue, 0, a);
         local_ucs2_substr(&val, fieldvalue, a+1, b);
         rc = id3v2_add_ucs2_lng(gfp, id, dsc, val);
-        free(dsc);
-        free(val);
+        lame_free(dsc);
+        lame_free(val);
     }
     return rc;
 }
@@ -1627,7 +1627,7 @@ id3tag_set_fieldvalue_utf16(lame_t gfp, const unsigned short *fieldvalue)
             int     rc;
             local_ucs2_substr(&txt, fieldvalue, dx+5, local_ucs2_strlen(fieldvalue));
             rc = id3tag_set_textinfo_utf16(gfp, fid, txt);
-            free(txt);
+            lame_free(txt);
             return rc;
         }
     }
@@ -1819,7 +1819,7 @@ id3tag_write_v2(lame_t gfp)
         }
         tag_size = lame_get_id3v2_tag(gfp, tag, n);
         if (tag_size > n) {
-            free(tag);
+            lame_free(tag);
             return -1;
         }
         else {
@@ -1829,7 +1829,7 @@ id3tag_write_v2(lame_t gfp)
                 add_dummy_byte(gfc, tag[i], 1);
             }
         }
-        free(tag);
+        lame_free(tag);
         return (int) tag_size; /* ok, tag should not exceed 2GB */
     }
     return 0;

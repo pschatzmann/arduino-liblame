@@ -55,24 +55,24 @@ free_id3tag(lame_internal_flags * const gfc)
 {
     gfc->tag_spec.language[0] = 0;
     if (gfc->tag_spec.title != 0) {
-        free(gfc->tag_spec.title);
+        lame_free(gfc->tag_spec.title);
         gfc->tag_spec.title = 0;
     }
     if (gfc->tag_spec.artist != 0) {
-        free(gfc->tag_spec.artist);
+        lame_free(gfc->tag_spec.artist);
         gfc->tag_spec.artist = 0;
     }
     if (gfc->tag_spec.album != 0) {
-        free(gfc->tag_spec.album);
+        lame_free(gfc->tag_spec.album);
         gfc->tag_spec.album = 0;
     }
     if (gfc->tag_spec.comment != 0) {
-        free(gfc->tag_spec.comment);
+        lame_free(gfc->tag_spec.comment);
         gfc->tag_spec.comment = 0;
     }
 
     if (gfc->tag_spec.albumart != 0) {
-        free(gfc->tag_spec.albumart);
+        lame_free(gfc->tag_spec.albumart);
         gfc->tag_spec.albumart = 0;
         gfc->tag_spec.albumart_size = 0;
         gfc->tag_spec.albumart_mimetype = MIMETYPE_NONE;
@@ -84,9 +84,9 @@ free_id3tag(lame_internal_flags * const gfc)
             void   *q = node->txt.ptr.b;
             void   *r = node;
             node = node->nxt;
-            free(p);
-            free(q);
-            free(r);
+            lame_free(p);
+            lame_free(q);
+            lame_free(r);
         } while (node != 0);
         gfc->tag_spec.v2_head = 0;
         gfc->tag_spec.v2_tail = 0;
@@ -100,13 +100,13 @@ free_global_data(lame_internal_flags * gfc)
     if (gfc && gfc->cd_psy) {
         if (gfc->cd_psy->l.s3) {
             /* XXX allocated in psymodel_init() */
-            free(gfc->cd_psy->l.s3);
+            lame_free(gfc->cd_psy->l.s3);
         }
         if (gfc->cd_psy->s.s3) {
             /* XXX allocated in psymodel_init() */
-            free(gfc->cd_psy->s.s3);
+            lame_free(gfc->cd_psy->s.s3);
         }
-        free(gfc->cd_psy);
+        lame_free(gfc->cd_psy);
         gfc->cd_psy = 0;
     }
 }
@@ -121,44 +121,44 @@ freegfc(lame_internal_flags * const gfc)
 
     for (i = 0; i <= 2 * BPC; i++)
         if (gfc->sv_enc.blackfilt[i] != NULL) {
-            free(gfc->sv_enc.blackfilt[i]);
+            lame_free(gfc->sv_enc.blackfilt[i]);
             gfc->sv_enc.blackfilt[i] = NULL;
         }
     if (gfc->sv_enc.inbuf_old[0]) {
-        free(gfc->sv_enc.inbuf_old[0]);
+        lame_free(gfc->sv_enc.inbuf_old[0]);
         gfc->sv_enc.inbuf_old[0] = NULL;
     }
     if (gfc->sv_enc.inbuf_old[1]) {
-        free(gfc->sv_enc.inbuf_old[1]);
+        lame_free(gfc->sv_enc.inbuf_old[1]);
         gfc->sv_enc.inbuf_old[1] = NULL;
     }
 
     if (gfc->bs.buf != NULL) {
-        free(gfc->bs.buf);
+        lame_free(gfc->bs.buf);
         gfc->bs.buf = NULL;
     }
 
     if (gfc->VBR_seek_table.bag) {
-        free(gfc->VBR_seek_table.bag);
+        lame_free(gfc->VBR_seek_table.bag);
         gfc->VBR_seek_table.bag = NULL;
         gfc->VBR_seek_table.size = 0;
     }
     if (gfc->ATH) {
-        free(gfc->ATH);
+        lame_free(gfc->ATH);
     }
     if (gfc->sv_rpg.rgdata) {
         // ps
 #if USE_MEMORY_HACK
-    	free(gfc->sv_rpg.rgdata->A);
-    	free(gfc->sv_rpg.rgdata->B);
+    	lame_free(gfc->sv_rpg.rgdata->A);
+    	lame_free(gfc->sv_rpg.rgdata->B);
 #endif
-        free(gfc->sv_rpg.rgdata);
+        lame_free(gfc->sv_rpg.rgdata);
     }
     if (gfc->sv_enc.in_buffer_0) {
-        free(gfc->sv_enc.in_buffer_0);
+        lame_free(gfc->sv_enc.in_buffer_0);
     }
     if (gfc->sv_enc.in_buffer_1) {
-        free(gfc->sv_enc.in_buffer_1);
+        lame_free(gfc->sv_enc.in_buffer_1);
     }
     free_id3tag(gfc);
 
@@ -171,7 +171,7 @@ freegfc(lame_internal_flags * const gfc)
 
     free_global_data(gfc);
 
-    free(gfc);
+    lame_free(gfc);
 }
 
 void
@@ -201,7 +201,7 @@ free_aligned(aligned_pointer_t * ptr)
 {
     if (ptr) {
         if (ptr->pointer) {
-            free(ptr->pointer);
+            lame_free(ptr->pointer);
             ptr->pointer = 0;
             ptr->aligned = 0;
         }

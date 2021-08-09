@@ -1636,10 +1636,10 @@ update_inbuffer_size(lame_internal_flags * gfc, const int nsamples)
     EncStateVar_t *const esv = &gfc->sv_enc;
     if (esv->in_buffer_0 == 0 || esv->in_buffer_nsamples < nsamples) {
         if (esv->in_buffer_0) {
-            free(esv->in_buffer_0);
+            lame_free(esv->in_buffer_0);
         }
         if (esv->in_buffer_1) {
-            free(esv->in_buffer_1);
+            lame_free(esv->in_buffer_1);
         }
         esv->in_buffer_0 = lame_calloc(sample_t, nsamples);
         esv->in_buffer_1 = lame_calloc(sample_t, nsamples);
@@ -1647,10 +1647,10 @@ update_inbuffer_size(lame_internal_flags * gfc, const int nsamples)
     }
     if (esv->in_buffer_0 == NULL || esv->in_buffer_1 == NULL) {
         if (esv->in_buffer_0) {
-            free(esv->in_buffer_0);
+            lame_free(esv->in_buffer_0);
         }
         if (esv->in_buffer_1) {
-            free(esv->in_buffer_1);
+            lame_free(esv->in_buffer_1);
         }
         esv->in_buffer_0 = 0;
         esv->in_buffer_1 = 0;
@@ -2262,7 +2262,7 @@ lame_close(lame_global_flags * gfp)
         }
         if (gfp->lame_allocated_gfp) {
             gfp->lame_allocated_gfp = 0;
-            free(gfp);
+            lame_free(gfp);
         }
     }
     return ret;
@@ -2490,7 +2490,7 @@ lame_init(void)
     ret = lame_init_old(gfp);
     if (ret != 0) {
         ERRORF(gfc, "lame_init_old failed\n");
-        free(gfp);
+        lame_free(gfp);
         return NULL;
     }
 
@@ -2693,7 +2693,13 @@ void* debug_calloc(int count, int size){
     result = calloc(count,size);
 #endif
     printf("==> calloc(%d,%d) -> %d [available: %d]\n", count, size, result!=NULL, getFreeHeap());
-  return result;
+    return result;
+}
+
+
+void debug_free(void* ptr){
+    printf("free (%p)\n",ptr);
+    free(ptr);
 }
 
 
