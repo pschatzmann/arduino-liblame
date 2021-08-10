@@ -1,6 +1,6 @@
 # MP3 Encoding with LAME
 
-[Lame](https://lame.sourceforge.io/about.php) is a open source implementation of a MP3 encoder.
+[LAME](https://lame.sourceforge.io/about.php) is a open source implementation of a MP3 encoder.
 This project just reorganized the code to follow Arduino Library conventions, so that you can use it in Arduino and PlatformIO. 
 
 I have also added a simple Arduino style C++ API which allows to output the resulting MP3 via to a Arduino Stream or to receive it via a callback. 
@@ -65,8 +65,8 @@ cmake ..
 make
 ```
 
-### Changes to Original Code
-The initial code was working prefectly with my [Arduino Simulator](https://github.com/pschatzmann/Arduino-Emulator) on the desktop, but as soon I as I deployed it on an ESP32 it was crashing because of different reasons:
+### Changes to the Original Code
+The initial restructured code was working prefectly with my [Arduino Simulator](https://github.com/pschatzmann/Arduino-Emulator) on the desktop, but as soon I as I deployed it on an ESP32 it was crashing because of different reasons:
 
 - The memory structures were partly too big 
 - Long arrays were allocated on the stack
@@ -74,7 +74,7 @@ The initial code was working prefectly with my [Arduino Simulator](https://githu
 So I needed to adjust the original code quite a bit. You can activate some micro processor specific functionaitly in config.h. 
 
 ```
-// use precalculated log table
+// use dynamically precalculated log table
 #define USE_FAST_LOG 0
 
 // use precalculated log table as const -> in the ESP32 this will end up in flash memory
