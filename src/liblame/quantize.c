@@ -1680,7 +1680,7 @@ VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
 #if USE_STACK_HACK 
-    struct struct_VBR_new_iteration_loop *data = (struct struct_VBR_new_iteration_loop*) lame_calloc(struct struct_VBR_new_iteration_loop,1);
+    struct struct_VBR_new_iteration_loop *data = (struct struct_VBR_new_iteration_loop*) lame_calloc(struct struct_VBR_new_iteration_loop, 1);
 #else
     struct struct_VBR_new_iteration_loop loop_data;
     struct struct_VBR_new_iteration_loop *data = &loop_data;

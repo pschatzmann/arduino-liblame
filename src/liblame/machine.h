@@ -78,7 +78,7 @@ char   *strchr(), *strrchr();
 # endif
 #endif
 
-#if WITH_DMALLOC
+#if USE_DMALLOC
 #include <dmalloc.h>
 #endif
 

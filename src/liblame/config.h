@@ -1,5 +1,37 @@
 #pragma once
 
+// ==> New Config
+
+// use precalculated log table
+#define USE_FAST_LOG 0
+
+// use precalculated log table as const -> in the ESP32 this will end up in flash memory
+#define USE_FAST_LOG_CONST 1
+
+// deocode on the fly
+#define DECODE_ON_THE_FLY 0
+
+// optimization which only works with -fno-strict-alias
+#define USE_HIRO_IEEE754_HACK 0
+
+// Avoid big memory allocations in replaygain_data
+#define USE_MEMORY_HACK 1
+
+// Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
+#define USE_LOGGING_HACK 1
+
+// Print debug messages
+#define USE_DEBUG 1
+
+// Print memory allocation
+#define USE_DEBUG_ALLOC 1
+
+// The stack on microcontrollers is very limited and we should avoid big objects on the stack in psymodel.c
+#define USE_STACK_HACK 1
+
+
+// ==> Standard Config
+
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 0
 
@@ -21,35 +53,8 @@
 // disallow bcopy in string.h
 #define _POSIX_C_SOURCE 200809L
 
-// use precalculated log table
-#define USE_FAST_LOG 0
-
-// use precalculated log table as const -> in the ESP32 this will end up in flash memory
-#define USE_FAST_LOG_CONST 1
-
-// deocode on the fly
-#define DECODE_ON_THE_FLY 0
-
-// optimization which only works with -fno-strict-alias
-#define USE_HIRO_IEEE754_HACK 0
-
-// Avoid big memory allocations in replaygain_data
-#define USE_MEMORY_HACK 1
-
-// Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
-#define USE_LOGGING_HACK 1
-
-// Print debug messages
-#define USE_DEBUG 0
-
-// Print memory allocation
-#define USE_DEBUG_ALLOC 0
-
-// The stack on microcontrollers is very limited and we should avoid big objects on the stack in psymodel.c
-#define USE_STACK_HACK 1
-
 // Includes dmalloc (debug malloc)
-#define WITH_DMALLOC 0
+#define USE_DMALLOC 0
 
 // removes depreciated methods
 #define DEPRECATED_OR_OBSOLETE_CODE_REMOVED 1
