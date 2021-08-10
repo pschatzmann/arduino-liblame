@@ -968,7 +968,7 @@ disable_FPE(void)
 }
 
 
-#if USE_FAST_LOG
+#if USE_FAST_LOG || USE_FAST_LOG_CONST
 /***********************************************************************
  *
  * Fast Log Approximation for log2, used to approximate every other log

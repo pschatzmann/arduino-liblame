@@ -25,7 +25,7 @@
 #define USE_FAST_LOG 0
 
 // use precalculated log table as const -> in the ESP32 this will end up in flash memory
-#define USE_FAST_LOG_CONST 0
+#define USE_FAST_LOG_CONST 1
 
 // deocode on the fly
 #define DECODE_ON_THE_FLY 0

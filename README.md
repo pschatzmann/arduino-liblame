@@ -64,7 +64,33 @@ cd build
 cmake ..
 make
 ```
-  
+
+### Changes to Original Code
+You can activate some micro processor specific functionaitly in config.h. 
+
+```
+// use precalculated log table
+#define USE_FAST_LOG 0
+
+// use precalculated log table as const -> in the ESP32 this will end up in flash memory
+#define USE_FAST_LOG_CONST 1
+
+// Avoid big memory allocations in replaygain_data
+#define USE_MEMORY_HACK 1
+
+// Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
+#define USE_LOGGING_HACK 1
+
+// Print debug and trace messages
+#define USE_DEBUG 0
+
+// Print memory allocations and frees
+#define USE_DEBUG_ALLOC 0
+
+// The stack on microcontrollers is very limited - use the heap for big arrays instead of the stack! 
+#define USE_STACK_HACK 1
+```
+
 
 ### Documentation
 
