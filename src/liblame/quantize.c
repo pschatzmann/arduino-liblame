@@ -1509,6 +1509,12 @@ bitpressure_strategy(lame_internal_flags const *gfc,
  *
  ************************************************************************/
 
+struct struct_VBR_iteration_loop {
+    FLOAT   l3_xmin[2][2][SFBMAX];
+    FLOAT   xrpow[2][2][576];
+};
+
+
 void
 VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
                        const FLOAT ms_ener_ratio[2], const III_psy_ratio ratio[2][2])
@@ -1516,9 +1522,14 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
     DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
-    FLOAT   l3_xmin[2][2][SFBMAX];
 
-    FLOAT   xrpow[576];
+#if USE_STACK_HACK 
+    struct struct_VBR_iteration_loop *data = (struct struct_VBR_iteration_loop*) lame_calloc(struct struct_VBR_iteration_loop, 1);
+#else
+    struct struct_VBR_iteration_loop loop;
+    struct struct_VBR_iteration_loop *data = &loop;
+#endif
+
     int     bands[2][2];
     int     frameBits[15];
     int     used_bits;
@@ -1529,7 +1540,7 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
     III_side_info_t *const l3_side = &gfc->l3_side;
 
     analog_silence = VBR_old_prepare(gfc, pe, ms_ener_ratio, ratio,
-                                     l3_xmin, frameBits, min_bits, max_bits, bands);
+                                     data->l3_xmin, frameBits, min_bits, max_bits, bands);
 
     /*---------------------------------*/
     for (;;) {
@@ -1546,7 +1557,7 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
 
                 /*  init_outer_loop sets up cod_info, scalefac and xrpow
                  */
-                ret = init_xrpow(gfc, cod_info, xrpow);
+                ret = init_xrpow(gfc, cod_info, (FLOAT*)data->xrpow);
                 if (ret == 0 || max_bits[gr][ch] == 0) {
                     /*  xr contains no energy
                      *  l3_enc, our encoding data, will be quantized to zero
@@ -1554,13 +1565,13 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
                     continue; /* with next channel */
                 }
 
-                VBR_encode_granule(gfc, cod_info, l3_xmin[gr][ch], xrpow,
+                VBR_encode_granule(gfc, cod_info, data->l3_xmin[gr][ch], (FLOAT*)data->xrpow,
                                    ch, min_bits[gr][ch], max_bits[gr][ch]);
 
                 /*  do the 'substep shaping'
                  */
                 if (gfc->sv_qnt.substep_shaping & 1) {
-                    trancate_smallspectrums(gfc, &l3_side->tt[gr][ch], l3_xmin[gr][ch], xrpow);
+                    trancate_smallspectrums(gfc, &l3_side->tt[gr][ch], data->l3_xmin[gr][ch], (FLOAT*)data->xrpow);
                 }
 
                 ret = cod_info->part2_3_length + cod_info->part2_length;
@@ -1587,7 +1598,7 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
         if (used_bits <= bits)
             break;
 
-        bitpressure_strategy(gfc, l3_xmin, (const int (*)[2])min_bits, max_bits);
+        bitpressure_strategy(gfc, data->l3_xmin, (const int (*)[2])min_bits, max_bits);
 
     }                   /* breaks adjusted */
     /*--------------------------------------*/
@@ -1598,6 +1609,10 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
         }               /* for ch */
     }                   /* for gr */
     ResvFrameEnd(gfc, mean_bits);
+
+#if USE_STACK_HACK 
+    lame_free(data);
+#endif
 }
 
 
@@ -1664,13 +1679,6 @@ VBR_new_prepare(lame_internal_flags * gfc,
     return analog_silence;
 }
 
-struct struct_VBR_new_iteration_loop {
-    FLOAT   l3_xmin[2][2][SFBMAX];
-    FLOAT   xrpow[2][2][576];
-};
-#if USE_STACK_HACK 
-struct struct_VBR_new_iteration_loop loop_data;
-#endif
 
 void
 VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
@@ -1680,10 +1688,10 @@ VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
 #if USE_STACK_HACK 
-    struct struct_VBR_new_iteration_loop *data = (struct struct_VBR_new_iteration_loop*) lame_calloc(struct struct_VBR_new_iteration_loop, 1);
+    struct struct_VBR_iteration_loop *data = (struct struct_VBR_iteration_loop*) lame_calloc(struct struct_VBR_iteration_loop, 1);
 #else
-    struct struct_VBR_new_iteration_loop loop_data;
-    struct struct_VBR_new_iteration_loop *data = &loop_data;
+    struct struct_VBR_iteration_loop loop_data;
+    struct struct_VBR_iteration_loop *data = &loop_data;
 #endif
 
     int     frameBits[15];
