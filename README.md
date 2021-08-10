@@ -66,7 +66,12 @@ make
 ```
 
 ### Changes to Original Code
-You can activate some micro processor specific functionaitly in config.h. 
+The initial code was working prefectly with my [Arduino Simulator](https://github.com/pschatzmann/Arduino-Emulator) on the desktop, but as soon I as I deployed it on an ESP32 it was crashing because of different reasons:
+
+- The memory structures were partly too big 
+- Long arrays were allocated on the stack
+
+So I needed to adjust the original code quite a bit. You can activate some micro processor specific functionaitly in config.h. 
 
 ```
 // use precalculated log table
