@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Arduino LibLAME: MP3 Encoding with liblame</title>
+<title>Arduino LibLAME: MP3 Encoding with LAME</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,10 +62,10 @@ $(function() {
 
 <div class="PageDoc"><div class="header">
   <div class="headertitle">
-<div class="title">MP3 Encoding with liblame </div>  </div>
+<div class="title">MP3 Encoding with LAME </div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://lame.sourceforge.io/about.php">Lame</a> is a open source implementation of a MP3 encoder. This project is just a port from the <a href="https://github.com/commarmi76/libmp3lame_for_esp32">https://github.com/commarmi76/libmp3lame_for_esp32</a>, reorganized to follow Arduino Library conventions, so that you can use it in Arduino and PlatformIO.</p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a> <a href="https://lame.sourceforge.io/about.php">Lame</a> is a open source implementation of a MP3 encoder. This project just reorganized the code to follow Arduino Library conventions, so that you can use it in Arduino and PlatformIO.</p>
 <p>I have also added a simple Arduino style C++ API which allows to output the resulting MP3 via to a Arduino Stream or to receive it via a callback.</p>
 <h2><a class="anchor" id="autotoc_md1"></a>
 API</h2>
@@ -115,6 +115,29 @@ Installation</h2>
 <div class="line">cmake ..</div>
 <div class="line">make</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md3"></a>
+Changes to Original Code</h2>
+<p>You can activate some micro processor specific functionaitly in config.h.</p>
+<div class="fragment"><div class="line">// use precalculated log table</div>
+<div class="line">#define USE_FAST_LOG 0</div>
+<div class="line"> </div>
+<div class="line">// use precalculated log table as const -&gt; in the ESP32 this will end up in flash memory</div>
+<div class="line">#define USE_FAST_LOG_CONST 1</div>
+<div class="line"> </div>
+<div class="line">// Avoid big memory allocations in replaygain_data</div>
+<div class="line">#define USE_MEMORY_HACK 1</div>
+<div class="line"> </div>
+<div class="line">// Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor</div>
+<div class="line">#define USE_LOGGING_HACK 1</div>
+<div class="line"> </div>
+<div class="line">// Print debug and trace messages</div>
+<div class="line">#define USE_DEBUG 0</div>
+<div class="line"> </div>
+<div class="line">// Print memory allocations and frees</div>
+<div class="line">#define USE_DEBUG_ALLOC 0</div>
+<div class="line"> </div>
+<div class="line">// The stack on microcontrollers is very limited - use the heap for big arrays instead of the stack! </div>
+<div class="line">#define USE_STACK_HACK 1</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md4"></a>
 Documentation</h2>
 <p>The <a href="https://pschatzmann.github.io/arduino-liblame/html/annotated.html">Class Documentation can be found here</a> </p>
 </div></div><!-- PageDoc -->
