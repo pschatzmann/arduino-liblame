@@ -66,6 +66,7 @@ static const FLOAT costab[TRI_SIZE * 2] = {
 static void
 fht(FLOAT * fz, int n)
 {
+    DEBUGF(gfc,__FUNCTION__);
     const FLOAT *tri = costab;
     int     k4;
     FLOAT  *fi, *gi;
@@ -196,6 +197,7 @@ void
 fft_short(lame_internal_flags const *const gfc,
           FLOAT x_real[3][BLKSIZE_s], int chn, const sample_t *const buffer[2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
     int     j;
     int     b;
@@ -257,6 +259,7 @@ void
 fft_long(lame_internal_flags const *const gfc,
          FLOAT x[BLKSIZE], int chn, const sample_t *const buffer[2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
     int     jj = BLKSIZE / 8 - 1;
     x += BLKSIZE / 2;
@@ -316,6 +319,7 @@ extern void fht_SSE(FLOAT * fz, int n);
 void
 init_fft(lame_internal_flags * const gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
 
 #if !USE_MEMORY_HACK

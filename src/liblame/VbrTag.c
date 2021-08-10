@@ -69,8 +69,6 @@ static const char VBRTag0[] = { "Xing" };
 static const char VBRTag1[] = { "Info" };
 
 
-
-
 /* Lookup table for fast CRC computation
  * See 'CRC_update_lookup'
  * Uses the polynomial x^16+x^15+x^2+1 */
@@ -121,6 +119,7 @@ static const unsigned int crc16_lookup[256] = {
 static void
 addVbr(VBR_seek_info_t * v, int bitrate)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
 
     v->nVbrNumFrames++;
@@ -148,6 +147,7 @@ addVbr(VBR_seek_info_t * v, int bitrate)
 static void
 Xing_seek_table(VBR_seek_info_t const* v, unsigned char *t)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i, indx;
     int     seek_point;
 
@@ -172,6 +172,7 @@ Xing_seek_table(VBR_seek_info_t const* v, unsigned char *t)
 static void
 print_seeking(unsigned char *t)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
 
     printf("seeking table ");
@@ -193,6 +194,7 @@ print_seeking(unsigned char *t)
 void
 AddVbrFrame(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     kbps = bitrate_table[gfc->cfg.version][gfc->ov_enc.bitrate_index];
     assert(gfc->VBR_seek_table.bag);
     addVbr(&gfc->VBR_seek_table, kbps);
@@ -254,6 +256,7 @@ IsVbrTag(const unsigned char *buf)
 static void
 setLameTagFrameHeader(lame_internal_flags const *gfc, unsigned char *buffer)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t const *const eov = &gfc->ov_enc;
     char    abyte, bbyte;
@@ -359,6 +362,7 @@ CheckVbrTag(unsigned char *buf)
 int
 GetVbrTag(VBRTAGDATA * pTagData, const unsigned char *buf)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i, head_flags;
     int     h_bitrate, h_id, h_mode, h_sr_index, h_layer;
     int     enc_delay, enc_padding;
@@ -489,6 +493,7 @@ GetVbrTag(VBRTAGDATA * pTagData, const unsigned char *buf)
 int
 InitVbrTag(lame_global_flags * gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags *gfc = gfp->internal_flags;
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     kbps_header;
@@ -612,6 +617,7 @@ UpdateMusicCRC(uint16_t * crc, unsigned char const *buffer, int size)
 static int
 PutLameVBR(lame_global_flags const *gfp, size_t nMusicLength, uint8_t * pbtStreamBuffer, uint16_t crc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags const *gfc = gfp->internal_flags;
     SessionConfig_t const *const cfg = &gfc->cfg;
 
@@ -862,6 +868,7 @@ PutLameVBR(lame_global_flags const *gfp, size_t nMusicLength, uint8_t * pbtStrea
 static long
 skipId3v2(FILE * fpStream)
 {
+    DEBUGF(gfc,__FUNCTION__);
     size_t  nbytes;
     long    id3v2TagSize;
     unsigned char id3v2Header[10];
@@ -897,6 +904,7 @@ skipId3v2(FILE * fpStream)
 size_t
 lame_get_lametag_frame(lame_global_flags const *gfp, unsigned char *buffer, size_t size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags *gfc;
     SessionConfig_t const *cfg;
     unsigned long stream_size;
@@ -1027,6 +1035,7 @@ lame_get_lametag_frame(lame_global_flags const *gfp, unsigned char *buffer, size
 int
 PutVbrTag(lame_global_flags const *gfp, FILE * fpStream)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags *gfc = gfp->internal_flags;
 
     long    lFileSize;

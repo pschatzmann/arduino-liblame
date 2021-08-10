@@ -106,7 +106,7 @@ the strength with s3(), the "spreading function."
 masking(j) = sum_over_i  s3(i-j)*strength(i)  = s3 o strength
 
 where "o" = convolution operator.  s3 is given by a formula determined
-via listening tests.  It is normalized so that s3 o 1 = 1.
+via listening tests.  It is data->normalized so that s3 o 1 = 1.
 
 Note: instead of a simple convolution, LAME also has the
 option of using "additive masking"
@@ -145,7 +145,7 @@ blocktype_d[2]        block type to use for previous granule
 #endif
 
 #include <float.h>
-
+#include "config.h"
 #include "lame.h"
 #include "machine.h"
 #include "encoder.h"
@@ -215,6 +215,7 @@ future:  Data indicates that the shape of the equal loudness curve varies
 static  FLOAT
 psycho_loudness_approx(FLOAT const *energy, FLOAT const *eql_w)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
     FLOAT   loudness_power;
 
@@ -278,6 +279,7 @@ static const int tab_mask_add_delta[] = { 2, 2, 2, 1, 1, 1, 0, 0, -1 };
 inline static int
 mask_add_delta(int i)
 {
+//  DEBUGF(gfc,__FUNCTION__);
     STATIC_ASSERT_EQUAL_DIMENSION(tab_mask_add_delta,tab);
     assert(i < (int)dimension_of(tab));
     return tab_mask_add_delta[i];
@@ -287,6 +289,7 @@ mask_add_delta(int i)
 static void
 init_mask_add_max_values(void)
 {
+    DEBUGF(gfc,__FUNCTION__);
 #ifndef NDEBUG
     FLOAT const _ma_max_i1 = pow(10, (I1LIMIT + 1) / 16.0);
     FLOAT const _ma_max_i2 = pow(10, (I2LIMIT + 1) / 16.0);
@@ -304,6 +307,7 @@ init_mask_add_max_values(void)
 inline static FLOAT
 vbrpsy_mask_add(FLOAT m1, FLOAT m2, int b, int delta)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     static const FLOAT table2[] = {
         1.33352 * 1.33352, 1.35879 * 1.35879, 1.38454 * 1.38454, 1.39497 * 1.39497,
         1.40548 * 1.40548, 1.3537 * 1.3537, 1.30382 * 1.30382, 1.22321 * 1.22321,
@@ -361,6 +365,7 @@ static void
 convert_partition2scalefac(PsyConst_CB2SB_t const *const gd, FLOAT const *eb, FLOAT const *thr,
                            FLOAT enn_out[], FLOAT thm_out[])
 {
+    DEBUGF(gfc,__FUNCTION__);
     FLOAT   enn, thmm;
     int     sb, b, n = gd->n_sb;
     enn = thmm = 0.0f;
@@ -406,6 +411,7 @@ static void
 convert_partition2scalefac_s(lame_internal_flags * gfc, FLOAT const *eb, FLOAT const *thr, int chn,
                              int sblock)
 {
+    DEBUGF(gfc,__FUNCTION__);
     PsyStateVar_t *const psv = &gfc->sv_psy;
     PsyConst_CB2SB_t const *const gds = &gfc->cd_psy->s;
     FLOAT   enn[SBMAX_s], thm[SBMAX_s];
@@ -421,6 +427,7 @@ convert_partition2scalefac_s(lame_internal_flags * gfc, FLOAT const *eb, FLOAT c
 static void
 convert_partition2scalefac_l(lame_internal_flags * gfc, FLOAT const *eb, FLOAT const *thr, int chn)
 {
+    DEBUGF(gfc,__FUNCTION__);
     PsyStateVar_t *const psv = &gfc->sv_psy;
     PsyConst_CB2SB_t const *const gdl = &gfc->cd_psy->l;
     FLOAT  *enn = &psv->en[chn].l[0];
@@ -432,6 +439,7 @@ static void
 convert_partition2scalefac_l_to_s(lame_internal_flags * gfc, FLOAT const *eb, FLOAT const *thr,
                                   int chn)
 {
+    DEBUGF(gfc,__FUNCTION__);
     PsyStateVar_t *const psv = &gfc->sv_psy;
     PsyConst_CB2SB_t const *const gds = &gfc->cd_psy->l_to_s;
     FLOAT   enn[SBMAX_s], thm[SBMAX_s];
@@ -468,6 +476,7 @@ NS_INTERP(FLOAT x, FLOAT y, FLOAT r)
 static  FLOAT
 pecalc_s(III_psy_ratio const *mr, FLOAT masking_lower)
 {
+    DEBUGF(gfc,__FUNCTION__);
     FLOAT   pe_s;
     static const FLOAT regcoef_s[] = {
         11.8,           /* these values are tuned only for 44.1kHz... */
@@ -513,6 +522,7 @@ pecalc_s(III_psy_ratio const *mr, FLOAT masking_lower)
 static  FLOAT
 pecalc_l(III_psy_ratio const *mr, FLOAT masking_lower)
 {
+    DEBUGF(gfc,__FUNCTION__);
     FLOAT   pe_l;
     static const FLOAT regcoef_l[] = {
         6.8,            /* these values are tuned only for 44.1kHz... */
@@ -566,6 +576,7 @@ pecalc_l(III_psy_ratio const *mr, FLOAT masking_lower)
 static void
 calc_energy(PsyConst_CB2SB_t const *l, FLOAT const *fftenergy, FLOAT * eb, FLOAT * max, FLOAT * avg)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     b, j;
 
     for (b = j = 0; b < l->npart; ++b) {
@@ -594,6 +605,7 @@ static void
 calc_mask_index_l(lame_internal_flags const *gfc, FLOAT const *max,
                   FLOAT const *avg, unsigned char *mask_idx)
 {
+    DEBUGF(gfc,__FUNCTION__);
     PsyConst_CB2SB_t const *const gdl = &gfc->cd_psy->l;
     FLOAT   m, a;
     int     b, k;
@@ -766,13 +778,25 @@ vbrpsy_compute_loudness_approximation_l(lame_internal_flags * gfc, int gr_out, i
     *  Apply HPF of fs/4 to the input signal.
     *  This is used for attack detection / handling.
     **********************************************************************/
+
+struct struct_attack {
+    FLOAT  ns_hpfsmpl[2][576];
+};
+
+
 static void
 vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer[2], int gr_out,
                         III_psy_ratio masking_ratio[2][2], III_psy_ratio masking_MS_ratio[2][2],
                         FLOAT energy[4], FLOAT sub_short_factor[4][3], int ns_attacks[4][4],
                         int uselongblock[2])
 {
-    FLOAT   ns_hpfsmpl[2][576];
+    DEBUGF(gfc,__FUNCTION__);
+#if USE_STACK_HACK
+    struct struct_attack *data = lame_calloc(struct struct_attack,1);
+#else
+    struct struct_attack arrays;
+    struct struct_attack data = &arrays;
+#endif
     SessionConfig_t const *const cfg = &gfc->cfg;
     PsyStateVar_t *const psv = &gfc->sv_psy;
     plotting_data *plt = cfg->analysis ? gfc->pinfo : 0;
@@ -781,7 +805,7 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
     int const n_chn_psy = (cfg->mode == JOINT_STEREO) ? 4 : n_chn_out;
     int     chn, i, j;
 
-    memset(&ns_hpfsmpl[0][0], 0, sizeof(ns_hpfsmpl));
+    memset(&data->ns_hpfsmpl[0][0], 0, sizeof(data->ns_hpfsmpl));
     /* Don't copy the input buffer into a temporary buffer */
     /* unroll the loop 2 times */
     for (chn = 0; chn < n_chn_out; chn++) {
@@ -801,7 +825,7 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
                 sum1 += fircoef[j] * (firbuf[i + j] + firbuf[i + NSFIRLEN - j]);
                 sum2 += fircoef[j + 1] * (firbuf[i + j + 1] + firbuf[i + NSFIRLEN - j - 1]);
             }
-            ns_hpfsmpl[chn][i] = sum1 + sum2;
+            data->ns_hpfsmpl[chn][i] = sum1 + sum2;
         }
         masking_ratio[gr_out][chn].en = psv->en[chn];
         masking_ratio[gr_out][chn].thm = psv->thm[chn];
@@ -816,15 +840,15 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
         FLOAT   attack_intensity[12];
         FLOAT   en_subshort[12];
         FLOAT   en_short[4] = { 0, 0, 0, 0 };
-        FLOAT const *pf = ns_hpfsmpl[chn & 1];
+        FLOAT const *pf = data->ns_hpfsmpl[chn & 1];
         int     ns_uselongblock = 1;
 
         if (chn == 2) {
             for (i = 0, j = 576; j > 0; ++i, --j) {
-                FLOAT const l = ns_hpfsmpl[0][i];
-                FLOAT const r = ns_hpfsmpl[1][i];
-                ns_hpfsmpl[0][i] = l + r;
-                ns_hpfsmpl[1][i] = l - r;
+                FLOAT const l = data->ns_hpfsmpl[0][i];
+                FLOAT const r = data->ns_hpfsmpl[1][i];
+                data->ns_hpfsmpl[0][i] = l + r;
+                data->ns_hpfsmpl[1][i] = l - r;
             }
         }
         /*************************************************************** 
@@ -947,12 +971,18 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
          */
         energy[chn] = psv->tot_ener[chn];
     }
+
+#if USE_STACK_HACK
+    lame_free(data);
+#endif
+
 }
 
 
 static void
 vbrpsy_skip_masking_s(lame_internal_flags * gfc, int chn, int sblock)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (sblock == 0) {
         FLOAT  *nbs2 = &gfc->sv_psy.nb_s2[chn][0];
         FLOAT  *nbs1 = &gfc->sv_psy.nb_s1[chn][0];
@@ -969,6 +999,7 @@ static void
 vbrpsy_calc_mask_index_s(lame_internal_flags const *gfc, FLOAT const *max,
                          FLOAT const *avg, unsigned char *mask_idx)
 {
+    DEBUGF(gfc,__FUNCTION__);
     PsyConst_CB2SB_t const *const gds = &gfc->cd_psy->s;
     FLOAT   m, a;
     int     b, k;
@@ -1143,8 +1174,8 @@ vbrpsy_compute_masking_s(lame_internal_flags * gfc, const FLOAT(*fftenergy_s)[HB
 
 static void
 vbrpsy_compute_masking_l(lame_internal_flags * gfc, const FLOAT fftenergy[HBLKSIZE],
-                         FLOAT eb_l[CBANDS], FLOAT thr[CBANDS], int chn)
-{
+                         FLOAT eb_l[CBANDS], FLOAT thr[CBANDS], int chn){
+    DEBUGF(gfc,__FUNCTION__);
     PsyStateVar_t *const psv = &gfc->sv_psy;
     PsyConst_CB2SB_t const *const gdl = &gfc->cd_psy->l;
     FLOAT   max[CBANDS], avg[CBANDS];
@@ -1275,6 +1306,7 @@ vbrpsy_compute_masking_l(lame_internal_flags * gfc, const FLOAT fftenergy[HBLKSI
 static void
 vbrpsy_compute_block_type(SessionConfig_t const *cfg, int *uselongblock)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     chn;
 
     if (cfg->short_blocks == short_block_coupled
@@ -1299,6 +1331,7 @@ vbrpsy_compute_block_type(SessionConfig_t const *cfg, int *uselongblock)
 static void
 vbrpsy_apply_block_type(PsyStateVar_t * psv, int nch, int const *uselongblock, int *blocktype_d)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     chn;
 
     /* update the blocktype of the previous granule, since it depends on what
@@ -1338,6 +1371,7 @@ vbrpsy_compute_MS_thresholds(const FLOAT eb[4][CBANDS], FLOAT thr[4][CBANDS],
                              const FLOAT cb_mld[CBANDS], const FLOAT ath_cb[CBANDS], FLOAT athlower,
                              FLOAT msfix, int n)
 {
+    DEBUGF(gfc,__FUNCTION__);
     FLOAT const msfix2 = msfix * 2.f;
     FLOAT   rside, rmid;
     int     b;
@@ -1404,39 +1438,56 @@ vbrpsy_compute_MS_thresholds(const FLOAT eb[4][CBANDS], FLOAT thr[4][CBANDS],
  * not use this feature. (Robert 071216)
 */
 
-int
-L3psycho_anal_vbr(lame_internal_flags * gfc,
+
+struct struct_psycho_anal {
+    III_psy_xmin last_thm[4];
+
+    /* fft and energy calculation   */
+    FLOAT(*wsamp_l)[BLKSIZE];
+    FLOAT(*wsamp_s)[3][BLKSIZE_s];
+    FLOAT  fftenergy[HBLKSIZE];
+    FLOAT  fftenergy_s[3][HBLKSIZE_s];
+    FLOAT  wsamp_L[2][BLKSIZE];
+    FLOAT  wsamp_S[2][3][BLKSIZE_s];
+    FLOAT  eb[4][CBANDS], thr[4][CBANDS];
+
+    FLOAT  sub_short_factor[4][3];
+
+    FLOAT(*const_eb)[CBANDS];
+    FLOAT(*const_fftenergy_s)[HBLKSIZE_s];
+  
+};
+
+
+
+int L3psycho_anal_vbr(lame_internal_flags * gfc,
                   const sample_t * const buffer[2], int gr_out,
                   III_psy_ratio masking_ratio[2][2],
                   III_psy_ratio masking_MS_ratio[2][2],
                   FLOAT percep_entropy[2], FLOAT percep_MS_entropy[2],
                   FLOAT energy[4], int blocktype_d[2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     PsyStateVar_t *const psv = &gfc->sv_psy;
     PsyConst_CB2SB_t const *const gdl = &gfc->cd_psy->l;
     PsyConst_CB2SB_t const *const gds = &gfc->cd_psy->s;
     plotting_data *plt = cfg->analysis ? gfc->pinfo : 0;
 
-    III_psy_xmin last_thm[4];
 
-    /* fft and energy calculation   */
-    FLOAT(*wsamp_l)[BLKSIZE];
-    FLOAT(*wsamp_s)[3][BLKSIZE_s];
-    FLOAT   fftenergy[HBLKSIZE];
-    FLOAT   fftenergy_s[3][HBLKSIZE_s];
-    FLOAT   wsamp_L[2][BLKSIZE];
-    FLOAT   wsamp_S[2][3][BLKSIZE_s];
-    FLOAT   eb[4][CBANDS], thr[4][CBANDS];
+#if USE_STACK_HACK
+    struct struct_psycho_anal *data =  lame_calloc(struct struct_psycho_anal, 1);
+#else
+    struct struct_psycho_anal arrays;
+    struct struct_psycho_anal *data = &arrays;
 
-    FLOAT   sub_short_factor[4][3];
+#endif
     FLOAT   thmm;
     FLOAT const pcfact = 0.6f;
-    FLOAT const ath_factor =
-        (cfg->msfix > 0.f) ? (cfg->ATH_offset_factor * gfc->ATH->adjust_factor) : 1.f;
+    FLOAT const ath_factor = (cfg->msfix > 0.f) ? (cfg->ATH_offset_factor * gfc->ATH->adjust_factor) : 1.f;
 
-    const   FLOAT(*const_eb)[CBANDS] = (const FLOAT(*)[CBANDS]) eb;
-    const   FLOAT(*const_fftenergy_s)[HBLKSIZE_s] = (const FLOAT(*)[HBLKSIZE_s]) fftenergy_s;
+    data->const_eb = ( FLOAT(*)[CBANDS]) data->eb;
+    data->const_fftenergy_s= ( FLOAT(*)[HBLKSIZE_s]) data->fftenergy_s;
 
     /* block type  */
     int     ns_attacks[4][4] = { {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0} };
@@ -1448,10 +1499,10 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
     /* chn=2 and 3 = Mid and Side channels */
     int const n_chn_psy = (cfg->mode == JOINT_STEREO) ? 4 : cfg->channels_out;
 
-    memcpy(&last_thm[0], &psv->thm[0], sizeof(last_thm));
+    memcpy(&data->last_thm[0], &psv->thm[0], sizeof(data->last_thm));
 
     vbrpsy_attack_detection(gfc, buffer, gr_out, masking_ratio, masking_MS_ratio, energy,
-                            sub_short_factor, ns_attacks, uselongblock);
+                            data->sub_short_factor, ns_attacks, uselongblock);
 
     vbrpsy_compute_block_type(cfg, uselongblock);
 
@@ -1460,21 +1511,21 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
         for (chn = 0; chn < n_chn_psy; chn++) {
             int const ch01 = chn & 0x01;
 
-            wsamp_l = wsamp_L + ch01;
-            vbrpsy_compute_fft_l(gfc, buffer, chn, gr_out, fftenergy, wsamp_l);
-            vbrpsy_compute_loudness_approximation_l(gfc, gr_out, chn, fftenergy);
-            vbrpsy_compute_masking_l(gfc, fftenergy, eb[chn], thr[chn], chn);
+            data->wsamp_l = data->wsamp_L + ch01;
+            vbrpsy_compute_fft_l(gfc, buffer, chn, gr_out, (data->fftenergy), data->wsamp_l);
+            vbrpsy_compute_loudness_approximation_l(gfc, gr_out, chn, (data->fftenergy));
+            vbrpsy_compute_masking_l(gfc, (data->fftenergy), data->eb[chn], data->thr[chn], chn);
         }
         if (cfg->mode == JOINT_STEREO) {
             if ((uselongblock[0] + uselongblock[1]) == 2) {
-                vbrpsy_compute_MS_thresholds(const_eb, thr, gdl->mld_cb, gfc->ATH->cb_l,
+                vbrpsy_compute_MS_thresholds(data->const_eb, data->thr, gdl->mld_cb, gfc->ATH->cb_l,
                                              ath_factor, cfg->msfix, gdl->npart);
             }
         }
         /* TODO: apply adaptive ATH masking here ?? */
         for (chn = 0; chn < n_chn_psy; chn++) {
-            convert_partition2scalefac_l(gfc, eb[chn], thr[chn], chn);
-            convert_partition2scalefac_l_to_s(gfc, eb[chn], thr[chn], chn);
+            convert_partition2scalefac_l(gfc, data->eb[chn], data->thr[chn], chn);
+            convert_partition2scalefac_l_to_s(gfc, data->eb[chn], data->thr[chn], chn);
         }
     }
     /* SHORT BLOCKS CASE */
@@ -1488,15 +1539,15 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
                 }
                 else {
                     /* compute masking thresholds for short blocks */
-                    wsamp_s = wsamp_S + ch01;
-                    vbrpsy_compute_fft_s(gfc, buffer, chn, sblock, fftenergy_s, wsamp_s);
-                    vbrpsy_compute_masking_s(gfc, const_fftenergy_s, eb[chn], thr[chn], chn,
+                    data->wsamp_s = data->wsamp_S + ch01;
+                    vbrpsy_compute_fft_s(gfc, buffer, chn, sblock, data->fftenergy_s, data->wsamp_s);
+                    vbrpsy_compute_masking_s(gfc, data->const_fftenergy_s, data->eb[chn], data->thr[chn], chn,
                                              sblock);
                 }
             }
             if (cfg->mode == JOINT_STEREO) {
                 if ((uselongblock[0] + uselongblock[1]) == 0) {
-                    vbrpsy_compute_MS_thresholds(const_eb, thr, gds->mld_cb, gfc->ATH->cb_s,
+                    vbrpsy_compute_MS_thresholds(data->const_eb, data->thr, gds->mld_cb, gfc->ATH->cb_s,
                                                  ath_factor, cfg->msfix, gds->npart);
                 }
             }
@@ -1504,15 +1555,15 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
             for (chn = 0; chn < n_chn_psy; ++chn) {
                 int const ch01 = chn & 0x01;
                 if (!uselongblock[ch01] || force_short_block_calc) {
-                    convert_partition2scalefac_s(gfc, eb[chn], thr[chn], chn, sblock);
+                    convert_partition2scalefac_s(gfc, data->eb[chn], data->thr[chn], chn, sblock);
                 }
             }
         }
 
         /****   short block pre-echo control   ****/
+        FLOAT   new_thmm[3], prev_thm, t1, t2;
         for (chn = 0; chn < n_chn_psy; chn++) {
             for (sb = 0; sb < SBMAX_s; sb++) {
-                FLOAT   new_thmm[3], prev_thm, t1, t2;
                 for (sblock = 0; sblock < 3; sblock++) {
                     thmm = psv->thm[chn].s[sb][sblock];
                     thmm *= NS_PREECHO_ATT0;
@@ -1523,7 +1574,7 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
                         prev_thm = new_thmm[sblock - 1];
                     }
                     else {
-                        prev_thm = last_thm[chn].s[sb][2];
+                        prev_thm = data->last_thm[chn].s[sb][2];
                     }
                     if (ns_attacks[chn][sblock] >= 2 || ns_attacks[chn][sblock + 1] == 1) {
                         t1 = NS_INTERP(prev_thm, thmm, NS_PREECHO_ATT1 * pcfact);
@@ -1536,10 +1587,10 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
                              || (sblock > 0 && ns_attacks[chn][sblock - 1] == 3)) { /* 2nd preceeding block */
                         switch (sblock) {
                         case 0:
-                            prev_thm = last_thm[chn].s[sb][1];
+                            prev_thm = data->last_thm[chn].s[sb][1];
                             break;
                         case 1:
-                            prev_thm = last_thm[chn].s[sb][2];
+                            prev_thm = data->last_thm[chn].s[sb][2];
                             break;
                         case 2:
                             prev_thm = new_thmm[0];
@@ -1552,7 +1603,7 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
                     thmm = Min(t2, thmm);
 
                     /* pulse like signal detection for fatboy.wav and so on */
-                    thmm *= sub_short_factor[chn][sblock];
+                    thmm *= data->sub_short_factor[chn][sblock];
 
                     new_thmm[sblock] = thmm;
                 }
@@ -1575,10 +1626,10 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
     /*********************************************************************
     * compute the value of PE to return ... no delay and advance
     *********************************************************************/
+    FLOAT  *ppe;
+    int     type;
+    III_psy_ratio const *mr;
     for (chn = 0; chn < n_chn_psy; chn++) {
-        FLOAT  *ppe;
-        int     type;
-        III_psy_ratio const *mr;
 
         if (chn > 1) {
             ppe = percep_MS_entropy - 2;
@@ -1603,6 +1654,10 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
             plt->pe[gr_out][chn] = ppe[chn];
         }
     }
+
+#if USE_STACK_HACK
+    lame_free(data);
+#endif
     return 0;
 }
 
@@ -1615,6 +1670,7 @@ L3psycho_anal_vbr(lame_internal_flags * gfc,
 static  FLOAT
 s3_func(FLOAT bark)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     FLOAT   tempx, x, tempy, temp;
     tempx = bark;
     if (tempx >= 0)
@@ -1693,6 +1749,7 @@ norm_s3_func(void)
             /*printf( "norm = %lf\n",norm); */
             return norm;
         }
+        }
     }
 }
 #endif
@@ -1700,6 +1757,7 @@ norm_s3_func(void)
 static  FLOAT
 stereo_demask(double f)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     /* setup stereo demasking thresholds */
     /* formula reverse enginerred from plot in paper */
     double  arg = freq2bark(f);
@@ -1708,10 +1766,13 @@ stereo_demask(double f)
     return pow(10.0, 1.25 * (1 - cos(PI * arg)) - 2.5);
 }
 
+
+
 static void
 init_numline(PsyConst_CB2SB_t * gd, FLOAT sfreq, int fft_size,
              int mdct_size, int sbmax, int const *scalepos)
 {
+    DEBUGF(gfc,__FUNCTION__);
     FLOAT   b_frq[CBANDS + 1];
     FLOAT const mdct_freq_frac = sfreq / (2.0f * mdct_size);
     FLOAT const deltafreq = fft_size / (2.0f * mdct_size);
@@ -1805,6 +1866,7 @@ static void
 compute_bark_values(PsyConst_CB2SB_t const *gd, FLOAT sfreq, int fft_size,
                     FLOAT * bval, FLOAT * bval_width)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* compute bark values of each critical band */
     int     k, j = 0, ni = gd->npart;
     sfreq /= fft_size;
@@ -1821,20 +1883,36 @@ compute_bark_values(PsyConst_CB2SB_t const *gd, FLOAT sfreq, int fft_size,
         bval_width[k] = bark2 - bark1;
         j += w;
     }
+    DEBUGF(gfc,"compute_bark_values - end");
 }
+
+
+
+struct struct_s3 {
+    FLOAT   s3[CBANDS][CBANDS];
+}; 
 
 static int
 init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
                FLOAT const *bval, FLOAT const *bval_width, FLOAT const *norm)
 {
-    FLOAT   s3[CBANDS][CBANDS];
+    DEBUGF(gfc,__FUNCTION__);
+
+#if USE_STACK_HACK
+    struct struct_s3 *data = lame_calloc(struct struct_s3,1);
+#else
+    struct sturct_s3 arrays;
+    struct sturct_s3 *data = &arrays;
+    memset(&(data->s3[0][0]), 0, sizeof(data->s3));
+#endif
+
     /* The s3 array is not linear in the bark scale.
-     * bval[x] should be used to get the bark value.
+     * data->bval[x] should be used to get the bark value.
      */
     int     i, j, k;
     int     numberOfNoneZero = 0;
 
-    memset(&s3[0][0], 0, sizeof(s3));
+    memset(&data->s3[0][0], 0, sizeof(data->s3));
 
     /* s[i][j], the value of the spreading function,
      * centered at band j (masker), for band i (maskee)
@@ -1845,18 +1923,18 @@ init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
     for (i = 0; i < npart; i++) {
         for (j = 0; j < npart; j++) {
             FLOAT   v = s3_func(bval[i] - bval[j]) * bval_width[j];
-            s3[i][j] = v * norm[i];
+            data->s3[i][j] = v * norm[i];
         }
     }
     for (i = 0; i < npart; i++) {
         for (j = 0; j < npart; j++) {
-            if (s3[i][j] > 0.0f)
+            if (data->s3[i][j] > 0.0f)
                 break;
         }
         s3ind[i][0] = j;
 
         for (j = npart - 1; j > 0; j--) {
-            if (s3[i][j] > 0.0f)
+            if (data->s3[i][j] > 0.0f)
                 break;
         }
         s3ind[i][1] = j;
@@ -1869,14 +1947,27 @@ init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
     k = 0;
     for (i = 0; i < npart; i++)
         for (j = s3ind[i][0]; j <= s3ind[i][1]; j++)
-            (*p)[k++] = s3[i][j];
+            (*p)[k++] = data->s3[i][j];
+
+#if USE_STACK_HACK
+    lame_free(data);
+#endif
 
     return 0;
 }
 
+
+
+struct struct_psy {
+    FLOAT  bval[CBANDS];
+    FLOAT  bval_width[CBANDS];
+    FLOAT  norm[CBANDS];
+};
+
 int
 psymodel_init(lame_global_flags const *gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags *const gfc = gfp->internal_flags;
     SessionConfig_t *const cfg = &gfc->cfg;
     PsyStateVar_t *const psv = &gfc->sv_psy;
@@ -1886,18 +1977,20 @@ psymodel_init(lame_global_flags const *gfp)
     FLOAT   snr_l_a = 0, snr_l_b = 0;
     FLOAT   snr_s_a = -8.25, snr_s_b = -4.5;
 
-    FLOAT   bval[CBANDS];
-    FLOAT   bval_width[CBANDS];
-    FLOAT   norm[CBANDS];
+#if USE_STACK_HACK
+    struct struct_psy *data = (struct struct_psy *) lame_calloc(struct struct_psy, 1);
+#else
+    struct struct_psy arrays;
+    struct struct_psy *data = &arrays;
+#endif
     FLOAT const sfreq = cfg->samplerate_out;
-
     FLOAT   xav = 10, xbv = 12;
     FLOAT const minval_low = (0.f - cfg->minval);
 
     if (gfc->cd_psy != 0) {
         return 0;
     }
-    memset(norm, 0, sizeof(norm));
+    memset(data->norm, 0, sizeof(data->norm));
 
     gd = lame_calloc(PsyConst_t, 1);
     gfc->cd_psy = gd;
@@ -1939,20 +2032,27 @@ psymodel_init(lame_global_flags const *gfp)
     /* compute numlines, bo, bm, bval, bval_width, mld */
     init_numline(&gd->l, sfreq, BLKSIZE, 576, SBMAX_l, gfc->scalefac_band.l);
     assert(gd->l.npart < CBANDS);
-    compute_bark_values(&gd->l, sfreq, BLKSIZE, bval, bval_width);
+    compute_bark_values(&gd->l, sfreq, BLKSIZE, data->bval, data->bval_width);
 
     /* compute the spreading function */
+    DEBUGF(gfc,"Calculate spreading");
     for (i = 0; i < gd->l.npart; i++) {
         double  snr = snr_l_a;
-        if (bval[i] >= bvl_a) {
-            snr = snr_l_b * (bval[i] - bvl_a) / (bvl_b - bvl_a)
-                + snr_l_a * (bvl_b - bval[i]) / (bvl_b - bvl_a);
+        if (data->bval[i] >= bvl_a) {
+            snr = snr_l_b * (data->bval[i] - bvl_a) / (bvl_b - bvl_a)
+                + snr_l_a * (bvl_b - data->bval[i]) / (bvl_b - bvl_a);
         }
-        norm[i] = pow(10.0, snr / 10.0);
+        data->norm[i] = pow(10.0, snr / 10.0);
     }
-    i = init_s3_values(&gd->l.s3, gd->l.s3ind, gd->l.npart, bval, bval_width, norm);
-    if (i)
+    DEBUGF(gfc,"Spreading calculated");
+ 
+    i = init_s3_values(&gd->l.s3, gd->l.s3ind, gd->l.npart, data->bval, data->bval_width, data->norm);
+    if (i) {
+        #if USE_STACK_HACK
+            lame_free(data);
+        #endif
         return i;
+    }
 
     /* compute long block specific values, ATH and MINVAL */
     j = 0;
@@ -1980,7 +2080,7 @@ psymodel_init(lame_global_flags const *gfp)
            and lead-voice samples, but introduces some 3 kbps bit bloat too.
            TODO: Further refinement of the shape of this hack.
          */
-        x = 20.0 * (bval[i] / xav - 1.0);
+        x = 20.0 * (data->bval[i] / xav - 1.0);
         if (x > 6) {
             x = 30;
         }
@@ -1999,18 +2099,18 @@ psymodel_init(lame_global_flags const *gfp)
      ************************************************************************/
     init_numline(&gd->s, sfreq, BLKSIZE_s, 192, SBMAX_s, gfc->scalefac_band.s);
     assert(gd->s.npart < CBANDS);
-    compute_bark_values(&gd->s, sfreq, BLKSIZE_s, bval, bval_width);
+    compute_bark_values(&gd->s, sfreq, BLKSIZE_s, data->bval, data->bval_width);
 
-    /* SNR formula. short block is normalized by SNR. is it still right ? */
+    /* SNR formula. short block is data->normalized by SNR. is it still right ? */
     j = 0;
     for (i = 0; i < gd->s.npart; i++) {
         double  x;
         double  snr = snr_s_a;
-        if (bval[i] >= bvl_a) {
-            snr = snr_s_b * (bval[i] - bvl_a) / (bvl_b - bvl_a)
-                + snr_s_a * (bvl_b - bval[i]) / (bvl_b - bvl_a);
+        if (data->bval[i] >= bvl_a) {
+            snr = snr_s_b * (data->bval[i] - bvl_a) / (bvl_b - bvl_a)
+                + snr_s_a * (bvl_b - data->bval[i]) / (bvl_b - bvl_a);
         }
-        norm[i] = pow(10.0, snr / 10.0);
+        data->norm[i] = pow(10.0, snr / 10.0);
 
         /* ATH */
         x = FLOAT_MAX;
@@ -2029,11 +2129,11 @@ psymodel_init(lame_global_flags const *gfp)
         /* MINVAL.
            For low freq, the strength of the masking is limited by minval
            this is an ISO MPEG1 thing, dont know if it is really needed */
-        x = 7.0 * (bval[i] / xbv - 1.0);
-        if (bval[i] > xbv) {
+        x = 7.0 * (data->bval[i] / xbv - 1.0);
+        if (data->bval[i] > xbv) {
             x *= 1 + log(1 + x) * 3.1;
         }
-        if (bval[i] < xbv) {
+        if (data->bval[i] < xbv) {
             x *= 1 + log(1 - x) * 2.3;
         }
         if (x > 6) {
@@ -2049,10 +2149,13 @@ psymodel_init(lame_global_flags const *gfp)
         gd->s.minval[i] = pow(10.0, x / 10) * gd->s.numlines[i];
     }
 
-    i = init_s3_values(&gd->s.s3, gd->s.s3ind, gd->s.npart, bval, bval_width, norm);
-    if (i)
+    i = init_s3_values(&gd->s.s3, gd->s.s3ind, gd->s.npart, data->bval, data->bval_width, data->norm);
+    if (i) {
+        #if USE_STACK_HACK
+            lame_free(data);
+        #endif
         return i;
-
+    }
 
     init_mask_add_max_values();
     init_fft(gfc);
@@ -2163,5 +2266,10 @@ psymodel_init(lame_global_flags const *gfp)
     }
     memcpy(&gd->l_to_s, &gd->l, sizeof(gd->l_to_s));
     init_numline(&gd->l_to_s, sfreq, BLKSIZE, 192, SBMAX_s, gfc->scalefac_band.s);
+
+#if USE_STACK_HACK
+    lame_free(data);
+#endif
+
     return 0;
 }

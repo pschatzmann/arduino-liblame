@@ -56,6 +56,7 @@
 static void
 adjust_ATH(lame_internal_flags const *const gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     FLOAT   gr2_max, max_pow;
 
@@ -155,6 +156,7 @@ adjust_ATH(lame_internal_flags const *const gfc)
 static void
 updateStats(lame_internal_flags * const gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *eov = &gfc->ov_enc;
     int     gr, ch;
@@ -184,24 +186,33 @@ updateStats(lame_internal_flags * const gfc)
 }
 
 
-
+#if USE_STACK_HACK
+    sample_t *primebuff0 = NULL;
+    sample_t *primebuff1 = NULL;
+#endif
 
 static void
 lame_encode_frame_init(lame_internal_flags * gfc, const sample_t *const inbuf[2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
 
     int     ch, gr;
 
     if (gfc->lame_encode_frame_init == 0) {
+#if USE_STACK_HACK
+        primebuff0 = lame_calloc(sample_t, 286 + 1152 + 576);
+        primebuff1 = lame_calloc(sample_t, 286 + 1152 + 576);
+#else
         sample_t primebuff0[286 + 1152 + 576];
         sample_t primebuff1[286 + 1152 + 576];
+        memset(primebuff0, 0, sizeof(primebuff0));
+        memset(primebuff1, 0, sizeof(primebuff1));
+#endif
         int const framesize = 576 * cfg->mode_gr;
         /* prime the MDCT/polyphase filterbank with a short block */
         int     i, j;
         gfc->lame_encode_frame_init = 1;
-        memset(primebuff0, 0, sizeof(primebuff0));
-        memset(primebuff1, 0, sizeof(primebuff1));
         for (i = 0, j = 0; i < 286 + 576 * (1 + cfg->mode_gr); ++i) {
             if (i < framesize) {
                 primebuff0[i] = 0;
@@ -227,18 +238,23 @@ lame_encode_frame_init(lame_internal_flags * gfc, const sample_t *const inbuf[2]
 #if 576 < FFTOFFSET
 # error FFTOFFSET greater than 576: FFT uses a negative offset
 #endif
+
+
+#if USE_STACK_HACK
+        lame_free(primebuff0);
+        lame_free(primebuff1);
+        primebuff1 = NULL;
+        primebuff0 = NULL;
+#endif
+
         /* check if we have enough data for FFT */
         assert(gfc->sv_enc.mf_size >= (BLKSIZE + framesize - FFTOFFSET));
         /* check if we have enough data for polyphase filterbank */
         assert(gfc->sv_enc.mf_size >= (512 + framesize - 32));
     }
 
+
 }
-
-
-
-
-
 
 
 /************************************************************************
@@ -301,6 +317,12 @@ FFT's                    <---------1024---------->
 
 typedef FLOAT chgrdata[2][2];
 
+#if USE_STACK_HACK
+    III_psy_ratio masking_LR[2][2]; /*LR masking & energy */
+    III_psy_ratio masking_MS[2][2]; /*MS masking & energy */
+    const III_psy_ratio (*masking)[2]; /*pointer to selected maskings */
+#endif
+
 
 int
 lame_encode_mp3_frame(       /* Output */
@@ -310,18 +332,19 @@ lame_encode_mp3_frame(       /* Output */
                          unsigned char *mp3buf, /* Output */
                          int mp3buf_size)
 {                       /* Output */
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     mp3count;
+#if !USE_STACK_HACK
     III_psy_ratio masking_LR[2][2]; /*LR masking & energy */
     III_psy_ratio masking_MS[2][2]; /*MS masking & energy */
     const III_psy_ratio (*masking)[2]; /*pointer to selected maskings */
+#endif
     const sample_t *inbuf[2];
 
     FLOAT   tot_ener[2][4];
     FLOAT   ms_ener_ratio[2] = { .5, .5 };
-    FLOAT   pe[2][2] = { {0., 0.}, {0., 0.} }, pe_MS[2][2] = { {
-    0., 0.}, {
-    0., 0.}};
+    FLOAT   pe[2][2] = { {0., 0.}, {0., 0.} }, pe_MS[2][2] = { { 0., 0.}, { 0., 0.}};
     FLOAT (*pe_use)[2];
 
     int     ch, gr;

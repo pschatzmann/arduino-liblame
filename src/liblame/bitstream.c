@@ -70,6 +70,7 @@ calcFrameLength(SessionConfig_t const *const cfg, int kbps, int pad)
 int
 getframebits(const lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t const *const eov = &gfc->ov_enc;
     int     bit_rate;
@@ -90,6 +91,7 @@ getframebits(const lame_internal_flags * gfc)
 int
 get_max_frame_buffer_size_by_constraint(SessionConfig_t const * cfg, int constraint)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     maxmp3buf = 0;
     if (cfg->avg_bitrate > 320) {
         /* in freeformat the buffer is constant */
@@ -132,6 +134,7 @@ get_max_frame_buffer_size_by_constraint(SessionConfig_t const * cfg, int constra
 static void
 putheader_bits(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     Bit_stream_struc *bs = &gfc->bs;
@@ -151,6 +154,7 @@ putheader_bits(lame_internal_flags * gfc)
 inline static void
 putbits2(lame_internal_flags * gfc, int val, int j)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     EncStateVar_t const *const esv = &gfc->sv_enc;
     Bit_stream_struc *bs;
     bs = &gfc->bs;
@@ -187,6 +191,7 @@ putbits2(lame_internal_flags * gfc, int val, int j)
 inline static void
 putbits_noheaders(lame_internal_flags * gfc, int val, int j)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     Bit_stream_struc *bs;
     bs = &gfc->bs;
 
@@ -225,6 +230,7 @@ putbits_noheaders(lame_internal_flags * gfc, int val, int j)
 inline static void
 drain_into_ancillary(lame_internal_flags * gfc, int remainingBits)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     i;
@@ -269,6 +275,7 @@ drain_into_ancillary(lame_internal_flags * gfc, int remainingBits)
 inline static void
 writeheader(lame_internal_flags * gfc, int val, int j)
 {
+    DEBUGF(gfc,__FUNCTION__);
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     ptr = esv->header[esv->h_ptr].ptr;
 
@@ -287,6 +294,7 @@ writeheader(lame_internal_flags * gfc, int val, int j)
 static int
 CRC_update(int value, int crc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
     value <<= 8;
     for (i = 0; i < 8; i++) {
@@ -303,6 +311,7 @@ CRC_update(int value, int crc)
 void
 CRC_writeheader(lame_internal_flags const *gfc, char *header)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     crc = 0xffff;    /* (jo) init crc16 for error_protection */
     int     i;
@@ -320,6 +329,7 @@ CRC_writeheader(lame_internal_flags const *gfc, char *header)
 inline static void
 encodeSideInfo2(lame_internal_flags * gfc, int bitsPerFrame)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t const *const eov = &gfc->ov_enc;
     EncStateVar_t *const esv = &gfc->sv_enc;
@@ -490,6 +500,7 @@ encodeSideInfo2(lame_internal_flags * gfc, int bitsPerFrame)
 inline static int
 huffman_coder_count1(lame_internal_flags * gfc, gr_info const *gi)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* Write count1 area */
     struct huffcodetab const *const h = &ht[gi->count1table_select + 32];
     int     i, bits = 0;
@@ -561,6 +572,7 @@ inline static int
 Huffmancode(lame_internal_flags * const gfc, const unsigned int tableindex,
             int start, int end, gr_info const *gi)
 {
+    DEBUGF(gfc,__FUNCTION__);
     struct huffcodetab const *const h = &ht[tableindex];
     unsigned int const linbits = h->xlen;
     int     i, bits = 0;
@@ -638,6 +650,7 @@ Huffmancode(lame_internal_flags * const gfc, const unsigned int tableindex,
 static int
 ShortHuffmancodebits(lame_internal_flags * gfc, gr_info const *gi)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     bits;
     int     region1Start;
 
@@ -654,6 +667,7 @@ ShortHuffmancodebits(lame_internal_flags * gfc, gr_info const *gi)
 static int
 LongHuffmancodebits(lame_internal_flags * gfc, gr_info const *gi)
 {
+    DEBUGF(gfc,__FUNCTION__);
     unsigned int i;
     int     bigvalues, bits;
     int     region1Start, region2Start;
@@ -685,6 +699,7 @@ LongHuffmancodebits(lame_internal_flags * gfc, gr_info const *gi)
 inline static int
 writeMainData(lame_internal_flags * const gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     III_side_info_t const *const l3_side = &gfc->l3_side;
     int     gr, ch, sfb, data_bits, tot_bits = 0;
@@ -801,6 +816,7 @@ writeMainData(lame_internal_flags * const gfc)
 int
 compute_flushbits(const lame_internal_flags * gfc, int *total_bytes_output)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t const *const esv = &gfc->sv_enc;
     int     flushbits, remaining_headers;
@@ -862,6 +878,7 @@ compute_flushbits(const lame_internal_flags * gfc, int *total_bytes_output)
 void
 flush_bitstream(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     EncStateVar_t *const esv = &gfc->sv_enc;
     III_side_info_t *l3_side;
     int     nbytes;
@@ -892,6 +909,7 @@ flush_bitstream(lame_internal_flags * gfc)
 void
 add_dummy_byte(lame_internal_flags * gfc, unsigned char val, unsigned int n)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     i;
 
@@ -917,6 +935,7 @@ add_dummy_byte(lame_internal_flags * gfc, unsigned char val, unsigned int n)
 int
 format_bitstream(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     bits, nbytes;
@@ -987,6 +1006,7 @@ format_bitstream(lame_internal_flags * gfc)
 static int
 do_gain_analysis(lame_internal_flags * gfc, unsigned char* buffer, int minimum)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     RpgStateVar_t const *const rsv = &gfc->sv_rpg;
     RpgResult_t *const rov = &gfc->ov_rpg;
@@ -1055,6 +1075,7 @@ do_gain_analysis(lame_internal_flags * gfc, unsigned char* buffer, int minimum)
 static int
 do_copy_buffer(lame_internal_flags * gfc, unsigned char *buffer, int size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     Bit_stream_struc *const bs = &gfc->bs;
     int const minimum = bs->buf_byte_idx + 1;
     if (minimum <= 0)
@@ -1078,7 +1099,8 @@ do_copy_buffer(lame_internal_flags * gfc, unsigned char *buffer, int size)
 int
 copy_buffer(lame_internal_flags * gfc, unsigned char *buffer, int size, int mp3data)
 {
-    int const minimum = do_copy_buffer(gfc, buffer, size);
+    DEBUGF(gfc,__FUNCTION__);
+   int const minimum = do_copy_buffer(gfc, buffer, size);
     if (minimum > 0 && mp3data) {
         UpdateMusicCRC(&gfc->nMusicCRC, buffer, minimum);
 
@@ -1096,6 +1118,7 @@ copy_buffer(lame_internal_flags * gfc, unsigned char *buffer, int size, int mp3d
 void
 init_bit_stream_w(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     EncStateVar_t *const esv = &gfc->sv_enc;
 
     esv->h_ptr = esv->w_ptr = 0;

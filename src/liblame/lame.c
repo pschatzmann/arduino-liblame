@@ -71,17 +71,21 @@
 int
 is_lame_global_flags_valid(const lame_global_flags * gfp)
 {
+    int result = 1;
     if (gfp == NULL)
-        return 0;
+        result = 0;
     if (gfp->class_id != LAME_ID)
-        return 0;
-    return 1;
+        result = 0;
+
+    DEBUGF(gfc,"is_lame_global_flags_valid: %d", result);
+    return result;
 }
 
 
 int
 is_lame_internal_flags_valid(const lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (gfc == NULL)
         return 0;
     if (gfc->class_id != LAME_ID)
@@ -96,6 +100,7 @@ is_lame_internal_flags_valid(const lame_internal_flags * gfc)
 static  FLOAT
 filter_coef(FLOAT x)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (x > 1.0)
         return 0.0;
     if (x <= 0.0)
@@ -107,6 +112,7 @@ filter_coef(FLOAT x)
 static void
 lame_init_params_ppflt(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t *const cfg = &gfc->cfg;
     
     /***************************************************************/
@@ -198,6 +204,7 @@ lame_init_params_ppflt(lame_internal_flags * gfc)
 static void
 optimum_bandwidth(double *const lowerlimit, double *const upperlimit, const unsigned bitrate)
 {
+    DEBUGF(gfc,__FUNCTION__);
 /*
  *  Input:
  *      bitrate     total bitrate in kbps
@@ -278,6 +285,7 @@ optimum_bandwidth(double *const lowerlimit, double *const upperlimit, const unsi
 static int
 optimum_samplefreq(int lowpassfreq, int input_samplefreq)
 {
+    DEBUGF(gfc,__FUNCTION__);
 /*
  * Rules:
  *  - if possible, sfb21 should NOT be used
@@ -367,6 +375,7 @@ optimum_samplefreq(int lowpassfreq, int input_samplefreq)
 static void
 lame_init_qval(lame_global_flags * gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags *const gfc = gfp->internal_flags;
     SessionConfig_t *const cfg = &gfc->cfg;
 
@@ -542,7 +551,7 @@ linear_int(double a, double b, double m)
 int
 lame_init_params(lame_global_flags * gfp)
 {
-    MSGF(gfc,"lame_init_params")
+    DEBUGF(gfc,__FUNCTION__);
 
     int     i;
     int     j;
@@ -624,8 +633,12 @@ lame_init_params(lame_global_flags * gfp)
         gfp->force_ms = 0; /* forced mid/side stereo for j-stereo only */
     cfg->force_ms = gfp->force_ms;
 
+    MSGF(gfc,"step 1");
+
     if (cfg->vbr == vbr_off && gfp->VBR_mean_bitrate_kbps != 128 && gfp->brate == 0)
         gfp->brate = gfp->VBR_mean_bitrate_kbps;
+
+    MSGF(gfc,"step 2");
 
     switch (cfg->vbr) {
     case vbr_off:
@@ -1338,6 +1351,7 @@ concatSep(char* dest, char const* sep, char const* str)
 void
 lame_print_config(const lame_global_flags * gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags const *const gfc = gfp->internal_flags;
     SessionConfig_t const *const cfg = &gfc->cfg;
     double const out_samplerate = cfg->samplerate_out;
@@ -1429,6 +1443,7 @@ lame_print_config(const lame_global_flags * gfp)
 void
 lame_print_internals(const lame_global_flags * gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags const *const gfc = gfp->internal_flags;
     SessionConfig_t const *const cfg = &gfc->cfg;
     const char *pc = "";
@@ -1602,6 +1617,7 @@ lame_print_internals(const lame_global_flags * gfp)
 static void
 save_gain_values(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     RpgStateVar_t const *const rsv = &gfc->sv_rpg;
     RpgResult_t *const rov = &gfc->ov_rpg;
@@ -1633,6 +1649,7 @@ save_gain_values(lame_internal_flags * gfc)
 static int
 update_inbuffer_size(lame_internal_flags * gfc, const int nsamples)
 {
+    DEBUGF(gfc,__FUNCTION__);
     EncStateVar_t *const esv = &gfc->sv_enc;
     if (esv->in_buffer_0 == 0 || esv->in_buffer_nsamples < nsamples) {
         if (esv->in_buffer_0) {
@@ -1665,6 +1682,7 @@ update_inbuffer_size(lame_internal_flags * gfc, const int nsamples)
 static int
 calcNeeded(SessionConfig_t const * cfg)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     mf_needed;
     int     pcm_samples_per_frame = 576 * cfg->mode_gr;
 
@@ -1710,6 +1728,7 @@ static int
 lame_encode_buffer_sample_t(lame_internal_flags * gfc,
                             int nsamples, unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     pcm_samples_per_frame = 576 * cfg->mode_gr;
@@ -1828,6 +1847,7 @@ lame_copy_inbuffer(lame_internal_flags* gfc,
                    void const* l, void const* r, int nsamples,
                    enum PCMSampleType pcm_type, int jump, FLOAT s)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     sample_t* ib0 = esv->in_buffer_0;
@@ -1881,6 +1901,7 @@ lame_encode_buffer_template(lame_global_flags * gfp,
                             void const* buffer_l, void const* buffer_r, const int nsamples,
                             unsigned char *mp3buf, const int mp3buf_size, enum PCMSampleType pcm_type, int aa, FLOAT norm)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags *const gfc = gfp->internal_flags;
         if (is_lame_internal_flags_valid(gfc)) {
@@ -1917,6 +1938,7 @@ lame_encode_buffer(lame_global_flags * gfp,
                    const short int pcm_l[], const short int pcm_r[], const int nsamples,
                    unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     return lame_encode_buffer_template(gfp, pcm_l, pcm_r, nsamples, mp3buf, mp3buf_size, pcm_short_type, 1, 1.0);
 }
 
@@ -1926,6 +1948,7 @@ lame_encode_buffer_float(lame_global_flags * gfp,
                          const float pcm_l[], const float pcm_r[], const int nsamples,
                          unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- 32768 for full scale */
     return lame_encode_buffer_template(gfp, pcm_l, pcm_r, nsamples, mp3buf, mp3buf_size, pcm_float_type, 1, 1.0);
 }
@@ -1936,6 +1959,7 @@ lame_encode_buffer_ieee_float(lame_t gfp,
                          const float pcm_l[], const float pcm_r[], const int nsamples,
                          unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- 1.0 for full scale */
     return lame_encode_buffer_template(gfp, pcm_l, pcm_r, nsamples, mp3buf, mp3buf_size, pcm_float_type, 1, 32767.0);
 }
@@ -1946,6 +1970,7 @@ lame_encode_buffer_interleaved_ieee_float(lame_t gfp,
                          const float pcm[], const int nsamples,
                          unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- 1.0 for full scale */
     return lame_encode_buffer_template(gfp, pcm, pcm+1, nsamples, mp3buf, mp3buf_size, pcm_float_type, 2, 32767.0);
 }
@@ -1956,6 +1981,7 @@ lame_encode_buffer_ieee_double(lame_t gfp,
                          const double pcm_l[], const double pcm_r[], const int nsamples,
                          unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- 1.0 for full scale */
     return lame_encode_buffer_template(gfp, pcm_l, pcm_r, nsamples, mp3buf, mp3buf_size, pcm_double_type, 1, 32767.0);
 }
@@ -1966,6 +1992,7 @@ lame_encode_buffer_interleaved_ieee_double(lame_t gfp,
                          const double pcm[], const int nsamples,
                          unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- 1.0 for full scale */
     return lame_encode_buffer_template(gfp, pcm, pcm+1, nsamples, mp3buf, mp3buf_size, pcm_double_type, 2, 32767.0);
 }
@@ -1976,6 +2003,7 @@ lame_encode_buffer_int(lame_global_flags * gfp,
                        const int pcm_l[], const int pcm_r[], const int nsamples,
                        unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- MAX_INT for full scale */
     FLOAT const norm = (1.0 / (1L << (8 * sizeof(int) - 16)));
     return lame_encode_buffer_template(gfp, pcm_l, pcm_r, nsamples, mp3buf, mp3buf_size, pcm_int_type, 1, norm);
@@ -1987,6 +2015,7 @@ lame_encode_buffer_long2(lame_global_flags * gfp,
                          const long pcm_l[],  const long pcm_r[], const int nsamples,
                          unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- MAX_LONG for full scale */
     FLOAT const norm = (1.0 / (1L << (8 * sizeof(long) - 16)));
     return lame_encode_buffer_template(gfp, pcm_l, pcm_r, nsamples, mp3buf, mp3buf_size, pcm_long_type, 1, norm);
@@ -1998,6 +2027,7 @@ lame_encode_buffer_long(lame_global_flags * gfp,
                         const long pcm_l[], const long pcm_r[], const int nsamples,
                         unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- 32768 for full scale */
     return lame_encode_buffer_template(gfp, pcm_l, pcm_r, nsamples, mp3buf, mp3buf_size, pcm_long_type, 1, 1.0);
 }
@@ -2009,6 +2039,7 @@ lame_encode_buffer_interleaved(lame_global_flags * gfp,
                                short int pcm[], int nsamples,
                                unsigned char *mp3buf, int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- MAX_SHORT for full scale */
     return lame_encode_buffer_template(gfp, pcm, pcm+1, nsamples, mp3buf, mp3buf_size, pcm_short_type, 2, 1.0);
 }
@@ -2019,6 +2050,7 @@ lame_encode_buffer_interleaved_int(lame_t gfp,
                                    const int pcm[], const int nsamples,
                                    unsigned char *mp3buf, const int mp3buf_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* input is assumed to be normalized to +/- MAX(int) for full scale */
     FLOAT const norm = (1.0 / (1L << (8 * sizeof(int)-16)));
     return lame_encode_buffer_template(gfp, pcm, pcm + 1, nsamples, mp3buf, mp3buf_size, pcm_int_type, 2, norm);
@@ -2039,6 +2071,7 @@ lame_encode_buffer_interleaved_int(lame_t gfp,
 int
 lame_encode_flush_nogap(lame_global_flags * gfp, unsigned char *mp3buffer, int mp3buffer_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     rc = -3;
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags *const gfc = gfp->internal_flags;
@@ -2060,6 +2093,7 @@ lame_encode_flush_nogap(lame_global_flags * gfp, unsigned char *mp3buffer, int m
 int
 lame_init_bitstream(lame_global_flags * gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags *const gfc = gfp->internal_flags;
         if (gfc != 0) {
@@ -2096,6 +2130,7 @@ lame_init_bitstream(lame_global_flags * gfp)
 int
 lame_encode_flush(lame_global_flags * gfp, unsigned char *mp3buffer, int mp3buffer_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags *gfc;
     SessionConfig_t const *cfg;
     EncStateVar_t *esv;
@@ -2246,6 +2281,7 @@ lame_encode_flush(lame_global_flags * gfp, unsigned char *mp3buffer, int mp3buff
 int
 lame_close(lame_global_flags * gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     ret = 0;
     if (gfp && gfp->class_id == LAME_ID) {
         lame_internal_flags *const gfc = gfp->internal_flags;
@@ -2280,6 +2316,7 @@ lame_encode_finish(lame_global_flags * gfp, unsigned char *mp3buffer, int mp3buf
 int
 lame_encode_finish(lame_global_flags * gfp, unsigned char *mp3buffer, int mp3buffer_size)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int const ret = lame_encode_flush(gfp, mp3buffer, mp3buffer_size);
 
     (void) lame_close(gfp);
@@ -2295,6 +2332,7 @@ void    lame_mp3_tags_fid(lame_global_flags * gfp, FILE * fpStream);
 void
 lame_mp3_tags_fid(lame_global_flags * gfp, FILE * fpStream)
 {
+    DEBUGF(gfc,__FUNCTION__);
     lame_internal_flags *gfc;
     SessionConfig_t const *cfg;
     if (!is_lame_global_flags_valid(gfp)) {
@@ -2335,6 +2373,7 @@ lame_mp3_tags_fid(lame_global_flags * gfp, FILE * fpStream)
 static int
 lame_init_internal_flags(lame_internal_flags* gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (NULL == gfc)
         return -1;
 
@@ -2388,6 +2427,7 @@ static
 int
 lame_init_old(lame_global_flags * gfp)
 {
+    DEBUGF(gfc,__FUNCTION__);
     disable_FPE();      /* disable floating point exceptions */
 
     memset(gfp, 0, sizeof(lame_global_flags));
@@ -2475,7 +2515,7 @@ lame_init_old(lame_global_flags * gfp)
 lame_global_flags *
 lame_init(void)
 {
-    MSGF(gfc,"lame_init")
+    DEBUGF(gfc,__FUNCTION__);
     lame_global_flags *gfp;
     int     ret;
 
@@ -2529,6 +2569,7 @@ lame_init(void)
 void
 lame_bitrate_kbps(const lame_global_flags * gfp, int bitrate_kbps[14])
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags const *const gfc = gfp->internal_flags;
         if (is_lame_internal_flags_valid(gfc)) {
@@ -2551,6 +2592,7 @@ lame_bitrate_kbps(const lame_global_flags * gfp, int bitrate_kbps[14])
 void
 lame_bitrate_hist(const lame_global_flags * gfp, int bitrate_count[14])
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags const *const gfc = gfp->internal_flags;
         if (is_lame_internal_flags_valid(gfc)) {
@@ -2577,6 +2619,7 @@ lame_bitrate_hist(const lame_global_flags * gfp, int bitrate_count[14])
 void
 lame_stereo_mode_hist(const lame_global_flags * gfp, int stmode_count[4])
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags const *const gfc = gfp->internal_flags;
         if (is_lame_internal_flags_valid(gfc)) {
@@ -2595,6 +2638,7 @@ lame_stereo_mode_hist(const lame_global_flags * gfp, int stmode_count[4])
 void
 lame_bitrate_stereo_mode_hist(const lame_global_flags * gfp, int bitrate_stmode_count[14][4])
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags const *const gfc = gfp->internal_flags;
         if (is_lame_internal_flags_valid(gfc)) {
@@ -2627,6 +2671,7 @@ lame_bitrate_stereo_mode_hist(const lame_global_flags * gfp, int bitrate_stmode_
 void
 lame_block_type_hist(const lame_global_flags * gfp, int btype_count[6])
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags const *const gfc = gfp->internal_flags;
         if (is_lame_internal_flags_valid(gfc)) {
@@ -2645,6 +2690,7 @@ lame_block_type_hist(const lame_global_flags * gfp, int btype_count[6])
 void
 lame_bitrate_block_type_hist(const lame_global_flags * gfp, int bitrate_btype_count[14][6])
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (is_lame_global_flags_valid(gfp)) {
         lame_internal_flags const *const gfc = gfp->internal_flags;
         if (is_lame_internal_flags_valid(gfc)) {
@@ -2685,20 +2731,24 @@ void lame_abort(){
 
 void* debug_calloc(int count, int size){
     void* result = NULL;
-
-#ifdef ESP32
-    result = heap_caps_malloc(count*size, MALLOC_CAP_32BIT);
-    memset(result, 0, count*size);
-#else
     result = calloc(count,size);
+    if (result!=NULL) {
+#if USE_DEBUG_ALLOC
+        printf("==> calloc(%d,%d) -> %d [available: %d]\n", count, size, result!=NULL, getFreeHeap());
 #endif
-    printf("==> calloc(%d,%d) -> %d [available: %d]\n", count, size, result!=NULL, getFreeHeap());
+    } else {
+        lame_errorf(gfc, "calloc(%d,%d) -> %d [available: %d]\n", count, size, result!=NULL, getFreeHeap())
+        lame_abort();
+    }
+
     return result;
 }
 
 
 void debug_free(void* ptr){
-    printf("free (%p)\n",ptr);
+#if USE_DEBUG_ALLOC
+    printf("==> free (%p)\n",ptr);
+#endif
     free(ptr);
 }
 

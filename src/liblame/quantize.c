@@ -48,6 +48,7 @@
 static void
 ms_convert(III_side_info_t * l3_side, int gr)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
     for (i = 0; i < 576; ++i) {
         FLOAT   l, r;
@@ -72,6 +73,7 @@ ms_convert(III_side_info_t * l3_side, int gr)
 static void
 init_xrpow_core_c(gr_info * const cod_info, FLOAT xrpow[576], int upper, FLOAT * sum)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
     FLOAT   tmp;
     *sum = 0;
@@ -92,6 +94,7 @@ init_xrpow_core_c(gr_info * const cod_info, FLOAT xrpow[576], int upper, FLOAT *
 void
 init_xrpow_core_init(lame_internal_flags * const gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     gfc->init_xrpow_core = init_xrpow_core_c;
 
 #if HAVE_XMMINTRIN_H
@@ -110,6 +113,7 @@ init_xrpow_core_init(lame_internal_flags * const gfc)
 static int
 init_xrpow(lame_internal_flags * gfc, gr_info * const cod_info, FLOAT xrpow[576])
 {
+    DEBUGF(gfc,__FUNCTION__);
     FLOAT   sum = 0;
     int     i;
     int const upper = cod_info->max_nonzero_coeff;
@@ -159,6 +163,7 @@ coeff higher than ath.
 static void
 psfb21_analogsilence(lame_internal_flags const *gfc, gr_info * const cod_info)
 {
+    DEBUGF(gfc,__FUNCTION__);
     ATH_t const *const ATH = gfc->ATH;
     FLOAT  *const xr = cod_info->xr;
 
@@ -226,6 +231,7 @@ psfb21_analogsilence(lame_internal_flags const *gfc, gr_info * const cod_info)
 static void
 init_outer_loop(lame_internal_flags const *gfc, gr_info * const cod_info)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     sfb, j;
     /*  initialize fresh cod_info
@@ -368,6 +374,7 @@ static int
 bin_search_StepSize(lame_internal_flags * const gfc, gr_info * const cod_info,
                     int desired_rate, const int ch, const FLOAT xrpow[576])
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     nBits;
     int     CurrentStep = gfc->sv_qnt.CurrentStep[ch];
     int     flag_GoneOver = 0;
@@ -443,6 +450,7 @@ bin_search_StepSize(lame_internal_flags * const gfc, gr_info * const cod_info,
 static int
 floatcompare(const void *v1, const void *v2)
 {
+    DEBUGF(gfc,__FUNCTION__);
     const FLOAT *const a = v1, *const b = v2;
     if (*a > *b)
         return 1;
@@ -455,6 +463,7 @@ static void
 trancate_smallspectrums(lame_internal_flags const *gfc,
                         gr_info * const gi, const FLOAT * const l3_xmin, FLOAT * const work)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     sfb, j, width;
     FLOAT   distort[SFBMAX];
     calc_noise_result dummy;
@@ -540,6 +549,7 @@ trancate_smallspectrums(lame_internal_flags const *gfc,
 inline static int
 loop_break(const gr_info * const cod_info)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     sfb;
 
     for (sfb = 0; sfb < cod_info->sfbmax; sfb++)
@@ -574,6 +584,7 @@ penalties(double noise)
 static double
 get_klemm_noise(const FLOAT * distort, const gr_info * const gi)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     sfb;
     double  klemm_noise = 1E-37;
     for (sfb = 0; sfb < gi->psymax; sfb++)
@@ -587,6 +598,7 @@ quant_compare(const int quant_comp,
               const calc_noise_result * const best,
               calc_noise_result * const calc, const gr_info * const gi, const FLOAT * distort)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /*
        noise is given in decibels (dB) relative to masking thesholds.
 
@@ -721,6 +733,7 @@ static void
 amp_scalefac_bands(lame_internal_flags * gfc,
                    gr_info * const cod_info, FLOAT const *distort, FLOAT xrpow[576], int bRefine)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     j, sfb;
     FLOAT   ifqstep34, trigger;
@@ -808,6 +821,7 @@ amp_scalefac_bands(lame_internal_flags * gfc,
 static void
 inc_scalefac_scale(gr_info * const cod_info, FLOAT xrpow[576])
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     l, j, sfb;
     const FLOAT ifqstep34 = 1.29683955465100964055;
 
@@ -847,6 +861,7 @@ inc_scalefac_scale(gr_info * const cod_info, FLOAT xrpow[576])
 static int
 inc_subblock_gain(const lame_internal_flags * const gfc, gr_info * const cod_info, FLOAT xrpow[576])
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     sfb, window;
     int    *const scalefac = cod_info->scalefac;
 
@@ -941,6 +956,7 @@ inline static int
 balance_noise(lame_internal_flags * gfc,
               gr_info * const cod_info, FLOAT const *distort, FLOAT xrpow[576], int bRefine)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     status;
 
@@ -1012,6 +1028,7 @@ outer_loop(lame_internal_flags * gfc, gr_info * const cod_info, const FLOAT * co
            FLOAT xrpow[576], /* coloured magnitudes of spectral */
            const int ch, const int targ_bits)
 {                       /* maximum allowed bits */
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     gr_info cod_info_w;
     FLOAT   save_xrpow[576];
@@ -1213,6 +1230,7 @@ outer_loop(lame_internal_flags * gfc, gr_info * const cod_info, const FLOAT * co
 static void
 iteration_finish_one(lame_internal_flags * gfc, int gr, int ch)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     III_side_info_t *const l3_side = &gfc->l3_side;
     gr_info *const cod_info = &l3_side->tt[gr][ch];
@@ -1246,6 +1264,7 @@ VBR_encode_granule(lame_internal_flags * gfc, gr_info * const cod_info, const FL
                    FLOAT xrpow[576], /* coloured magnitudes of spectral values */
                    const int ch, int min_bits, int max_bits)
 {
+    DEBUGF(gfc,__FUNCTION__);
     gr_info bst_cod_info;
     FLOAT   bst_xrpow[576];
     int const Max_bits = max_bits;
@@ -1340,6 +1359,7 @@ VBR_encode_granule(lame_internal_flags * gfc, gr_info * const cod_info, const FL
 static void
 get_framebits(lame_internal_flags * gfc, int frameBits[15])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
     int     bitsPerFrame, i;
@@ -1393,6 +1413,7 @@ VBR_old_prepare(lame_internal_flags * gfc,
                 FLOAT l3_xmin[2][2][SFBMAX],
                 int frameBits[16], int min_bits[2][2], int max_bits[2][2], int bands[2][2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
 
@@ -1454,6 +1475,7 @@ static void
 bitpressure_strategy(lame_internal_flags const *gfc,
                      FLOAT l3_xmin[2][2][SFBMAX], const int min_bits[2][2], int max_bits[2][2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     gr, ch, sfb;
     for (gr = 0; gr < cfg->mode_gr; gr++) {
@@ -1491,6 +1513,7 @@ void
 VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
                        const FLOAT ms_ener_ratio[2], const III_psy_ratio ratio[2][2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
     FLOAT   l3_xmin[2][2][SFBMAX];
@@ -1585,6 +1608,7 @@ VBR_new_prepare(lame_internal_flags * gfc,
                 FLOAT l3_xmin[2][2][SFBMAX], int frameBits[16], int max_bits[2][2],
                 int* max_resv)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
 
@@ -1640,32 +1664,43 @@ VBR_new_prepare(lame_internal_flags * gfc,
     return analog_silence;
 }
 
-
+struct struct_VBR_new_iteration_loop {
+    FLOAT   l3_xmin[2][2][SFBMAX];
+    FLOAT   xrpow[2][2][576];
+};
+#if USE_STACK_HACK 
+struct struct_VBR_new_iteration_loop loop_data;
+#endif
 
 void
 VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
                        const FLOAT ms_ener_ratio[2], const III_psy_ratio ratio[2][2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
-    FLOAT   l3_xmin[2][2][SFBMAX];
+#if USE_STACK_HACK 
+    struct struct_VBR_new_iteration_loop *data = (struct struct_VBR_new_iteration_loop*) lame_calloc(struct struct_VBR_new_iteration_loop,1);
+#else
+    struct struct_VBR_new_iteration_loop loop_data;
+    struct struct_VBR_new_iteration_loop *data = &loop_data;
+#endif
 
-    FLOAT   xrpow[2][2][576];
     int     frameBits[15];
     int     used_bits;
     int     max_bits[2][2];
     int     ch, gr, analog_silence, pad;
     III_side_info_t *const l3_side = &gfc->l3_side;
 
-    const FLOAT (*const_l3_xmin)[2][SFBMAX] = (const FLOAT (*)[2][SFBMAX])l3_xmin;
-    const FLOAT (*const_xrpow)[2][576] = (const FLOAT (*)[2][576])xrpow;
+    const FLOAT (*const_l3_xmin)[2][SFBMAX] = (const FLOAT (*)[2][SFBMAX])data->l3_xmin;
+    const FLOAT (*const_xrpow)[2][576] = (const FLOAT (*)[2][576])data->xrpow;
     const int (*const_max_bits)[2] = (const int (*)[2])max_bits;
     
     (void) ms_ener_ratio; /* not used */
 
-    memset(xrpow, 0, sizeof(xrpow));
+    memset(data->xrpow, 0, sizeof(data->xrpow));
 
-    analog_silence = VBR_new_prepare(gfc, pe, ratio, l3_xmin, frameBits, max_bits, &pad);
+    analog_silence = VBR_new_prepare(gfc, pe, ratio, data->l3_xmin, frameBits, max_bits, &pad);
 
     for (gr = 0; gr < cfg->mode_gr; gr++) {
         for (ch = 0; ch < cfg->channels_out; ch++) {
@@ -1673,7 +1708,7 @@ VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
 
             /*  init_outer_loop sets up cod_info, scalefac and xrpow
              */
-            if (0 == init_xrpow(gfc, cod_info, xrpow[gr][ch])) {
+            if (0 == init_xrpow(gfc, cod_info, data->xrpow[gr][ch])) {
                 max_bits[gr][ch] = 0; /* silent granule needs no bits */
             }
         }               /* for ch */
@@ -1748,6 +1783,9 @@ VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
         ERRORF(gfc, "INTERNAL ERROR IN VBR NEW CODE, please send bug report\n");
         lame_abort();
     }
+#if USE_STACK_HACK 
+    lame_free(data);
+#endif
 }
 
 
@@ -1770,6 +1808,7 @@ calc_target_bits(lame_internal_flags * gfc,
                  FLOAT const ms_ener_ratio[2],
                  int targ_bits[2][2], int *analog_silence_bits, int *max_frame_bits)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
     III_side_info_t const *const l3_side = &gfc->l3_side;
@@ -1901,6 +1940,7 @@ void
 ABR_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
                    const FLOAT ms_ener_ratio[2], const III_psy_ratio ratio[2][2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
     FLOAT   l3_xmin[SFBMAX];
@@ -1989,6 +2029,7 @@ void
 CBR_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
                    const FLOAT ms_ener_ratio[2], const III_psy_ratio ratio[2][2])
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     FLOAT   l3_xmin[SFBMAX];
     FLOAT   xrpow[576];

@@ -97,6 +97,7 @@
 #include <string.h>
 
 #include "lame.h"
+#include "log.h"
 #include "machine.h"
 #include "gain_analysis.h"
 
@@ -146,6 +147,7 @@ static const Float_t ABButter[9][multiple_of(4, 2 * BUTTER_ORDER + 1)] = {
 static void
 filterYule(const Float_t * input, Float_t * output, size_t nSamples, const Float_t * const kernel)
 {
+    DEBUGF(gfc,__FUNCTION__);
     while (nSamples--) {
         Float_t y0 =  input[-10] * kernel[ 0];
         Float_t y2 =  input[ -9] * kernel[ 1];
@@ -180,6 +182,7 @@ filterYule(const Float_t * input, Float_t * output, size_t nSamples, const Float
 static void
 filterButter(const Float_t * input, Float_t * output, size_t nSamples, const Float_t * const kernel)
 {
+    DEBUGF(gfc,__FUNCTION__);
     while (nSamples--) {
         Float_t s1 =  input[-2] * kernel[0] +  input[-1] * kernel[2] +  input[ 0] * kernel[4];
         Float_t s2 = output[-2] * kernel[1] + output[-1] * kernel[3];
@@ -198,6 +201,7 @@ static int ResetSampleFrequency(replaygain_t * rgData, long samplefreq);
 int
 ResetSampleFrequency(replaygain_t * rgData, long samplefreq)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* zero out initial values, only first MAX_ORDER values */
     memset(rgData->linprebuf, 0, MAX_ORDER * sizeof(*rgData->linprebuf));
     memset(rgData->rinprebuf, 0, MAX_ORDER * sizeof(*rgData->rinprebuf));
@@ -258,6 +262,7 @@ ResetSampleFrequency(replaygain_t * rgData, long samplefreq)
 int
 InitGainAnalysis(replaygain_t * rgData, long samplefreq)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (ResetSampleFrequency(rgData, samplefreq) != INIT_GAIN_ANALYSIS_OK) {
         return INIT_GAIN_ANALYSIS_ERROR;
     }
@@ -277,7 +282,7 @@ InitGainAnalysis(replaygain_t * rgData, long samplefreq)
 
     if (rgData->B==NULL){
         rgData->size_B = STEPS_per_dB * MAX_dB;
-        rgData->B = debug_calloc(1, rgData->size_A);
+        rgData->B = debug_calloc(1, rgData->size_B);
     } else {
         memset(rgData->B, 0, rgData->size_B );
     }
@@ -299,6 +304,7 @@ int
 AnalyzeSamples(replaygain_t * rgData, const Float_t * left_samples, const Float_t * right_samples,
                size_t num_samples, int num_channels)
 {
+    DEBUGF(gfc,__FUNCTION__);
     const Float_t *curleft;
     const Float_t *curright;
     long    batchsamples;
@@ -442,6 +448,7 @@ AnalyzeSamples(replaygain_t * rgData, const Float_t * left_samples, const Float_
 static  Float_t
 analyzeResult(uint32_t const *Array, size_t len)
 {
+    DEBUGF(gfc,__FUNCTION__);
     uint32_t elems;
     uint32_t upper;
     uint32_t sum;
@@ -469,6 +476,7 @@ analyzeResult(uint32_t const *Array, size_t len)
 Float_t
 GetTitleGain(replaygain_t * rgData)
 {
+    DEBUGF(gfc,__FUNCTION__);
     Float_t retval;
     unsigned int i;
 

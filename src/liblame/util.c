@@ -53,6 +53,7 @@ struct _reent *_impure_ptr __ATTRIBUTE_IMPURE_PTR__ = NULL;
 void
 free_id3tag(lame_internal_flags * const gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     gfc->tag_spec.language[0] = 0;
     if (gfc->tag_spec.title != 0) {
         lame_free(gfc->tag_spec.title);
@@ -97,6 +98,7 @@ free_id3tag(lame_internal_flags * const gfc)
 static void
 free_global_data(lame_internal_flags * gfc)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (gfc && gfc->cd_psy) {
         if (gfc->cd_psy->l.s3) {
             /* XXX allocated in psymodel_init() */
@@ -115,6 +117,7 @@ free_global_data(lame_internal_flags * gfc)
 void
 freegfc(lame_internal_flags * const gfc)
 {                       /* bit stream structure */
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
 
     if (gfc == 0) return;
@@ -177,6 +180,7 @@ freegfc(lame_internal_flags * const gfc)
 void
 calloc_aligned(aligned_pointer_t * ptr, unsigned int size, unsigned int bytes)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (ptr) {
         if (!ptr->pointer) {
             ptr->pointer = malloc(size + bytes);
@@ -199,6 +203,7 @@ calloc_aligned(aligned_pointer_t * ptr, unsigned int size, unsigned int bytes)
 void
 free_aligned(aligned_pointer_t * ptr)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (ptr) {
         if (ptr->pointer) {
             lame_free(ptr->pointer);
@@ -214,6 +219,7 @@ their minimum value for input = -1*/
 static  FLOAT
 ATHformula_GB(FLOAT f, FLOAT value, FLOAT f_min, FLOAT f_max)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     /* from Painter & Spanias
        modified by Gabriel Bouvigne to better fit the reality
        ath =    3.640 * pow(f,-0.8)
@@ -258,6 +264,7 @@ bitrate is more balanced according to the -V value.*/
 FLOAT
 ATHformula(SessionConfig_t const *cfg, FLOAT f)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     FLOAT   ath;
     switch (cfg->ATHtype) {
     case 0:
@@ -289,6 +296,7 @@ ATHformula(SessionConfig_t const *cfg, FLOAT f)
 FLOAT
 freq2bark(FLOAT freq)
 {
+//    DEBUGF(gfc,__FUNCTION__);
     /* input: freq in hz  output: barks */
     if (freq < 0)
         freq = 0;
@@ -319,6 +327,7 @@ int
 FindNearestBitrate(int bRate, /* legal rates from 8 to 320 */
                    int version, int samplerate)
 {                       /* MPEG-1 or MPEG-2 LSF */
+    DEBUGF(gfc,__FUNCTION__);
     int     bitrate;
     int     i;
 
@@ -359,6 +368,7 @@ FindNearestBitrate(int bRate, /* legal rates from 8 to 320 */
 int
 nearestBitrateFullIndex(uint16_t bitrate)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* borrowed from DM abr presets */
 
     const int full_bitrate_table[] =
@@ -408,6 +418,7 @@ nearestBitrateFullIndex(uint16_t bitrate)
 int
 map2MP3Frequency(int freq)
 {
+    DEBUGF(gfc,__FUNCTION__);
     if (freq <= 8000)
         return 8000;
     if (freq <= 11025)
@@ -433,6 +444,7 @@ BitrateIndex(int bRate,      /* legal rates from 32 to 448 kbps */
              int version,    /* MPEG-1 or MPEG-2/2.5 LSF */
              int samplerate)
 {                       /* convert bitrate in kbps to index */
+    DEBUGF(gfc,__FUNCTION__);
     int     i;
     if (samplerate < 16000)
         version = 2;
@@ -451,6 +463,7 @@ BitrateIndex(int bRate,      /* legal rates from 32 to 448 kbps */
 int
 SmpFrqIndex(int sample_freq, int *const version)
 {
+    DEBUGF(gfc,__FUNCTION__);
     switch (sample_freq) {
     case 44100:
         *version = 1;
@@ -505,6 +518,7 @@ SmpFrqIndex(int sample_freq, int *const version)
 inline static FLOAT
 blackman(FLOAT x, FLOAT fcn, int l)
 {
+    DEBUGF(gfc,__FUNCTION__);
     /* This algorithm from:
        SIGNAL PROCESSING ALGORITHMS IN FORTRAN AND C
        S.D. Stearns and R.A. David, Prentice-Hall, 1992
@@ -548,6 +562,7 @@ fill_buffer_resample(lame_internal_flags * gfc,
                      sample_t * outbuf,
                      int desired_len, sample_t const *inbuf, int len, int *num_used, int ch)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *esv = &gfc->sv_enc;
     double  resample_ratio = (double)cfg->samplerate_in / (double)cfg->samplerate_out;
@@ -669,6 +684,7 @@ fill_buffer_resample(lame_internal_flags * gfc,
 int
 isResamplingNecessary(SessionConfig_t const* cfg)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int const l = cfg->samplerate_out * 0.9995f;
     int const h = cfg->samplerate_out * 1.0005f;
     return (cfg->samplerate_in < l) || (h < cfg->samplerate_in) ? 1 : 0;
@@ -682,6 +698,7 @@ void
 fill_buffer(lame_internal_flags * gfc,
             sample_t * const mfbuf[2], sample_t const * const in_buffer[2], int nsamples, int *n_in, int *n_out)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     mf_size = gfc->sv_enc.mf_size;
     int     framesize = 576 * cfg->mode_gr;
@@ -705,6 +722,7 @@ fill_buffer(lame_internal_flags * gfc,
         *n_out = nout;
         *n_in = nout;
     }
+
 }
 
 
@@ -843,6 +861,8 @@ has_SSE2(void)
 void
 disable_FPE(void)
 {
+    DEBUGF(gfc,__FUNCTION__);
+
 /* extremly system dependent stuff, move to a lib to make the code readable */
 /*==========================================================================*/
 
@@ -977,6 +997,7 @@ static float log_table[LOG2_SIZE + 1];
 
 void init_log_table(void)
 {
+    DEBUGF(gfc,__FUNCTION__);
     int     j;
     static int init = 0;
 
@@ -994,6 +1015,7 @@ void init_log_table(void)
 
 float fast_log2(float x)
 {
+    DEBUGF(gfc,__FUNCTION__);
     float log2val, partial;
     union {
         float f;

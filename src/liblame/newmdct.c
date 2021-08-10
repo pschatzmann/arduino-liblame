@@ -944,6 +944,7 @@ mdct_long(FLOAT * out, FLOAT const *in)
 void
 mdct_sub48(lame_internal_flags * gfc, const sample_t * w0, const sample_t * w1)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     gr, k, ch;

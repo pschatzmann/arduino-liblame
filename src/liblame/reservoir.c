@@ -82,6 +82,7 @@
 int
 ResvFrameBegin(lame_internal_flags * gfc, int *mean_bits)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     fullFrameBits;
@@ -174,6 +175,7 @@ ResvFrameBegin(lame_internal_flags * gfc, int *mean_bits)
 void
 ResvMaxBits(lame_internal_flags * gfc, int mean_bits, int *targ_bits, int *extra_bits, int cbr)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     int     add_bits, targBits, extraBits;
@@ -225,6 +227,7 @@ ResvMaxBits(lame_internal_flags * gfc, int mean_bits, int *targ_bits, int *extra
 void
 ResvAdjust(lame_internal_flags * gfc, gr_info const *gi)
 {
+    DEBUGF(gfc,__FUNCTION__);
     gfc->sv_enc.ResvSize -= gi->part2_3_length + gi->part2_length;
 }
 
@@ -238,6 +241,7 @@ ResvAdjust(lame_internal_flags * gfc, gr_info const *gi)
 void
 ResvFrameEnd(lame_internal_flags * gfc, int mean_bits)
 {
+    DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncStateVar_t *const esv = &gfc->sv_enc;
     III_side_info_t *const l3_side = &gfc->l3_side;
