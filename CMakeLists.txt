@@ -20,3 +20,4 @@ target_include_directories(arduino_liblame PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/sr
 
 # build examples
 add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/examples/encode")
+add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/examples/speed_test")
