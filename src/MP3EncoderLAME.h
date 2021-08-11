@@ -36,7 +36,7 @@ public:
 	}
 
 	/// Constructor which provides the decoded result in a callback
-	MP3EncoderLAME(MP3CallbackFDK cb=nullptr){
+	MP3EncoderLAME(MP3CallbackFDK cb){
 		LOG(Debug,__FUNCTION__);
         setDataCallback(cb);
 	}
@@ -57,7 +57,7 @@ public:
 	}
 
 	/// Defines the output stream
-	void setStream(Print &out_stream){
+	void setOutput(Print &out_stream){
 		LOG(Debug,__FUNCTION__);
 		this->out = &out_stream;
 	}
@@ -77,10 +77,8 @@ public:
 
 	/**
 	 * @brief Opens the encoder  
-	 * 
-	 * @param in 
 	 */
-	 void begin(AudioInfo  in) {
+	 void begin() {
 		LOG(Debug,__FUNCTION__);
 		active = setup();
 	}
@@ -166,6 +164,11 @@ public:
 		LOG(Debug,__FUNCTION__);
 	 	lame_close(lame);
 	}
+
+ 	operator boolean() {
+		return active;
+	}
+
 
 protected:
 	bool active;
