@@ -11,7 +11,8 @@ typedef void (*MP3CallbackFDK)(uint8_t *mp3_data, size_t len);
 
 /**
  * @brief LAME parameters
- * 
+ * @author Phil Schatzmann
+ * @copyright GPLv3
  */
 struct AudioInfo  {
     AudioInfo () = default;
@@ -25,7 +26,8 @@ struct AudioInfo  {
 
 /**
  * @brief Encodes PCM data to the MP3 format and writes the result to a stream or provides it via a callback
- * 
+ * @author Phil Schatzmann
+ * @copyright GPLv3
  */
 class MP3EncoderLAME  {
 
