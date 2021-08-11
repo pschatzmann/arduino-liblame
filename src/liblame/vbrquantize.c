@@ -1249,15 +1249,20 @@ reduce_bit_usage(lame_internal_flags * gfc, int gr, int ch
 }
 
 
-
+#if USE_STACK_HACK 
+    int     sfwork_[2][2][SFBMAX];
+    int     vbrsfmin_[2][2][SFBMAX];
+#endif
 
 int
 VBR_encode_frame(lame_internal_flags * gfc, const FLOAT xr34orig[2][2][576],
                  const FLOAT l3_xmin[2][2][SFBMAX], const int max_bits[2][2])
 {
     SessionConfig_t const *const cfg = &gfc->cfg;
+#if !USE_STACK_HACK 
     int     sfwork_[2][2][SFBMAX];
     int     vbrsfmin_[2][2][SFBMAX];
+#endif
     algo_t  that_[2][2];
     int const ngr = cfg->mode_gr;
     int const nch = cfg->channels_out;

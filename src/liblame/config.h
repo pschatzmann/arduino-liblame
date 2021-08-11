@@ -9,7 +9,7 @@
 
 // use precalculated log table as const -> in the ESP32 this will end up in flash memory
 #ifndef USE_FAST_LOG_CONST
-#define USE_FAST_LOG_CONST 1
+#define USE_FAST_LOG_CONST 0
 #endif
 
 // Avoid big memory allocations in replaygain_data

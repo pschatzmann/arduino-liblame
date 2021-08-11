@@ -879,34 +879,39 @@ recalc_divide_sub(const lame_internal_flags * const gfc,
 }
 
 
+struct struct_best_huffman_divide {
+    gr_info cod_info2;
+    int     r01_bits[7 + 15 + 1];
+    int     r01_div[7 + 15 + 1];
+    int     r0_tbl[7 + 15 + 1];
+    int     r1_tbl[7 + 15 + 1];
+} ;
 
 
 void
 best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
 {
     SessionConfig_t const *const cfg = &gfc->cfg;
+#if USE_STACK_HACK 
+    static struct struct_best_huffman_divide data;
+#else
+    struct struct_best_huffman_divide data;
+#endif
     int     i, a1, a2;
-    gr_info cod_info2;
     int const *const ix = gi->l3_enc;
-
-    int     r01_bits[7 + 15 + 1];
-    int     r01_div[7 + 15 + 1];
-    int     r0_tbl[7 + 15 + 1];
-    int     r1_tbl[7 + 15 + 1];
-
 
     /* SHORT BLOCK stuff fails for MPEG2 */
     if (gi->block_type == SHORT_TYPE && cfg->mode_gr == 1)
         return;
 
 
-    memcpy(&cod_info2, gi, sizeof(gr_info));
+    memcpy(&data.cod_info2, gi, sizeof(gr_info));
     if (gi->block_type == NORM_TYPE) {
-        recalc_divide_init(gfc, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
-        recalc_divide_sub(gfc, &cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
+        recalc_divide_init(gfc, gi, ix, data.r01_bits, data.r01_div, data.r0_tbl, data.r1_tbl);
+        recalc_divide_sub(gfc, &data.cod_info2, gi, ix, data.r01_bits, data.r01_div, data.r0_tbl, data.r1_tbl);
     }
 
-    i = cod_info2.big_values;
+    i = data.cod_info2.big_values;
     if (i == 0 || (unsigned int) (ix[i - 2] | ix[i - 1]) > 1)
         return;
 
@@ -915,44 +920,44 @@ best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
         return;
 
     /* Determines the number of bits to encode the quadruples. */
-    memcpy(&cod_info2, gi, sizeof(gr_info));
-    cod_info2.count1 = i;
+    memcpy(&data.cod_info2, gi, sizeof(gr_info));
+    data.cod_info2.count1 = i;
     a1 = a2 = 0;
 
     assert(i <= 576);
 
-    for (; i > cod_info2.big_values; i -= 4) {
+    for (; i > data.cod_info2.big_values; i -= 4) {
         int const p = ((ix[i - 4] * 2 + ix[i - 3]) * 2 + ix[i - 2]) * 2 + ix[i - 1];
         a1 += t32l[p];
         a2 += t33l[p];
     }
-    cod_info2.big_values = i;
+    data.cod_info2.big_values = i;
 
-    cod_info2.count1table_select = 0;
+    data.cod_info2.count1table_select = 0;
     if (a1 > a2) {
         a1 = a2;
-        cod_info2.count1table_select = 1;
+        data.cod_info2.count1table_select = 1;
     }
 
-    cod_info2.count1bits = a1;
+    data.cod_info2.count1bits = a1;
 
-    if (cod_info2.block_type == NORM_TYPE)
-        recalc_divide_sub(gfc, &cod_info2, gi, ix, r01_bits, r01_div, r0_tbl, r1_tbl);
+    if (data.cod_info2.block_type == NORM_TYPE)
+        recalc_divide_sub(gfc, &data.cod_info2, gi, ix, data.r01_bits, data.r01_div, data.r0_tbl, data.r1_tbl);
     else {
         /* Count the number of bits necessary to code the bigvalues region. */
-        cod_info2.part2_3_length = a1;
+        data.cod_info2.part2_3_length = a1;
         a1 = gfc->scalefac_band.l[7 + 1];
         if (a1 > i) {
             a1 = i;
         }
         if (a1 > 0)
-            cod_info2.table_select[0] =
-                gfc->choose_table(ix, ix + a1, (int *) &cod_info2.part2_3_length);
+            data.cod_info2.table_select[0] =
+                gfc->choose_table(ix, ix + a1, (int *) &data.cod_info2.part2_3_length);
         if (i > a1)
-            cod_info2.table_select[1] =
-                gfc->choose_table(ix + a1, ix + i, (int *) &cod_info2.part2_3_length);
-        if (gi->part2_3_length > cod_info2.part2_3_length)
-            memcpy(gi, &cod_info2, sizeof(gr_info));
+            data.cod_info2.table_select[1] =
+                gfc->choose_table(ix + a1, ix + i, (int *) &data.cod_info2.part2_3_length);
+        if (gi->part2_3_length > data.cod_info2.part2_3_length)
+            memcpy(gi, &data.cod_info2, sizeof(gr_info));
     }
 }
 

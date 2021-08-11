@@ -224,15 +224,17 @@ protected:
 
 		// allocate conversion buffer
 		int samples = bytes / bytes_per_sample;
-		if (samples>convert_buffer_size){
+		if (convert_buffer == nullptr || samples>convert_buffer_size){
 			if (convert_buffer!=nullptr){
 				delete []convert_buffer;
 			}
 			convert_buffer = new short[samples];
+			convert_buffer_size = samples;
 		}
 
 		if (convert_buffer==nullptr){
 			LOG(Error, "not enough memory to allocate conversion buffer - decrise the size of written bytes!")
+			lame_abort();
 			return nullptr;
 		}
 
