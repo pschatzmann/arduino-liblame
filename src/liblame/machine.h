@@ -162,13 +162,8 @@ typedef FLOAT sample_t;
 #define dimension_of(array) (sizeof(array)/sizeof(array[0]))
 #define beyond(array) (array+dimension_of(array))
 #define compiletime_assert(expression) enum{static_assert_##FILE##_##LINE = 1/((expression)?1:0)}
-#if USE_DEBUG_ALLOC
 #define lame_calloc(TYPE, COUNT) ((TYPE*)debug_calloc(COUNT, sizeof(TYPE)))
 #define lame_free(PTR) debug_free(PTR)
-#else
-#define lame_calloc(TYPE, COUNT) ((TYPE*)calloc(COUNT, sizeof(TYPE)))
-#define lame_free(PTR) free(PTR)
-#endif
 #define multiple_of(CHUNK, COUNT) (\
   ( (COUNT) < 1 || (CHUNK) < 1 || (COUNT) % (CHUNK) == 0 ) \
   ? (COUNT) \
