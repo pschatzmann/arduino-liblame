@@ -51,13 +51,13 @@ public:
 #ifdef ARDUINO
 
 	/// Constructor which makes sure that the decoded result is written to the indicatd Stream
-	MP3EncoderLAME(Stream &out_stream){
+	MP3EncoderLAME(Print &out_stream){
 		LOG(Debug,__FUNCTION__);
 		this->out = &out_stream;
 	}
 
 	/// Defines the output stream
-	void setStream(Stream &out_stream){
+	void setStream(Print &out_stream){
 		LOG(Debug,__FUNCTION__);
 		this->out = &out_stream;
 	}
@@ -170,7 +170,7 @@ protected:
 	int convert_buffer_size=0;
 
 #ifdef ARDUINO
-	Stream *out;
+	Print *out;
 #endif
 
 	bool setupOutputBuffer(int size) {
