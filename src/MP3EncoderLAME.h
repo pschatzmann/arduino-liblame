@@ -78,6 +78,17 @@ public:
 	/**
 	 * @brief Opens the encoder  
 	 * 
+	 * @param in 
+	 */
+	 void begin(AudioInfo  in) {
+		LOG(Debug,__FUNCTION__);
+		active = setup();
+	}
+
+
+	/**
+	 * @brief Opens the encoder  
+	 * 
 	 * @param info 
 	 * @return int 
 	 */
