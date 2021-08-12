@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # set the project name
-project(speed_test )
+project(lame-speed_test )
 include(FetchContent)
 
 # set (DCMAKE_CXX_FLAGS -Werror -Wall -Wextra)
@@ -20,8 +20,8 @@ endif()
 
 
 # build sketch as executable  
-add_executable (speed_test  speed_test.cpp)
-target_compile_options(speed_test PUBLIC -DEMULATOR)
+add_executable (lame-speed_test  speed_test.cpp)
+target_compile_options(lame-speed_test PUBLIC -DEMULATOR)
 
 # specify libraries
-target_link_libraries(speed_test  arduino_liblame arduino_emulator)
+target_link_libraries(lame-speed_test  arduino_liblame arduino_emulator)

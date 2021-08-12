@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # set the project name
-project(encode )
+project(lame-encode )
 include(FetchContent)
 
 # set (DCMAKE_CXX_FLAGS -Werror -Wall -Wextra)
@@ -20,8 +20,8 @@ endif()
 
 
 # build sketch as executable  
-add_executable (encode  encode.cpp)
-target_compile_options(encode PUBLIC -DEMULATOR)
+add_executable (lame-encode  encode.cpp)
+target_compile_options(lame-encode PUBLIC -DEMULATOR)
 
 # specify libraries
-target_link_libraries(encode  arduino_liblame arduino_emulator)
+target_link_libraries(lame-encode  arduino_liblame arduino_emulator)
