@@ -99,6 +99,7 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 
 ### Documentation
 
-The [Class Documentation can be found here](https://pschatzmann.github.io/arduino-liblame/html/annotated.html)
-You can also find some [more information in my Blog](https://www.pschatzmann.ch/home/2021/08/10/an-mp3-encoder-for-arduino/).
+- The [Class Documentation can be found here](https://pschatzmann.github.io/arduino-liblame/html/annotated.html)
+- You can also find some [more information in my dedicated Blog](https://www.pschatzmann.ch/home/2021/08/10/an-mp3-encoder-for-arduino/).
+- I also suggest that you have a look at [my overview Blog](https://www.pschatzmann.ch/home/2021/08/13/audio-decoders-for-microcontrollers/)
 
