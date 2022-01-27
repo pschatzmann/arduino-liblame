@@ -94,16 +94,16 @@ $(function() {
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">public</span>:</div>
 <div class="line"><a name="l00034"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a7e35cfa7cc48b05cf49b0b72ef0e03bc">   34</a></span>&#160;    <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a7e35cfa7cc48b05cf49b0b72ef0e03bc">MP3EncoderLAME</a>(){</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        LOG(Debug,__FUNCTION__);        </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        LOG_LAME(Debug,__FUNCTION__);        </div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    }</div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#abef18b3a7cee105bc56ff7638f7a0e89">   39</a></span>&#160;    <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#abef18b3a7cee105bc56ff7638f7a0e89">MP3EncoderLAME</a>(MP3CallbackFDK cb=<span class="keyword">nullptr</span>){</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;        <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a8385df8de26ce70ea594f3b7deee6415">setDataCallback</a>(cb);</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    }</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
 <div class="line"><a name="l00045"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a8385df8de26ce70ea594f3b7deee6415">   45</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a8385df8de26ce70ea594f3b7deee6415">setDataCallback</a>(MP3CallbackFDK cb){</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        this-&gt;MP3Callback = cb;</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    }</div>
 <div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
@@ -111,19 +111,19 @@ $(function() {
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="preprocessor">#ifdef ARDUINO</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
 <div class="line"><a name="l00054"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#aea370c613e230a131d46189cc2da0be0">   54</a></span>&#160;    <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#aea370c613e230a131d46189cc2da0be0">MP3EncoderLAME</a>(Stream &amp;out_stream){</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;        this-&gt;out = &amp;out_stream;</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;    }</div>
 <div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
 <div class="line"><a name="l00060"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#ae07d8fc3569d780c24fef654501db58e">   60</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#ae07d8fc3569d780c24fef654501db58e">setStream</a>(Stream &amp;out_stream){</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        this-&gt;out = &amp;out_stream;</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    }</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="preprocessor">#endif</span></div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;     ~<a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html">MP3EncoderLAME</a>(){</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#af50990122ad669a7a4755aac47d5046f">end</a>();</div>
 <div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="comment">// release buffers</span></div>
 <div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        <span class="keywordflow">if</span> (convert_buffer!=<span class="keyword">nullptr</span>)</div>
@@ -134,13 +134,13 @@ $(function() {
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;     }</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
 <div class="line"><a name="l00084"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a4fb46c73fd0be4e376c1f72d875b3297">   84</a></span>&#160;     <span class="keywordtype">void</span> <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a4fb46c73fd0be4e376c1f72d875b3297">begin</a>(<a class="code" href="structliblame_1_1_audio_info.html">AudioInfo</a>  in) {</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#af244cdcd8bac44f739d874038216b1cf">setAudioInfo</a>(in);</div>
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;        active = setup();</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    }</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
 <div class="line"><a name="l00098"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a47b52eaec66ff4513a483d4ce6ceeb6a">   98</a></span>&#160;     <span class="keywordtype">void</span> <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a47b52eaec66ff4513a483d4ce6ceeb6a">begin</a>(<span class="keywordtype">int</span> input_channels, <span class="keywordtype">int</span> input_sample_rate, <span class="keywordtype">int</span> input_bits_per_sample) {</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;        <a class="code" href="structliblame_1_1_audio_info.html">AudioInfo</a> ai;</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;        ai.channels = input_channels;</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        ai.sample_rate = input_sample_rate;</div>
@@ -160,7 +160,7 @@ $(function() {
 <div class="line"><a name="l00119"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a5aeaae2e0b9e9ac9fdf7e3ebb68fc404">  119</a></span>&#160;    int32_t <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a5aeaae2e0b9e9ac9fdf7e3ebb68fc404">write</a>(<span class="keywordtype">void</span> *pcm_samples, <span class="keywordtype">int</span> bytes){</div>
 <div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;        int32_t result = 0;</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;        <span class="keywordflow">if</span> (active){</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            LOG(Debug,<span class="stringliteral">&quot;write %d bytes&quot;</span>, bytes);</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;            LOG_LAME(Debug,<span class="stringliteral">&quot;write %d bytes&quot;</span>, bytes);</div>
 <div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;            <span class="comment">// convert to required input format</span></div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;            <span class="keywordtype">short</span> *buffer = convertToShort(pcm_samples, bytes);</div>
@@ -192,7 +192,7 @@ $(function() {
 <div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    }</div>
 <div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160; </div>
 <div class="line"><a name="l00154"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#af50990122ad669a7a4755aac47d5046f">  154</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#af50990122ad669a7a4755aac47d5046f">end</a>(){</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        lame_close(lame);</div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;    }</div>
 <div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
@@ -215,7 +215,7 @@ $(function() {
 <div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160; </div>
 <div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordtype">bool</span> setupOutputBuffer(<span class="keywordtype">int</span> size) {</div>
 <div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;        <span class="keywordflow">if</span> (size&gt;mp3_buffer_size){</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            <span class="keywordflow">if</span> (mp3_buffer!=<span class="keyword">nullptr</span>)</div>
 <div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;                <span class="keyword">delete</span>[] mp3_buffer;</div>
 <div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;            mp3_buffer = <span class="keyword">new</span> uint8_t[size];</div>
@@ -225,10 +225,10 @@ $(function() {
 <div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;    }</div>
 <div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160; </div>
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    <span class="keywordtype">bool</span> setup(){</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;         lame = lame_init();</div>
 <div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;         <span class="keywordflow">if</span> (lame==<span class="keyword">nullptr</span>){</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;             LOG(Error,<span class="stringliteral">&quot;lame_init failed&quot;</span>);</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;             LOG_LAME(Error,<span class="stringliteral">&quot;lame_init failed&quot;</span>);</div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;             <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;         }</div>
 <div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160; </div>
@@ -242,12 +242,12 @@ $(function() {
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
 <div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;        <span class="keywordtype">int</span> initRet = lame_init_params(lame);</div>
 <div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;        <span class="keywordflow">if</span>(initRet &lt; 0){</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            LOG(Error, <span class="stringliteral">&quot;Fail in setting internal parameters with code=%d\n&quot;</span>,initRet);</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;            LOG_LAME(Error, <span class="stringliteral">&quot;Fail in setting internal parameters with code=%d\n&quot;</span>,initRet);</div>
 <div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;            <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        } </div>
 <div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
 <div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;        info.frame_size = lame_get_framesize(lame);</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        LOG(Info, <span class="stringliteral">&quot;Framesize = %d\n&quot;</span>, info.frame_size);</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;        LOG_LAME(Info, <span class="stringliteral">&quot;Framesize = %d\n&quot;</span>, info.frame_size);</div>
 <div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160; </div>
 <div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    }</div>
@@ -260,7 +260,7 @@ $(function() {
 <div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        }</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
 <div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        <span class="comment">// if we got here conversion is required</span></div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        LOG(Debug,__FUNCTION__);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        LOG_LAME(Debug,__FUNCTION__);</div>
 <div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160; </div>
 <div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;        <span class="comment">// allocate conversion buffer</span></div>
 <div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;        <span class="keywordtype">int</span> samples = bytes / bytes_per_sample;</div>
@@ -272,7 +272,7 @@ $(function() {
 <div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;        }</div>
 <div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160; </div>
 <div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keywordflow">if</span> (convert_buffer==<span class="keyword">nullptr</span>){</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            LOG(Error, <span class="stringliteral">&quot;not enough memory to allocate conversion buffer - decrise the size of written bytes!&quot;</span>)</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;            LOG_LAME(Error, <span class="stringliteral">&quot;not enough memory to allocate conversion buffer - decrise the size of written bytes!&quot;</span>)</div>
 <div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;            return <span class="keywordtype">nullptr</span>;</div>
 <div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        }</div>
 <div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160; </div>
@@ -300,7 +300,7 @@ $(function() {
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;                <span class="keywordflow">return</span> convert_buffer;</div>
 <div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;            }</div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;            <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                LOG(Error, <span class="stringliteral">&quot;Unsupported bits_per_sample: %d&quot;</span>, info.bits_per_sample);</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;                LOG_LAME(Error, <span class="stringliteral">&quot;Unsupported bits_per_sample: %d&quot;</span>, info.bits_per_sample);</div>
 <div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;                <span class="keywordflow">return</span> <span class="keyword">nullptr</span>;</div>
 <div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        }</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
@@ -309,7 +309,7 @@ $(function() {
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
 <div class="line"><a name="l00271"></a><span class="lineno"><a class="line" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a67d26a63919418cf0916afba121f16ac">  271</a></span>&#160;    <span class="keywordtype">void</span> <a class="code" href="classliblame_1_1_m_p3_encoder_l_a_m_e.html#a67d26a63919418cf0916afba121f16ac">provideResult</a>(uint8_t *data, <span class="keywordtype">size_t</span> bytes){</div>
 <div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        <span class="keywordflow">if</span> (bytes&gt;0){</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            LOG(Debug, <span class="stringliteral">&quot;provideResult: %zu samples&quot;</span>,bytes);</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;            LOG_LAME(Debug, <span class="stringliteral">&quot;provideResult: %zu samples&quot;</span>,bytes);</div>
 <div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;            <span class="comment">// provide result</span></div>
 <div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;            <span class="keywordflow">if</span>(MP3Callback!=<span class="keyword">nullptr</span>){</div>
 <div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;                <span class="comment">// output via callback</span></div>

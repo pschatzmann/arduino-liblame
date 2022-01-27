@@ -15,6 +15,7 @@
 #ifndef LAME_LOGGING_ACTIVE
 #define LAME_LOGGING_ACTIVE true
 #endif
+
 #ifndef LAME_LOG_LEVEL
 #define LAME_LOG_LEVEL Debug
 #endif
@@ -22,10 +23,10 @@
 // Logging Implementation
 #if LAME_LOGGING_ACTIVE == true
 
-enum LogLevel {Debug, Info, Warning, Error};
-static int minLogLevel = Warning;
+enum LogLevelLame {Debug, Info, Warning, Error};
+static int LOGLEVEL_LAME = Warning;
 
-static const char* levelName(LogLevel level) {
+static const char* levelName(LogLevelLame level) {
     switch(level){
         case Debug:
             return "D";
@@ -40,8 +41,8 @@ static const char* levelName(LogLevel level) {
 }
 
 // We print the log based on the log level
-#define LOG(level,...) { if(level>=minLogLevel) {  snprintf(log_msg, MAX_LOG_LEN, __VA_ARGS__);  print_log(__FILE__,__LINE__, levelName(level)); } }
+#define LOG_LAME(level,...) { if(level>=LOGLEVEL_LAME) {  snprintf(log_msg, MAX_LOG_LEN, __VA_ARGS__);  print_log(__FILE__,__LINE__, levelName(level)); } }
 #else
 // Remove all log statments from the code
-#define LOG(level, ...) 
+#define LOG_LAME(level, ...) 
 #endif
