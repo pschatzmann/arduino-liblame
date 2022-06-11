@@ -65,6 +65,15 @@ cmake ..
 make
 ```
 
+### Documentation
+
+- The [Class Documentation can be found here](https://pschatzmann.github.io/arduino-liblame/html/annotated.html)
+- You can also find some [more information in my dedicated Blog](https://www.pschatzmann.ch/home/2021/08/10/an-mp3-encoder-for-arduino/).
+- I also suggest that you have a look at [my overview Blog](https://www.pschatzmann.ch/home/2021/08/13/audio-decoders-for-microcontrollers/)
+
+I recommend to use this library together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools). 
+This is just one of many __codecs__ that I have collected so far: Further details can be found in the [Encoding and Decoding Wiki](https://github.com/pschatzmann/arduino-audio-tools/wiki/Encoding-and-Decoding-of-Audio) of the Audio Tools.
+
 ### Changes to the Original Code
 The initial restructured code was working prefectly with my [Arduino Simulator](https://github.com/pschatzmann/Arduino-Emulator) on the desktop, but as soon I as I deployed it on an ESP32 it was crashing because of different reasons:
 
@@ -96,12 +105,3 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 #define USE_STACK_HACK 1
 ```
 
-
-### Documentation
-
-- The [Class Documentation can be found here](https://pschatzmann.github.io/arduino-liblame/html/annotated.html)
-- You can also find some [more information in my dedicated Blog](https://www.pschatzmann.ch/home/2021/08/10/an-mp3-encoder-for-arduino/).
-- I also suggest that you have a look at [my overview Blog](https://www.pschatzmann.ch/home/2021/08/13/audio-decoders-for-microcontrollers/)
-
-I recommend to use this library together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools). 
-This is just one of many __codecs__ that I have collected so far: Further details can be found in the [Encoding and Decoding Wiki](https://github.com/pschatzmann/arduino-audio-tools/wiki/Encoding-and-Decoding-of-Audio) of the Audio Tools.
