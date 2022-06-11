@@ -103,3 +103,5 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 - You can also find some [more information in my dedicated Blog](https://www.pschatzmann.ch/home/2021/08/10/an-mp3-encoder-for-arduino/).
 - I also suggest that you have a look at [my overview Blog](https://www.pschatzmann.ch/home/2021/08/13/audio-decoders-for-microcontrollers/)
 
+I recommend to use this library together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools). 
+This is just one of many __codecs__ that I have collected so far: Further details can be found in the [Encoding and Decoding Wiki](https://github.com/pschatzmann/arduino-audio-tools/wiki/Encoding-and-Decoding-of-Audio) of the Audio Tools.
