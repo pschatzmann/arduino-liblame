@@ -61,4 +61,9 @@ int     psymodel_init(lame_global_flags const* gfp);
 #define NSATTACKTHRE 4.4
 #define NSATTACKTHRE_S 25
 
+typedef struct {
+    FLOAT   s3[CBANDS][CBANDS];
+} struct_s3; 
+
+
 #endif /* LAME_PSYMODEL_H */

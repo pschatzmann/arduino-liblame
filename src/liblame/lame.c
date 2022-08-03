@@ -81,20 +81,30 @@ is_lame_global_flags_valid(const lame_global_flags * gfp)
     return result;
 }
 
-
 int
-is_lame_internal_flags_valid(const lame_internal_flags * gfc)
+is_lame_internal_flags_valid2(const lame_internal_flags * gfc, int logError)
 {
-    DEBUGF(gfc,__FUNCTION__);
-    if (gfc == NULL)
-        return 0;
-    if (gfc->class_id != LAME_ID)
-        return 0;
-    if (gfc->lame_init_params_successful <=0)
-        return 0;
-    return 1;
+    int result = 1;
+    if (gfc == NULL){
+        result = 0;
+        if (logError) ERRORF(gfc, "gfc is NULL\n");
+    }
+    if (gfc->class_id != LAME_ID){
+        result = 0;
+        if (logError) ERRORF(gfc, "class_id is not LAME_ID\n");
+    }
+    if (gfc->lame_init_params_successful <=0){
+        result = 0;
+        if (logError) ERRORF(gfc, "lame_init_params_successful <=0\n");
+    }
+    DEBUGF(gfc,"%s: %d",__FUNCTION__, result);
+    return result;
 }
 
+int
+is_lame_internal_flags_valid(const lame_internal_flags * gfc){
+    return is_lame_internal_flags_valid2(gfc, 1);
+}
 
 
 static  FLOAT
@@ -558,28 +568,38 @@ lame_init_params(lame_global_flags * gfp)
     lame_internal_flags *gfc;
     SessionConfig_t *cfg;
 
-    if (!is_lame_global_flags_valid(gfp)) 
+    if (!is_lame_global_flags_valid(gfp)) {
+        ERRORF(gfc, "is_lame_global_flags_valid failed\n");
         return -1;
+    }
 
     gfc = gfp->internal_flags;
-    if (gfc == 0) 
+    if (gfc == 0) {
+        ERRORF(gfc, "gfc is null\n");
         return -1;
+    } 
 
-    if (is_lame_internal_flags_valid(gfc))
-        return -1; /* already initialized */
-
+    if (is_lame_internal_flags_valid2(gfc, 0)){
+        return 0; /* already initialized */
+    }
     /* start updating lame internal flags */
     gfc->class_id = LAME_ID;
     gfc->lame_init_params_successful = 0; /* will be set to one, when we get through until the end */
 
-    if (gfp->samplerate_in < 1)
+    if (gfp->samplerate_in < 1){
+        ERRORF(gfc, "samplerate_in < 1\n");
         return -1; /* input sample rate makes no sense */
-    if (gfp->num_channels < 1 || 2 < gfp->num_channels)
+    }
+    if (gfp->num_channels < 1 || 2 < gfp->num_channels){
+        ERRORF(gfc, "num_channels < 1 || 2 < num_channels\n");
         return -1; /* number of input channels makes no sense */
+    }
     if (gfp->samplerate_out != 0) {
         int   v=0;
-        if (SmpFrqIndex(gfp->samplerate_out, &v) < 0)
+        if (SmpFrqIndex(gfp->samplerate_out, &v) < 0){
+            ERRORF(gfc, "output sample rate makes no sense: %d\n", gfp->samplerate_out);
             return -1; /* output sample rate makes no sense */
+        }
     }
 
     cfg = &gfc->cfg;
@@ -2728,16 +2748,31 @@ void lame_abort(){
 #endif
 }
 
-
 void* debug_calloc(int count, int size){
-    void* result = NULL;
+    void* result=NULL;
+#ifdef ESP32
+    heap_caps_malloc_extmem_enable(liblame_extmem_enable_limit);
+    //result = heap_caps_calloc(count, size, MALLOC_CAP_8BIT);  // MALLOC_CAP_SPIRAM, MALLOC_CAP_32BIT, MALLOC_CAP_8BIT
     result = calloc(count,size);
+#else
+    result = calloc(count,size);
+#endif    
+
     if (result!=NULL) {
-#if USE_DEBUG_ALLOC
-        printf("==> calloc(%d,%d) -> %d [available: %d]\n", count, size, result!=NULL, getFreeHeap());
+#if USE_DEBUG_ALLOC && ESP32
+        printf("==> calloc(%d,%d) -> %p - ", count, size, result);
+        printf(" available MALLOC_CAP_8BIT: %d", heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+        printf(" / MALLOC_CAP_32BIT: %d ", heap_caps_get_largest_free_block(MALLOC_CAP_32BIT));
+        printf(" / MALLOC_CAP_SPIRAM: %d\n", heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM));
 #endif
     } else {
-        lame_errorf(gfc, "calloc(%d,%d) -> %d [available: %d]\n", count, size, result!=NULL, getFreeHeap())
+        lame_errorf(gfc, "calloc(%d,%d) -> %p ", count, size, result);
+#ifdef ESP32
+        printf("available MALLOC_CAP_8BIT: %d", heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
+        printf(" / MALLOC_CAP_32BIT: %d ", heap_caps_get_largest_free_block(MALLOC_CAP_32BIT));
+        printf(" / MALLOC_CAP_SPIRAM: %d\n", heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM));
+#endif
+        //assert(result!=NULL);  // -> generate 
         lame_abort();
     }
 
@@ -2751,6 +2786,11 @@ void debug_free(void* ptr){
 #endif
     free(ptr);
 }
+
+/// Support for ESP32 PSRAM. Memory > limit will be allocated in PSRAM
+#ifdef ESP32
+int liblame_extmem_enable_limit = 10000;
+#endif
 
 
 /* end of lame.c */

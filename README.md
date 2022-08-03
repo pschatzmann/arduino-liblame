@@ -74,6 +74,10 @@ make
 I recommend to use this library together with my [Arduino Audio Tools](https://github.com/pschatzmann/arduino-audio-tools). 
 This is just one of many __codecs__ that I have collected so far: Further details can be found in the [Encoding and Decoding Wiki](https://github.com/pschatzmann/arduino-audio-tools/wiki/Encoding-and-Decoding-of-Audio) of the Audio Tools.
 
+### Memory/RAM
+
+This library requires quite a lot of RAM and it should work if you just use this decoder w/o any additional functionality that requires additional RAM. If you want to use e.g. WIFI together with this library you might not have enough RAM: Fortunately this library supports PSRAM so if you activate PSRAM you should have more then enough headroom...  
+
 ### Changes to the Original Code
 The initial restructured code was working prefectly with my [Arduino Simulator](https://github.com/pschatzmann/Arduino-Emulator) on the desktop, but as soon I as I deployed it on an ESP32 it was crashing because of different reasons:
 

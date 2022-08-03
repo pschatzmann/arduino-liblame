@@ -28,7 +28,7 @@ int16_t buffer[512];
 void setup() {
     Serial.begin(115200);
 
-    info.channels = 1;
+    info.channels = 2;
     info.sample_rate = 16000;
     mp3.begin(info);
 

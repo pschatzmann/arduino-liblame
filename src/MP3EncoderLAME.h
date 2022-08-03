@@ -8,7 +8,6 @@
 namespace liblame {
 
 typedef void (*MP3CallbackFDK)(uint8_t *mp3_data, size_t len);
-
 /**
  * @brief LAME parameters
  * @author Phil Schatzmann
@@ -215,7 +214,7 @@ protected:
 
     int initRet = lame_init_params(lame);
     if (initRet < 0) {
-      LOG_LAME(Error, "Fail in setting internal parameters with code=%d\n", initRet);
+      LOG_LAME(Error, "lame_init_params\n");
       return false;
     }
 

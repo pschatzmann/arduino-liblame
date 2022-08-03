@@ -893,72 +893,89 @@ best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
 {
     SessionConfig_t const *const cfg = &gfc->cfg;
 #if USE_STACK_HACK 
-    static struct struct_best_huffman_divide data;
+    struct struct_best_huffman_divide *p_data = lame_calloc(struct struct_best_huffman_divide, 1);
 #else
     struct struct_best_huffman_divide data;
+    struct struct_best_huffman_divide *p_data = &data;
 #endif
     int     i, a1, a2;
     int const *const ix = gi->l3_enc;
 
     /* SHORT BLOCK stuff fails for MPEG2 */
-    if (gi->block_type == SHORT_TYPE && cfg->mode_gr == 1)
+    if (gi->block_type == SHORT_TYPE && cfg->mode_gr == 1){
+        #if USE_STACK_HACK
+            lame_free(p_data);
+        #endif
         return;
-
-
-    memcpy(&data.cod_info2, gi, sizeof(gr_info));
-    if (gi->block_type == NORM_TYPE) {
-        recalc_divide_init(gfc, gi, ix, data.r01_bits, data.r01_div, data.r0_tbl, data.r1_tbl);
-        recalc_divide_sub(gfc, &data.cod_info2, gi, ix, data.r01_bits, data.r01_div, data.r0_tbl, data.r1_tbl);
     }
 
-    i = data.cod_info2.big_values;
-    if (i == 0 || (unsigned int) (ix[i - 2] | ix[i - 1]) > 1)
+
+    memcpy(&p_data->cod_info2, gi, sizeof(gr_info));
+    if (gi->block_type == NORM_TYPE) {
+        recalc_divide_init(gfc, gi, ix, p_data->r01_bits, p_data->r01_div, p_data->r0_tbl, p_data->r1_tbl);
+        recalc_divide_sub(gfc, &p_data->cod_info2, gi, ix, p_data->r01_bits, p_data->r01_div, p_data->r0_tbl, p_data->r1_tbl);
+    }
+
+    i = p_data->cod_info2.big_values;
+    if (i == 0 || (unsigned int) (ix[i - 2] | ix[i - 1]) > 1){
+        #if USE_STACK_HACK
+            lame_free(p_data);
+        #endif
         return;
+    }
 
     i = gi->count1 + 2;
-    if (i > 576)
+    if (i > 576) {
+        #if USE_STACK_HACK
+            lame_free(p_data);
+        #endif
         return;
+    }   
 
     /* Determines the number of bits to encode the quadruples. */
-    memcpy(&data.cod_info2, gi, sizeof(gr_info));
-    data.cod_info2.count1 = i;
+    memcpy(&p_data->cod_info2, gi, sizeof(gr_info));
+    p_data->cod_info2.count1 = i;
     a1 = a2 = 0;
 
     assert(i <= 576);
 
-    for (; i > data.cod_info2.big_values; i -= 4) {
+    for (; i > p_data->cod_info2.big_values; i -= 4) {
         int const p = ((ix[i - 4] * 2 + ix[i - 3]) * 2 + ix[i - 2]) * 2 + ix[i - 1];
         a1 += t32l[p];
         a2 += t33l[p];
     }
-    data.cod_info2.big_values = i;
+    p_data->cod_info2.big_values = i;
 
-    data.cod_info2.count1table_select = 0;
+    p_data->cod_info2.count1table_select = 0;
     if (a1 > a2) {
         a1 = a2;
-        data.cod_info2.count1table_select = 1;
+        p_data->cod_info2.count1table_select = 1;
     }
 
-    data.cod_info2.count1bits = a1;
+    p_data->cod_info2.count1bits = a1;
 
-    if (data.cod_info2.block_type == NORM_TYPE)
-        recalc_divide_sub(gfc, &data.cod_info2, gi, ix, data.r01_bits, data.r01_div, data.r0_tbl, data.r1_tbl);
+    if (p_data->cod_info2.block_type == NORM_TYPE)
+        recalc_divide_sub(gfc, &p_data->cod_info2, gi, ix, p_data->r01_bits, p_data->r01_div, p_data->r0_tbl, p_data->r1_tbl);
     else {
         /* Count the number of bits necessary to code the bigvalues region. */
-        data.cod_info2.part2_3_length = a1;
+        p_data->cod_info2.part2_3_length = a1;
         a1 = gfc->scalefac_band.l[7 + 1];
         if (a1 > i) {
             a1 = i;
         }
         if (a1 > 0)
-            data.cod_info2.table_select[0] =
-                gfc->choose_table(ix, ix + a1, (int *) &data.cod_info2.part2_3_length);
+            p_data->cod_info2.table_select[0] =
+                gfc->choose_table(ix, ix + a1, (int *) &p_data->cod_info2.part2_3_length);
         if (i > a1)
-            data.cod_info2.table_select[1] =
-                gfc->choose_table(ix + a1, ix + i, (int *) &data.cod_info2.part2_3_length);
-        if (gi->part2_3_length > data.cod_info2.part2_3_length)
-            memcpy(gi, &data.cod_info2, sizeof(gr_info));
+            p_data->cod_info2.table_select[1] =
+                gfc->choose_table(ix + a1, ix + i, (int *) &p_data->cod_info2.part2_3_length);
+        if (gi->part2_3_length > p_data->cod_info2.part2_3_length)
+            memcpy(gi, &p_data->cod_info2, sizeof(gr_info));
     }
+#if USE_STACK_HACK
+    lame_free(p_data);
+#endif
+
 }
 
 static const int slen1_n[16] = { 1, 1, 1, 1, 8, 2, 2, 2, 4, 4, 4, 8, 8, 8, 16, 16 };

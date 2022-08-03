@@ -795,7 +795,7 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
     struct struct_attack *data = lame_calloc(struct struct_attack,1);
 #else
     struct struct_attack arrays;
-    struct struct_attack data = &arrays;
+    struct struct_attack *data = &arrays;
 #endif
     SessionConfig_t const *const cfg = &gfc->cfg;
     PsyStateVar_t *const psv = &gfc->sv_psy;
@@ -1887,11 +1887,6 @@ compute_bark_values(PsyConst_CB2SB_t const *gd, FLOAT sfreq, int fft_size,
 }
 
 
-
-struct struct_s3 {
-    FLOAT   s3[CBANDS][CBANDS];
-}; 
-
 static int
 init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
                FLOAT const *bval, FLOAT const *bval_width, FLOAT const *norm)
@@ -1899,11 +1894,11 @@ init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
     DEBUGF(gfc,__FUNCTION__);
 
 #if USE_STACK_HACK
-    struct struct_s3 *data = lame_calloc(struct struct_s3,1);
+    struct_s3 *data = lame_calloc(struct_s3, 1);
 #else
-    struct sturct_s3 arrays;
-    struct sturct_s3 *data = &arrays;
-    memset(&(data->s3[0][0]), 0, sizeof(data->s3));
+    struct_s3 tmp;
+    struct_s3 *data = &tmp;
+    memset(&(data->s3), 0, sizeof(data->s3));
 #endif
 
     /* The s3 array is not linear in the bark scale.

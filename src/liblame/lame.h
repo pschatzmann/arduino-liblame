@@ -1330,6 +1330,11 @@ CDECL void* debug_calloc(int count, int size);
 CDECL void debug_free(void*);
 CDECL int getFreeHeap();
 
+#ifdef ESP32
+extern int liblame_extmem_enable_limit;
+#endif
+
+
 #if defined(__cplusplus)
 }
 #endif

@@ -317,11 +317,6 @@ FFT's                    <---------1024---------->
 
 typedef FLOAT chgrdata[2][2];
 
-#if USE_STACK_HACK
-    III_psy_ratio masking_LR[2][2]; /*LR masking & energy */
-    III_psy_ratio masking_MS[2][2]; /*MS masking & energy */
-    const III_psy_ratio (*masking)[2]; /*pointer to selected maskings */
-#endif
 
 
 int
@@ -335,11 +330,23 @@ lame_encode_mp3_frame(       /* Output */
     DEBUGF(gfc,__FUNCTION__);
     SessionConfig_t const *const cfg = &gfc->cfg;
     int     mp3count;
-#if !USE_STACK_HACK
+#if USE_STACK_HACK
+    static III_psy_ratio (*p_masking_LR)[2][2] = NULL; // pointer to 2 dim array
+    static III_psy_ratio (*p_masking_MS)[2][2] = NULL; //
+    if (p_masking_LR==NULL){
+        p_masking_LR = (III_psy_ratio(*)[2][2]) lame_calloc(III_psy_ratio, 4);
+    }
+    if (p_masking_MS==NULL){
+        p_masking_MS = (III_psy_ratio(*)[2][2]) lame_calloc(III_psy_ratio, 4);
+    }
+
+#else
     III_psy_ratio masking_LR[2][2]; /*LR masking & energy */
     III_psy_ratio masking_MS[2][2]; /*MS masking & energy */
-    const III_psy_ratio (*masking)[2]; /*pointer to selected maskings */
+    III_psy_ratio (*p_masking_LR)[2][2] = &masking_LR; //[2]; /*LR masking & energy */
+    III_psy_ratio (*p_masking_MS)[2][2] = &p_masking_MS; //[2]; /*MS masking & energy */
 #endif
+    const III_psy_ratio (*masking)[2]; /*pointer to selected maskings */
     const sample_t *inbuf[2];
 
     FLOAT   tot_ener[2][4];
@@ -395,7 +402,7 @@ lame_encode_mp3_frame(       /* Output */
                 bufp[ch] = &inbuf[ch][576 + gr * 576 - FFTOFFSET];
             }
             ret = L3psycho_anal_vbr(gfc, bufp, gr,
-                                    masking_LR, masking_MS,
+                                    *p_masking_LR, *p_masking_MS,
                                     pe[gr], pe_MS[gr], tot_ener[gr], blocktype);
             if (ret != 0)
                 return -4;
@@ -475,11 +482,11 @@ lame_encode_mp3_frame(       /* Output */
 
     /* bit and noise allocation */
     if (gfc->ov_enc.mode_ext == MPG_MD_MS_LR) {
-        masking = (const III_psy_ratio (*)[2])masking_MS; /* use MS masking */
+        masking = (const III_psy_ratio (*)[2])*p_masking_MS; /* use MS masking */
         pe_use = pe_MS;
     }
     else {
-        masking = (const III_psy_ratio (*)[2])masking_LR; /* use LR masking */
+        masking = (const III_psy_ratio (*)[2])*p_masking_LR; /* use LR masking */
         pe_use = pe;
     }
 
