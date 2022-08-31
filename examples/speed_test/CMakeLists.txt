@@ -4,12 +4,6 @@ cmake_minimum_required(VERSION 3.16)
 project(lame-speed_test )
 include(FetchContent)
 
-# set (DCMAKE_CXX_FLAGS -Werror -Wall -Wextra)
-if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
-set (CMAKE_CXX_FLAGS_DEBUG "${CMAKE_CXX_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
-set (CMAKE_LINKER_FLAGS_DEBUG "${CMAKE_LINKER_FLAGS_DEBUG} -fno-omit-frame-pointer -fsanitize=address")
-endif()
-
 # Build with Linux Arduino Emulator
 FetchContent_Declare(arduino_emulator GIT_REPOSITORY "https://github.com/pschatzmann/Arduino-Emulator.git" GIT_TAG main )
 FetchContent_GetProperties(arduino_emulator)
