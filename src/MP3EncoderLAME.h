@@ -34,17 +34,17 @@ class MP3EncoderLAME {
 public:
   /// Empty Constructor: call setDataCallback or setStream to define how the
   /// result should be provided.
-  MP3EncoderLAME() { LOG_LAME(Debug, __FUNCTION__); }
+  MP3EncoderLAME() { LOG_LAME(LAMEDebug, __FUNCTION__); }
 
   /// Constructor which provides the decoded result in a callback
   MP3EncoderLAME(MP3CallbackFDK cb) {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     setDataCallback(cb);
   }
 
   /// Defines the callback which receives the encded MP3 data
   void setDataCallback(MP3CallbackFDK cb) {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     this->MP3Callback = cb;
   }
 
@@ -53,20 +53,20 @@ public:
   /// Constructor which makes sure that the decoded result is written to the
   /// indicatd Stream
   MP3EncoderLAME(Print &out_stream) {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     this->out = &out_stream;
   }
 
   /// Defines the output stream
   void setOutput(Print &out_stream) {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     this->out = &out_stream;
   }
 
 #endif
 
   ~MP3EncoderLAME() {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     end();
     // release buffers
     if (convert_buffer != nullptr)
@@ -79,7 +79,7 @@ public:
    * @brief Opens the encoder
    */
   void begin() {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     active = setup();
   }
 
@@ -90,7 +90,7 @@ public:
    * @return int
    */
   void begin(AudioInfo in) {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     setAudioInfo(in);
     active = setup();
   }
@@ -105,7 +105,7 @@ public:
    */
   void begin(int input_channels, int input_sample_rate,
              int input_bits_per_sample) {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     AudioInfo ai;
     ai.channels = input_channels;
     ai.sample_rate = input_sample_rate;
@@ -124,7 +124,7 @@ public:
   int32_t write(void *pcm_samples, int bytes) {
     int32_t result = 0;
     if (active) {
-      LOG_LAME(Debug, "write %d bytes", bytes);
+      LOG_LAME(LAMEDebug, "write %d bytes", bytes);
 
       // convert to required input format
       short *buffer = convertToShort(pcm_samples, bytes);
@@ -159,7 +159,7 @@ public:
 
   /// closes the processing and release resources
   void end() {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     lame_close(lame);
     lame = nullptr;
   }
@@ -185,7 +185,7 @@ protected:
 
   bool setupOutputBuffer(int size) {
     if (size > mp3_buffer_size) {
-      LOG_LAME(Debug, __FUNCTION__);
+      LOG_LAME(LAMEDebug, __FUNCTION__);
       if (mp3_buffer != nullptr)
         delete[] mp3_buffer;
       mp3_buffer = new uint8_t[size];
@@ -195,12 +195,12 @@ protected:
   }
 
   bool setup() {
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
     if (lame==nullptr){
       lame = lame_init();
     }
     if (lame == nullptr) {
-      LOG_LAME(Error, "lame_init failed");
+      LOG_LAME(LAMEError, "lame_init failed");
       return false;
     }
 
@@ -214,12 +214,12 @@ protected:
 
     int initRet = lame_init_params(lame);
     if (initRet < 0) {
-      LOG_LAME(Error, "lame_init_params\n");
+      LOG_LAME(LAMEError, "lame_init_params\n");
       return false;
     }
 
     info.frame_size = lame_get_framesize(lame);
-    LOG_LAME(Info, "Framesize = %d\n", info.frame_size);
+    LOG_LAME(LAMEInfo, "Framesize = %d\n", info.frame_size);
     return true;
   }
 
@@ -231,7 +231,7 @@ protected:
     }
 
     // if we got here conversion is required
-    LOG_LAME(Debug, __FUNCTION__);
+    LOG_LAME(LAMEDebug, __FUNCTION__);
 
     // allocate conversion buffer
     int samples = bytes / bytes_per_sample;
@@ -244,7 +244,7 @@ protected:
     }
 
     if (convert_buffer == nullptr) {
-      LOG_LAME(Error, "not enough memory to allocate conversion buffer - decrise "
+      LOG_LAME(LAMEError, "not enough memory to allocate conversion buffer - decrise "
                  "the size of written bytes!")
       lame_abort();
       return nullptr;
@@ -274,7 +274,7 @@ protected:
       return convert_buffer;
     }
     default:
-      LOG_LAME(Error, "Unsupported bits_per_sample: %d", info.bits_per_sample);
+      LOG_LAME(LAMEError, "Unsupported bits_per_sample: %d", info.bits_per_sample);
       return nullptr;
     }
   }
@@ -282,7 +282,7 @@ protected:
   /// return the result PWM data
   void provideResult(uint8_t *data, size_t bytes) {
     if (bytes > 0) {
-      LOG_LAME(Debug, "provideResult: %zu samples", bytes);
+      LOG_LAME(LAMEDebug, "provideResult: %zu samples", bytes);
       // provide result
       if (MP3Callback != nullptr) {
         // output via callback
