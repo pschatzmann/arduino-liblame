@@ -1,4 +1,5 @@
 # MP3 Encoding with LAME
+[![CMake](../../actions/workflows/ubuntu.yml/badge.svg)](../../actions/workflows/ubuntu.yml)
 
 [LAME](https://lame.sourceforge.io/about.php) is a open source implementation of a MP3 encoder.
 This project just reorganized the code to follow Arduino Library conventions, so that you can use it in Arduino and PlatformIO. 
@@ -8,7 +9,7 @@ I have also added a simple Arduino style C++ API which allows to output the resu
 ### API
 Here is an example Arduino sketch for encoding PCM data into MP3:
 
-```
+```C++
 #include "MP3EncoderLAME.h"
 #include <stdlib.h>  // for rand
 
@@ -49,7 +50,7 @@ void loop() {
 
 In Arduino, you can download the library as zip and call include Library -> zip library. Or you can git clone this project into the Arduino libraries folder e.g. with
 
-```
+```bash
 cd  ~/Documents/Arduino/libraries
 git clone pschatzmann/arduino-liblame.git
 
@@ -57,7 +58,7 @@ git clone pschatzmann/arduino-liblame.git
 
 This project can also be built and executed on your desktop with cmake:
 
-```
+```bash
 cd arduino-liblame
 mkdir build
 cd build
@@ -86,7 +87,7 @@ The initial restructured code was working prefectly with my [Arduino Simulator](
 
 So I needed to adjust the original code quite a bit. You can activate some micro processor specific functionaitly in config.h. 
 
-```
+```C++
 // use dynamically precalculated log table
 #define USE_FAST_LOG 0
 
