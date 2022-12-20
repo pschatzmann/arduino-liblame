@@ -26,7 +26,7 @@
 // recycle the memory. This will prevent memory fragmentation. Only use this if you are sure that the
 // encoder will be called from a single thread.
 #ifndef USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED
-#define USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED 0
+#define USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED 1
 #endif
 
 // Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
