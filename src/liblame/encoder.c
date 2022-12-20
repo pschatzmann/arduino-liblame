@@ -201,8 +201,15 @@ lame_encode_frame_init(lame_internal_flags * gfc, const sample_t *const inbuf[2]
 
     if (gfc->lame_encode_frame_init == 0) {
 #if USE_STACK_HACK
+#if USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED
+        if (primebuff0 == NULL)
+            primebuff0 = lame_calloc(sample_t, 286 + 1152 + 576);
+        if (primebuff1 == NULL)
+            primebuff1 = lame_calloc(sample_t, 286 + 1152 + 576);
+#else
         primebuff0 = lame_calloc(sample_t, 286 + 1152 + 576);
         primebuff1 = lame_calloc(sample_t, 286 + 1152 + 576);
+#endif
 #else
         sample_t primebuff0[286 + 1152 + 576];
         sample_t primebuff1[286 + 1152 + 576];
@@ -241,10 +248,15 @@ lame_encode_frame_init(lame_internal_flags * gfc, const sample_t *const inbuf[2]
 
 
 #if USE_STACK_HACK
+#if USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED
+        memset(primebuff0, 0, sizeof(sample_t) * (286 + 1152 + 576));
+        memset(primebuff1, 0, sizeof(sample_t) * (286 + 1152 + 576));
+#else
         lame_free(primebuff0);
         lame_free(primebuff1);
         primebuff1 = NULL;
         primebuff0 = NULL;
+#endif
 #endif
 
         /* check if we have enough data for FFT */
@@ -293,7 +305,7 @@ FFT's                    <---------1024---------->
     encoder acts on inbuf[ch][0], but output is delayed by MDCTDELAY
     so the MDCT coefficints are from inbuf[ch][-MDCTDELAY]
 
-    psy-model FFT has a 1 granule delay, so we feed it data for the 
+    psy-model FFT has a 1 granule delay, so we feed it data for the
     next granule.
     FFT is centered over granule:  224+576+224
     So FFT starts at:   576-224-MDCTDELAY
@@ -367,7 +379,7 @@ lame_encode_mp3_frame(       /* Output */
 
 
     /********************** padding *****************************/
-    /* padding method as described in 
+    /* padding method as described in
      * "MPEG-Layer3 / Bitstream Syntax and Decoding"
      * by Martin Sieler, Ralph Sperschneider
      *
@@ -500,7 +512,7 @@ lame_encode_mp3_frame(       /* Output */
                 gfc->pinfo->blocktype[gr][ch] = gfc->l3_side.tt[gr][ch].block_type;
                 gfc->pinfo->pe[gr][ch] = pe_use[gr][ch];
                 memcpy(gfc->pinfo->xr[gr][ch], &gfc->l3_side.tt[gr][ch].xr[0], sizeof(FLOAT) * 576);
-                /* in psymodel, LR and MS data was stored in pinfo.  
+                /* in psymodel, LR and MS data was stored in pinfo.
                    switch to MS data: */
                 if (gfc->ov_enc.mode_ext == MPG_MD_MS_LR) {
                     gfc->pinfo->ers[gr][ch] = gfc->pinfo->ers[gr][ch + 2];
