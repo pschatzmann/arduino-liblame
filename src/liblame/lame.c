@@ -2751,9 +2751,11 @@ void lame_abort(){
 void* debug_calloc(int count, int size){
     void* result=NULL;
 #ifdef ESP32
-    heap_caps_malloc_extmem_enable(liblame_extmem_enable_limit);
-    //result = heap_caps_calloc(count, size, MALLOC_CAP_8BIT);  // MALLOC_CAP_SPIRAM, MALLOC_CAP_32BIT, MALLOC_CAP_8BIT
-    result = calloc(count,size);
+    if ((count * size > ESP_PSRAM_ENABLE_LIMIT) && (ESP_PSRAM_ENABLE_LIMIT > 0)) {
+      result = ps_calloc(count, size); // use psram
+    } else {
+      result = calloc(count, size);
+    }
 #else
     result = calloc(count,size);
 #endif    
@@ -2786,11 +2788,5 @@ void debug_free(void* ptr){
 #endif
     free(ptr);
 }
-
-/// Support for ESP32 PSRAM. Memory > limit will be allocated in PSRAM
-#ifdef ESP32
-int liblame_extmem_enable_limit = 10000;
-#endif
-
 
 /* end of lame.c */

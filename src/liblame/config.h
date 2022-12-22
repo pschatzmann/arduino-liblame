@@ -29,6 +29,13 @@
 #define USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED 1
 #endif
 
+// If the device is ESP32 and ESP_PARAM_ENABLE_LIMIT is > 0, then the ESP32 will
+// be configured to use allocate any allocation above ESP_PARAM_ENABLE_LIMIT using
+// psram, rather than scarce main memory.
+#ifndef ESP_PARAM_ENABLE_LIMIT
+#define ESP_PARAM_ENABLE_LIMIT 10000
+#endif
+
 // Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
 #ifndef USE_LOGGING_HACK
 #define USE_LOGGING_HACK 1
@@ -43,7 +50,6 @@
 #ifndef USE_DEBUG_ALLOC
 #define USE_DEBUG_ALLOC 0
 #endif
-
 
 // ==> Standard Config
 
@@ -85,4 +91,3 @@
 
 // support for MMX instruction set from Intel
 #define HAVE_XMMINTRIN_H 0
-
