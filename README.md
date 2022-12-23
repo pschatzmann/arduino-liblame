@@ -97,15 +97,15 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 // Avoid big memory allocations in replaygain_data
 #define USE_MEMORY_HACK 1
 
-// If the device is ESP32 and ESP_PARAM_ENABLE_LIMIT is > 0, then the ESP32 will
-// be configured to use allocate any allocation above ESP_PARAM_ENABLE_LIMIT using
-// psram, rather than scarce main memory.
-#define ESP_PARAM_ENABLE_LIMIT 10000
-
 // If you know the encoder will be used in a single threaded environment, you can use this hack to just
 // recycle the memory. This will prevent memory fragmentation. Only use this if you are sure that the
 // encoder will be called from a single thread.
 #define USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED 1
+
+// If the device is ESP32 and ESP_PARAM_ENABLE_LIMIT is > 0, then the ESP32 will
+// be configured to use allocate any allocation above ESP_PARAM_ENABLE_LIMIT using
+// psram, rather than scarce main memory.
+#define ESP_PARAM_ENABLE_LIMIT 10000
 
 // Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
 #define USE_LOGGING_HACK 1
