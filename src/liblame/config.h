@@ -29,11 +29,11 @@
 #define USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED 1
 #endif
 
-// If the device is ESP32 and ESP_PARAM_ENABLE_LIMIT is > 0, then the ESP32 will
-// be configured to use allocate any allocation above ESP_PARAM_ENABLE_LIMIT using
+// If the device is ESP32 and ESP_PSRAM_ENABLE_LIMIT is > 0, then the ESP32 will
+// be configured to use allocate any allocation above ESP_PSRAM_ENABLE_LIMIT using
 // psram, rather than scarce main memory.
-#ifndef ESP_PARAM_ENABLE_LIMIT
-#define ESP_PARAM_ENABLE_LIMIT 10000
+#ifndef ESP_PSRAM_ENABLE_LIMIT
+#define ESP_PSRAM_ENABLE_LIMIT 10000
 #endif
 
 // Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
