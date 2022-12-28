@@ -62,6 +62,7 @@
 
 #ifdef ESP32 
 #include "esp_heap_caps.h"
+#include "esp32-hal-psram.h"
 #endif
 
 #define LAME_DEFAULT_QUALITY 3
