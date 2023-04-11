@@ -10,7 +10,7 @@
 #include "Arduino.h"
 #endif
 
-enum AllocType { A_FLOAT=1, A_INT=2, A_BYTE=3 };
+enum AllocType { A_FLOAT=1, A_INT=2, A_BYTE=3, A_FLOAT_32 };
 
 
 /**
@@ -81,7 +81,7 @@ class LameESP32HeapAllocator : public LameHeapBase {
       result = ps_calloc(count, size);  // use psram
     }
 
-    if (size==4 && type==A_INT) {
+    if (size==4 && (type==A_INT||type==A_FLOAT_32)) {
       method = "heap_caps_calloc(32)";
       result = heap_caps_calloc(count, size, MALLOC_CAP_32BIT);  // use psram
     }

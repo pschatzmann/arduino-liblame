@@ -25,6 +25,7 @@
 #include "config.h"
 #include "version.h"
 #include "heap.h"
+#include "float32.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -156,8 +157,14 @@ typedef float FLOAT8;
 # endif
 #endif
 
-/* sample_t must be floating point, at least 32 bits */
+// sample_t must be floating point, at least 32 bits 
 typedef FLOAT sample_t;
+// on the ESP32 we support 32 bit alligned arrays
+#ifdef ESP32
+typedef float32 FLOAT_A32;
+#else
+typedef FLOAT FLOAT_A32;
+#endif
 
 #define dimension_of(array) (sizeof(array)/sizeof(array[0]))
 #define beyond(array) (array+dimension_of(array))
