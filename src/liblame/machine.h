@@ -24,7 +24,7 @@
 
 #include "config.h"
 #include "version.h"
-
+#include "heap.h"
 #include <stdio.h>
 #include <assert.h>
 
@@ -142,7 +142,7 @@ typedef float FLOAT;
 #endif
 
 #ifndef FLOAT8
-typedef double FLOAT8;
+typedef float FLOAT8;
 # ifdef DBL_MAX
 #  define FLOAT8_MAX DBL_MAX
 # else
@@ -162,8 +162,10 @@ typedef FLOAT sample_t;
 #define dimension_of(array) (sizeof(array)/sizeof(array[0]))
 #define beyond(array) (array+dimension_of(array))
 #define compiletime_assert(expression) enum{static_assert_##FILE##_##LINE = 1/((expression)?1:0)}
-#define lame_calloc(TYPE, COUNT) ((TYPE*)debug_calloc(COUNT, sizeof(TYPE)))
-#define lame_free(PTR) debug_free(PTR)
+//#define lame_calloc(TYPE, COUNT) ((TYPE*)debug_calloc(COUNT, sizeof(TYPE)))
+//#define lame_free(PTR) debug_free(PTR)
+#define lame_calloc(TYPE, COUNT) ((TYPE*)lamex_calloc(COUNT, sizeof(TYPE),A_BYTE))
+#define lame_free(PTR) lamex_free(PTR)
 #define multiple_of(CHUNK, COUNT) (\
   ( (COUNT) < 1 || (CHUNK) < 1 || (COUNT) % (CHUNK) == 0 ) \
   ? (COUNT) \

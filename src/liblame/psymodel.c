@@ -1476,7 +1476,7 @@ int L3psycho_anal_vbr(lame_internal_flags * gfc,
 
 
 #if USE_STACK_HACK
-    struct struct_psycho_anal *data =  lame_calloc(struct struct_psycho_anal, 1);
+    struct struct_psycho_anal *data = (struct struct_psycho_anal *)  lamex_calloc(sizeof(struct struct_psycho_anal)/sizeof(float), sizeof(float), A_FLOAT);
 #else
     struct struct_psycho_anal arrays;
     struct struct_psycho_anal *data = &arrays;
@@ -1894,7 +1894,9 @@ init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
     DEBUGF(gfc,__FUNCTION__);
 
 #if USE_STACK_HACK
-    struct_s3 *data = lame_calloc(struct_s3, 1);
+    //struct_s3 *data = lame_calloc(struct_s3, 1);
+    struct_s3 *data = (struct_s3*)lamex_calloc(sizeof(struct_s3)/sizeof(float), sizeof(float), A_FLOAT);
+
 #else
     struct_s3 tmp;
     struct_s3 *data = &tmp;
@@ -1907,7 +1909,7 @@ init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
     int     i, j, k;
     int     numberOfNoneZero = 0;
 
-    memset(&data->s3[0][0], 0, sizeof(data->s3));
+    memset32(&data->s3[0][0], 0, sizeof(data->s3));
 
     /* s[i][j], the value of the spreading function,
      * centered at band j (masker), for band i (maskee)
@@ -1973,7 +1975,8 @@ psymodel_init(lame_global_flags const *gfp)
     FLOAT   snr_s_a = -8.25, snr_s_b = -4.5;
 
 #if USE_STACK_HACK
-    struct struct_psy *data = (struct struct_psy *) lame_calloc(struct struct_psy, 1);
+    //struct struct_psy *data = (struct struct_psy *) lame_calloc(struct struct_psy, 1);
+    struct struct_psy *data = (struct struct_psy *) lamex_calloc(sizeof(struct struct_psy)/sizeof(float), sizeof(float), A_FLOAT);
 #else
     struct struct_psy arrays;
     struct struct_psy *data = &arrays;

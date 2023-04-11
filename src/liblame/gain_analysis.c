@@ -251,7 +251,7 @@ ResetSampleFrequency(replaygain_t * rgData, long samplefreq)
     rgData->totsamp = 0;
 
 #if USE_MEMORY_HACK
-    memset(rgData->A, 0, rgData->size_A);
+    memset32(rgData->A, 0, rgData->size_A);
 #else
     memset(rgData->A, 0, sizeof(rgData->A));
 #endif
@@ -277,14 +277,18 @@ InitGainAnalysis(replaygain_t * rgData, long samplefreq)
 #if USE_MEMORY_HACK
     if (rgData->A==NULL){
         rgData->size_A = STEPS_per_dB * MAX_dB;
-        rgData->A = debug_calloc(1, rgData->size_A);
+        rgData->A = lamex_calloc(rgData->size_A/sizeof(uint32_t), sizeof(uint32_t), A_INT);
+        //rgData->A = debug_calloc(1, rgData->size_A);
+        assert(rgData->A!=NULL);
     }
 
     if (rgData->B==NULL){
         rgData->size_B = STEPS_per_dB * MAX_dB;
-        rgData->B = debug_calloc(1, rgData->size_B);
+        rgData->A = lamex_calloc(rgData->size_B/sizeof(uint32_t), sizeof(uint32_t), A_INT);
+        //rgData->B = debug_calloc(1, rgData->size_B);
+        assert(rgData->B!=NULL);
     } else {
-        memset(rgData->B, 0, rgData->size_B );
+        memset32(rgData->B, 0, rgData->size_B );
     }
 
     if (rgData->A==NULL || rgData->B==NULL){

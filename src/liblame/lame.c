@@ -2517,11 +2517,9 @@ lame_init_old(lame_global_flags * gfp)
 
     gfp->write_id3tag_automatic = 1;
 
-#if !(USE_LOGGING_HACK)
-    gfp->report.debugf = &lame_report_def;
-    gfp->report.errorf = &lame_report_def;
-    gfp->report.msgf = &lame_report_def;
-#endif
+    // gfp->report.debugf = &lame_report_def;
+    // gfp->report.errorf = &lame_report_def;
+    // gfp->report.msgf = &lame_report_def;
     gfp->internal_flags = lame_calloc(lame_internal_flags, 1);
 
     if (lame_init_internal_flags(gfp->internal_flags) < 0) {
@@ -2740,54 +2738,5 @@ lame_bitrate_block_type_hist(const lame_global_flags * gfp, int bitrate_btype_co
     }
 }
 
-void lame_abort(){
-#ifdef ARDUINO
-    // enless loop!
-    while(1);
-#else
-    exit(-1);
-#endif
-}
-
-void* debug_calloc(int count, int size){
-    void* result=NULL;
-#ifdef ESP32
-    if ((count * size > ESP_PSRAM_ENABLE_LIMIT) && (ESP_PSRAM_ENABLE_LIMIT > 0)) {
-      result = ps_calloc(count, size); // use psram
-    } else {
-      result = calloc(count, size);
-    }
-#else
-    result = calloc(count,size);
-#endif    
-
-    if (result!=NULL) {
-#if USE_DEBUG_ALLOC && ESP32
-        printf("==> calloc(%d,%d) -> %p - ", count, size, result);
-        printf(" available MALLOC_CAP_8BIT: %d", heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
-        printf(" / MALLOC_CAP_32BIT: %d ", heap_caps_get_largest_free_block(MALLOC_CAP_32BIT));
-        printf(" / MALLOC_CAP_SPIRAM: %d\n", heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM));
-#endif
-    } else {
-        lame_errorf(gfc, "calloc(%d,%d) -> %p ", count, size, result);
-#ifdef ESP32
-        printf("available MALLOC_CAP_8BIT: %d", heap_caps_get_largest_free_block(MALLOC_CAP_8BIT));
-        printf(" / MALLOC_CAP_32BIT: %d ", heap_caps_get_largest_free_block(MALLOC_CAP_32BIT));
-        printf(" / MALLOC_CAP_SPIRAM: %d\n", heap_caps_get_largest_free_block(MALLOC_CAP_SPIRAM));
-#endif
-        //assert(result!=NULL);  // -> generate 
-        lame_abort();
-    }
-
-    return result;
-}
-
-
-void debug_free(void* ptr){
-#if USE_DEBUG_ALLOC
-    printf("==> free (%p)\n",ptr);
-#endif
-    free(ptr);
-}
 
 /* end of lame.c */

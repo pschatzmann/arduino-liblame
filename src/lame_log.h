@@ -17,14 +17,18 @@
 #endif
 
 #ifndef LAME_LOG_LEVEL
-#define LAME_LOG_LEVEL LAMEInfo
+#  if USE_DEBUG
+#    define LAME_LOG_LEVEL LAMEDebug
+#  else
+#    define LAME_LOG_LEVEL LAMEInfo
+#  endif
 #endif
 
 // Logging Implementation
 #if LAME_LOGGING_ACTIVE == true
 
 enum LogLevelLame {LAMEDebug, LAMEInfo, LAMEWarning, LAMEError};
-static int LOGLEVEL_LAME = LAMEWarning;
+static int LOGLEVEL_LAME = LAME_LOG_LEVEL;
 
 static const char* levelName(LogLevelLame level) {
     switch(level){

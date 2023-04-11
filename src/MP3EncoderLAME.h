@@ -2,6 +2,7 @@
 
 #include "lame_log.h"
 #include "liblame/lame.h"
+#include "heap.h"
 #include <stdint.h>
 #include <unistd.h>
 
@@ -19,8 +20,13 @@ struct AudioInfo {
   int sample_rate = 16000;
   int channels = 1;
   int bits_per_sample = 16; // we assume int16_t
-  int quality = 7;          // 0..9.  0=best (very slow).  9=worst.
-  int frame_size = 0;       // determined by decoder
+  /// Provide the quality range 0..9.  0=best (very slow).  9=worst.
+  int quality = 7;          
+  /// Provides the frame size determined by decoder
+  int frame_size = 0;      
+  /// set the heap implementation logic
+  LameHeapBase *lame_heap=nullptr;
+
 };
 
 /**
@@ -115,7 +121,10 @@ public:
   }
 
   /// Defines the audio information
-  void setAudioInfo(AudioInfo in) { this->info = in; }
+  void setAudioInfo(AudioInfo in) { 
+    LOG_LAME(LAMEDebug, __FUNCTION__);
+    this->info = in; 
+  }
 
   /// Provides the audio information
   AudioInfo audioInfo() { return info; }
@@ -203,6 +212,9 @@ protected:
       LOG_LAME(LAMEError, "lame_init failed");
       return false;
     }
+
+    if(info.lame_heap!=nullptr)
+      set_lame_heap(info.lame_heap);
 
     lame_set_VBR(lame, vbr_default);
     lame_set_num_channels(lame, info.channels);

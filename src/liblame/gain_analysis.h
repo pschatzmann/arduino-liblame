@@ -41,7 +41,7 @@ extern  "C" {
 #endif
 
 
-    typedef sample_t Float_t; /* Type used for filtering */
+typedef sample_t Float_t; /* Type used for filtering */
 
 
 #define PINK_REF                64.82       /* 298640883795 */ /* calibration value for 89dB */

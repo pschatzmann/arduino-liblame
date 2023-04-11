@@ -36,20 +36,15 @@
 #define ESP_PSRAM_ENABLE_LIMIT 10000
 #endif
 
-// Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
-#ifndef USE_LOGGING_HACK
-#define USE_LOGGING_HACK 1
-#endif
-
 // Print debug messages
 #ifndef USE_DEBUG
-#define USE_DEBUG 0
+#define USE_DEBUG 1
 #endif
 
-// Print memory allocation
-#ifndef USE_DEBUG_ALLOC
-#define USE_DEBUG_ALLOC 0
-#endif
+
+// heap size for custom allocator
+#define LAME_HEAP_SIZE 175000
+
 
 // ==> Standard Config
 

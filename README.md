@@ -113,9 +113,6 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 // Print debug and trace messages
 #define USE_DEBUG 0
 
-// Print memory allocations and frees
-#define USE_DEBUG_ALLOC 0
-
 // The stack on microcontrollers is very limited - use the heap for big arrays instead of the stack! 
 #define USE_STACK_HACK 1
 ```
