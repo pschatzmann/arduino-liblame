@@ -1863,6 +1863,25 @@ enum PCMSampleType
 ,   pcm_double_type
 };
 
+    /* make a copy of input buffer, changing type to sample_t */
+template<typename T>
+static void COPY_AND_TRANSFORM(void const* l, void const* r, int nsamples, int jump, FLOAT m[][2], sample_t*ib0, sample_t* ib1 ) 
+{ 
+    T const *bl = (T const *)l, *br = (T const *) r; 
+    int     i; 
+    for (i = 0; i < nsamples; i++) { 
+        sample_t const xl = *bl; 
+        sample_t const xr = *br; 
+        sample_t const u = xl * m[0][0] + xr * m[0][1]; 
+        sample_t const v = xl * m[1][0] + xr * m[1][1]; 
+        ib0[i] = u; 
+        ib1[i] = v; 
+        bl += jump; 
+        br += jump; 
+    } 
+}
+
+
 static void
 lame_copy_inbuffer(lame_internal_flags* gfc, 
                    void const* l, void const* r, int nsamples,
@@ -1881,37 +1900,37 @@ lame_copy_inbuffer(lame_internal_flags* gfc,
     m[1][0] = s * cfg->pcm_transform[1][0];
     m[1][1] = s * cfg->pcm_transform[1][1];
 
-    /* make a copy of input buffer, changing type to sample_t */
-#define COPY_AND_TRANSFORM(T) \
-{ \
-    T const *bl = l, *br = r; \
-    int     i; \
-    for (i = 0; i < nsamples; i++) { \
-        sample_t const xl = *bl; \
-        sample_t const xr = *br; \
-        sample_t const u = xl * m[0][0] + xr * m[0][1]; \
-        sample_t const v = xl * m[1][0] + xr * m[1][1]; \
-        ib0[i] = u; \
-        ib1[i] = v; \
-        bl += jump; \
-        br += jump; \
-    } \
-}
+//     /* make a copy of input buffer, changing type to sample_t */
+// #define COPY_AND_TRANSFORM(T) \
+// { \
+//     T const *bl = l, *br = r; \
+//     int     i; \
+//     for (i = 0; i < nsamples; i++) { \
+//         sample_t const xl = *bl; \
+//         sample_t const xr = *br; \
+//         sample_t const u = xl * m[0][0] + xr * m[0][1]; \
+//         sample_t const v = xl * m[1][0] + xr * m[1][1]; \
+//         ib0[i] = u; \
+//         ib1[i] = v; \
+//         bl += jump; \
+//         br += jump; \
+//     } \
+// }
     switch ( pcm_type ) {
     case pcm_short_type: 
-        COPY_AND_TRANSFORM(short int);
+        COPY_AND_TRANSFORM<short int>(l,r,nsamples,jump, m, ib0, ib1);
         break;
     case pcm_int_type:
-        COPY_AND_TRANSFORM(int);
+        COPY_AND_TRANSFORM<int>(l,r,nsamples,jump, m, ib0, ib1);
         break;
     case pcm_long_type:
-        COPY_AND_TRANSFORM(long int);
+        COPY_AND_TRANSFORM<long int>(l,r,nsamples,jump, m, ib0, ib1);
         break;
     case pcm_float_type:
-        COPY_AND_TRANSFORM(float);
+        COPY_AND_TRANSFORM<float>(l,r,nsamples,jump, m, ib0, ib1);
         break;
     case pcm_double_type:
-        COPY_AND_TRANSFORM(double);
+        COPY_AND_TRANSFORM<double>(l,r,nsamples,jump, m, ib0, ib1);
         break;
     }
 }

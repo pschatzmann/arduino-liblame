@@ -38,7 +38,7 @@
 
 // Print debug messages
 #ifndef USE_DEBUG
-#define USE_DEBUG 1
+#define USE_DEBUG 0
 #endif
 
 

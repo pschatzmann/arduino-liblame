@@ -451,7 +451,7 @@ static int
 floatcompare(const void *v1, const void *v2)
 {
     DEBUGF(gfc,__FUNCTION__);
-    const FLOAT *const a = v1, *const b = v2;
+    const FLOAT *const a = (const FLOAT *) v1, *const b = (const FLOAT *) v2;
     if (*a > *b)
         return 1;
     if (*a < *b)

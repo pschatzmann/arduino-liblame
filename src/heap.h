@@ -1,14 +1,7 @@
 #pragma once
 #include <stdint.h>
-
-enum AllocType { A_FLOAT=1, A_INT=2, A_BYTE=3 };
-
-#ifdef __cplusplus
-
 #include <stdio.h>
-
 #include <vector>
-
 #include "lame.h"
 #include "lame_log.h"
 #include "liblame/config.h"
@@ -17,8 +10,8 @@ enum AllocType { A_FLOAT=1, A_INT=2, A_BYTE=3 };
 #include "Arduino.h"
 #endif
 
+enum AllocType { A_FLOAT=1, A_INT=2, A_BYTE=3 };
 
-extern "C" {
 
 /**
  * @brief Base Class for different memory allocation strategies
@@ -132,15 +125,8 @@ class LameESP32HeapAllocator : public LameHeapBase {
 #endif
 
 void set_lame_heap(LameHeapBase *heap);
-
-#endif
-
-
 void *lamex_calloc(int count, int size, int type);
 void lamex_free(void *mem);
 void lame_abort();
 void memset32(void *data, int value, int bytes);
 
-#ifdef __cplusplus
-}
-#endif

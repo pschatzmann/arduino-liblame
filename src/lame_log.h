@@ -20,7 +20,7 @@
 #  if USE_DEBUG
 #    define LAME_LOG_LEVEL LAMEDebug
 #  else
-#    define LAME_LOG_LEVEL LAMEInfo
+#    define LAME_LOG_LEVEL LAMEWarning
 #  endif
 #endif
 

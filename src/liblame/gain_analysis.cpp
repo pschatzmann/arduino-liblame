@@ -277,14 +277,14 @@ InitGainAnalysis(replaygain_t * rgData, long samplefreq)
 #if USE_MEMORY_HACK
     if (rgData->A==NULL){
         rgData->size_A = STEPS_per_dB * MAX_dB;
-        rgData->A = lamex_calloc(rgData->size_A/sizeof(uint32_t), sizeof(uint32_t), A_INT);
+        rgData->A = (uint32_t*) lamex_calloc(rgData->size_A/sizeof(uint32_t), sizeof(uint32_t), A_INT);
         //rgData->A = debug_calloc(1, rgData->size_A);
         assert(rgData->A!=NULL);
     }
 
     if (rgData->B==NULL){
         rgData->size_B = STEPS_per_dB * MAX_dB;
-        rgData->A = lamex_calloc(rgData->size_B/sizeof(uint32_t), sizeof(uint32_t), A_INT);
+        rgData->A = (uint32_t*) lamex_calloc(rgData->size_B/sizeof(uint32_t), sizeof(uint32_t), A_INT);
         //rgData->B = debug_calloc(1, rgData->size_B);
         assert(rgData->B!=NULL);
     } else {

@@ -6,7 +6,7 @@
 
 char log_msg[MAX_LOG_LEN];
 
-int lame_write(char const s[static 1]) {
+int lame_write(const char *s) {
     for (size_t i = 0; s[i]; ++i)
         if (putchar(s[i]) == EOF) return EOF;
     return 0;
