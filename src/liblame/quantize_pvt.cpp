@@ -171,7 +171,7 @@ const scalefac_struct sfBandIndex[9] = {
 
 FLOAT   pow20[Q_MAX + Q_MAX2 + 1];
 FLOAT   ipow20[Q_MAX];
-FLOAT   pow43[PRECALC_SIZE];
+FLOAT   pow43_lame[PRECALC_SIZE];
 /* initialized in first call to iteration_init */
 #if USE_HIRO_IEEE754_HACK
 FLOAT   adj43asm[PRECALC_SIZE];
@@ -348,17 +348,17 @@ iteration_init(lame_internal_flags * gfc)
         l3_side->main_data_begin = 0;
         compute_ath(gfc);
 
-        pow43[0] = 0.0;
+        pow43_lame[0] = 0.0;
         for (i = 1; i < PRECALC_SIZE; i++)
-            pow43[i] = pow((FLOAT) i, 4.0 / 3.0);
+            pow43_lame[i] = pow((FLOAT) i, 4.0 / 3.0);
 
 #if USE_HIRO_IEEE754_HACK
         adj43asm[0] = 0.0;
         for (i = 1; i < PRECALC_SIZE; i++)
-            adj43asm[i] = i - 0.5 - pow(0.5 * (pow43[i - 1] + pow43[i]), 0.75);
+            adj43asm[i] = i - 0.5 - pow(0.5 * (pow43_lame[i - 1] + pow43_lame[i]), 0.75);
 #else
         for (i = 0; i < PRECALC_SIZE - 1; i++)
-            adj43[i] = (i + 1) - pow(0.5 * (pow43[i] + pow43[i + 1]), 0.75);
+            adj43[i] = (i + 1) - pow(0.5 * (pow43_lame[i] + pow43_lame[i + 1]), 0.75);
         adj43[i] = 0.5;
 #endif
         for (i = 0; i < Q_MAX; i++)
@@ -783,10 +783,10 @@ calc_noise_core_c(const gr_info * const cod_info, int *startline, int l, FLOAT s
     else {
         while (l--) {
             FLOAT   temp;
-            temp = fabs(cod_info->xr[j]) - pow43[ix[j]] * step;
+            temp = fabs(cod_info->xr[j]) - pow43_lame[ix[j]] * step;
             j++;
             noise += temp * temp;
-            temp = fabs(cod_info->xr[j]) - pow43[ix[j]] * step;
+            temp = fabs(cod_info->xr[j]) - pow43_lame[ix[j]] * step;
             j++;
             noise += temp * temp;
         }

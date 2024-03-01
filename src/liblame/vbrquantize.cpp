@@ -234,10 +234,10 @@ calc_sfb_noise_x34(const FLOAT * xr, const FLOAT * xr34, unsigned int bw, uint8_
 
         k_34_4(x, l3);
 
-        x[0] = fabsf(xr[0]) - sfpow * pow43[l3[0]];
-        x[1] = fabsf(xr[1]) - sfpow * pow43[l3[1]];
-        x[2] = fabsf(xr[2]) - sfpow * pow43[l3[2]];
-        x[3] = fabsf(xr[3]) - sfpow * pow43[l3[3]];
+        x[0] = fabsf(xr[0]) - sfpow * pow43_lame[l3[0]];
+        x[1] = fabsf(xr[1]) - sfpow * pow43_lame[l3[1]];
+        x[2] = fabsf(xr[2]) - sfpow * pow43_lame[l3[2]];
+        x[3] = fabsf(xr[3]) - sfpow * pow43_lame[l3[3]];
         xfsf += (x[0] * x[0] + x[1] * x[1]) + (x[2] * x[2] + x[3] * x[3]);
 
         xr += 4;
@@ -255,9 +255,9 @@ calc_sfb_noise_x34(const FLOAT * xr, const FLOAT * xr34, unsigned int bw, uint8_
         x[0] = x[1] = x[2] = x[3] = 0;
 
         switch( remaining ) {
-        case 3: x[2] = fabsf(xr[2]) - sfpow * pow43[l3[2]];
-        case 2: x[1] = fabsf(xr[1]) - sfpow * pow43[l3[1]];
-        case 1: x[0] = fabsf(xr[0]) - sfpow * pow43[l3[0]];
+        case 3: x[2] = fabsf(xr[2]) - sfpow * pow43_lame[l3[2]];
+        case 2: x[1] = fabsf(xr[1]) - sfpow * pow43_lame[l3[1]];
+        case 1: x[0] = fabsf(xr[0]) - sfpow * pow43_lame[l3[0]];
         }
         xfsf += (x[0] * x[0] + x[1] * x[1]) + (x[2] * x[2] + x[3] * x[3]);
     }

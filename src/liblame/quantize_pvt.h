@@ -37,7 +37,7 @@ extern const int slen2_tab[16];
 
 extern const scalefac_struct sfBandIndex[9];
 
-extern FLOAT pow43[PRECALC_SIZE];
+extern FLOAT pow43_lame[PRECALC_SIZE];
 #if USE_HIRO_IEEE754_HACK
 extern FLOAT adj43asm[PRECALC_SIZE];
 #else
