@@ -244,8 +244,7 @@ protected:
     }
 
     if (convert_buffer == nullptr) {
-      LOG_LAME(LAMEError, "not enough memory to allocate conversion buffer - decrise "
-                 "the size of written bytes!")
+      LOG_LAME(LAMEError, "not enough memory to allocate conversion buffer");
       lame_abort();
       return nullptr;
     }
