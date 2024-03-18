@@ -94,7 +94,7 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 // use precalculated log table as const -> in the ESP32 this will end up in flash memory
 #define USE_FAST_LOG_CONST 1
 
-// Avoid big memory allocations in replaygain_data
+// Avoid big memory allocations in replaygain_data: with PSRAM this can be 0
 #define USE_MEMORY_HACK 1
 
 // If you know the encoder will be used in a single threaded environment, you can use this hack to just
@@ -105,7 +105,7 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 // If the device is ESP32 and ESP_PSRAM_ENABLE_LIMIT is > 0, then the ESP32 will
 // be configured to use allocate any allocation above ESP_PSRAM_ENABLE_LIMIT using
 // psram, rather than scarce main memory.
-#define ESP_PSRAM_ENABLE_LIMIT 10000
+#define ESP_PSRAM_ENABLE_LIMIT 1024
 
 // Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
 #define USE_LOGGING_HACK 1
@@ -120,3 +120,4 @@ So I needed to adjust the original code quite a bit. You can activate some micro
 #define USE_STACK_HACK 1
 ```
 
+ESP32 Arduino 2.0.x Releases are using a lot of static memory and you will need to set USE_MEMORY_HACK to 0 to be able to compile this library. 
