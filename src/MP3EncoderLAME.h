@@ -78,9 +78,10 @@ public:
   /**
    * @brief Opens the encoder
    */
-  void begin() {
+  bool begin() {
     LOG_LAME(LAMEDebug, __FUNCTION__);
     active = setup();
+    return active;
   }
 
   /**
@@ -89,10 +90,11 @@ public:
    * @param info
    * @return int
    */
-  void begin(AudioInfo in) {
+  bool begin(AudioInfo in) {
     LOG_LAME(LAMEDebug, __FUNCTION__);
     setAudioInfo(in);
     active = setup();
+    return active;
   }
 
   /**
