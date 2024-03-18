@@ -212,6 +212,7 @@ protected:
       lame_set_mode(lame, MONO);
     }
     lame_set_in_samplerate(lame, info.sample_rate);
+    //lame_set_out_samplerate(lame, info.sample_rate);
     lame_set_quality(lame, info.quality);
 
     int initRet = lame_init_params(lame);

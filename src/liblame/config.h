@@ -14,7 +14,7 @@
 
 // Avoid big memory allocations in replaygain_data
 #ifndef USE_MEMORY_HACK
-#define USE_MEMORY_HACK 1
+#define USE_MEMORY_HACK 0
 #endif
 
 // The stack on microcontrollers is very limited and we should avoid big objects on the stack in psymodel.c
@@ -33,7 +33,7 @@
 // be configured to use allocate any allocation above ESP_PSRAM_ENABLE_LIMIT using
 // psram, rather than scarce main memory.
 #ifndef ESP_PSRAM_ENABLE_LIMIT
-#define ESP_PSRAM_ENABLE_LIMIT 10000
+#define ESP_PSRAM_ENABLE_LIMIT 1024
 #endif
 
 // Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
