@@ -120,6 +120,12 @@
 #define SHORT_TYPE    2
 #define STOP_TYPE     3
 
+
+#if USE_STACK_HACK
+extern sample_t *primebuff0;
+extern sample_t *primebuff1;
+#endif
+
 /* 
  * Mode Extention:
  * When we are in stereo mode, there are 4 possible methods to store these

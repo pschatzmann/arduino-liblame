@@ -2326,6 +2326,18 @@ lame_close(lame_global_flags * gfp)
             lame_free(gquantp);
             gquantp = NULL;
         }
+
+#if USE_STACK_HACK
+        if (primebuff0){
+            lame_free(primebuff0);
+            primebuff0 = NULL;
+        }
+
+        if (primebuff1){
+            lame_free(primebuff1);
+            primebuff1 = NULL;
+        }
+#endif
     }
     return ret;
 }
