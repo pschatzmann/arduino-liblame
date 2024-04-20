@@ -1,5 +1,4 @@
 # MP3 Encoding with LAME
-[![CMake](../../actions/workflows/ubuntu.yml/badge.svg)](../../actions/workflows/ubuntu.yml)
 
 [LAME](https://lame.sourceforge.io/about.php) is a open source implementation of a MP3 encoder.
 This project just reorganized the code to follow Arduino Library conventions, so that you can use it in Arduino and PlatformIO. 
