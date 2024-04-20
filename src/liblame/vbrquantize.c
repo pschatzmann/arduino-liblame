@@ -100,7 +100,7 @@ typedef VOLATILE union {
  * if XRPOW_FTOI(x) = floor(x), then QUANTFAC(x)=asj43[x]
  *                                   ROUNDFAC=0.4054
  *********************************************************************/
-#  define QUANTFAC(rx)  adj43[rx]
+#  define QUANTFAC(rx)  gquantp->adj43[rx]
 #  define ROUNDFAC_def 0.4054f
 #  define XRPOW_FTOI(src,dest) ((dest) = (int)(src))
 #endif
@@ -152,7 +152,7 @@ find_lowest_scalefac(const FLOAT xr34)
     uint8_t i;
     FLOAT const ixmax_val = IXMAX_VAL;
     for (i = 0; i < 8; ++i) {
-        FLOAT const xfsf = ipow20[sf] * xr34;
+        FLOAT const xfsf = gquantp->ipow20[sf] * xr34;
         if (xfsf <= ixmax_val) {
             sf_ok = sf;
             sf -= delsf;
@@ -181,10 +181,10 @@ k_34_4(DOUBLEX x[4], int l3[4])
     fi[2].f = x[2];
     x[3] += MAGIC_FLOAT;
     fi[3].f = x[3];
-    fi[0].f = x[0] + adj43asm[fi[0].i - MAGIC_INT];
-    fi[1].f = x[1] + adj43asm[fi[1].i - MAGIC_INT];
-    fi[2].f = x[2] + adj43asm[fi[2].i - MAGIC_INT];
-    fi[3].f = x[3] + adj43asm[fi[3].i - MAGIC_INT];
+    fi[0].f = x[0] + gquantp->adj43asm[fi[0].i - MAGIC_INT];
+    fi[1].f = x[1] + gquantp->adj43asm[fi[1].i - MAGIC_INT];
+    fi[2].f = x[2] + gquantp->adj43asm[fi[2].i - MAGIC_INT];
+    fi[3].f = x[3] + gquantp->adj43asm[fi[3].i - MAGIC_INT];
     l3[0] = fi[0].i - MAGIC_INT;
     l3[1] = fi[1].i - MAGIC_INT;
     l3[2] = fi[2].i - MAGIC_INT;
@@ -219,8 +219,8 @@ calc_sfb_noise_x34(const FLOAT * xr, const FLOAT * xr34, unsigned int bw, uint8_
 {
     DOUBLEX x[4];
     int     l3[4];
-    const FLOAT sfpow = pow20[sf + Q_MAX2]; /*pow(2.0,sf/4.0); */
-    const FLOAT sfpow34 = ipow20[sf]; /*pow(sfpow,-3.0/4.0); */
+    const FLOAT sfpow = gquantp->pow20[sf + Q_MAX2]; /*pow(2.0,sf/4.0); */
+    const FLOAT sfpow34 = gquantp->ipow20[sf]; /*pow(sfpow,-3.0/4.0); */
 
     FLOAT   xfsf = 0;
     unsigned int i = bw >> 2u;
@@ -234,10 +234,10 @@ calc_sfb_noise_x34(const FLOAT * xr, const FLOAT * xr34, unsigned int bw, uint8_
 
         k_34_4(x, l3);
 
-        x[0] = fabsf(xr[0]) - sfpow * pow43[l3[0]];
-        x[1] = fabsf(xr[1]) - sfpow * pow43[l3[1]];
-        x[2] = fabsf(xr[2]) - sfpow * pow43[l3[2]];
-        x[3] = fabsf(xr[3]) - sfpow * pow43[l3[3]];
+        x[0] = fabsf(xr[0]) - sfpow * gquantp->pow43[l3[0]];
+        x[1] = fabsf(xr[1]) - sfpow * gquantp->pow43[l3[1]];
+        x[2] = fabsf(xr[2]) - sfpow * gquantp->pow43[l3[2]];
+        x[3] = fabsf(xr[3]) - sfpow * gquantp->pow43[l3[3]];
         xfsf += (x[0] * x[0] + x[1] * x[1]) + (x[2] * x[2] + x[3] * x[3]);
 
         xr += 4;
@@ -255,9 +255,9 @@ calc_sfb_noise_x34(const FLOAT * xr, const FLOAT * xr34, unsigned int bw, uint8_
         x[0] = x[1] = x[2] = x[3] = 0;
 
         switch( remaining ) {
-        case 3: x[2] = fabsf(xr[2]) - sfpow * pow43[l3[2]];
-        case 2: x[1] = fabsf(xr[1]) - sfpow * pow43[l3[1]];
-        case 1: x[0] = fabsf(xr[0]) - sfpow * pow43[l3[0]];
+        case 3: x[2] = fabsf(xr[2]) - sfpow * gquantp->pow43[l3[2]];
+        case 2: x[1] = fabsf(xr[1]) - sfpow * gquantp->pow43[l3[1]];
+        case 1: x[0] = fabsf(xr[0]) - sfpow * gquantp->pow43[l3[0]];
         }
         xfsf += (x[0] * x[0] + x[1] * x[1]) + (x[2] * x[2] + x[3] * x[3]);
     }
@@ -516,7 +516,7 @@ quantize_x34(const algo_t * that)
             (cod_info->scalefac[sfb] + (cod_info->preflag ? pretab[sfb] : 0)) * ifqstep
             + cod_info->subblock_gain[cod_info->window[sfb]] * 8;
         uint8_t const sfac = (uint8_t) (cod_info->global_gain - s);
-        FLOAT const sfpow34 = ipow20[sfac];
+        FLOAT const sfpow34 = gquantp->ipow20[sfac];
         unsigned int const w = (unsigned int) cod_info->width[sfb];
         unsigned int const m = (unsigned int) (max_nonzero_coeff - j + 1);
         unsigned int i, remaining;

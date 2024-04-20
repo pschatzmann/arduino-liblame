@@ -2321,6 +2321,11 @@ lame_close(lame_global_flags * gfp)
             gfp->lame_allocated_gfp = 0;
             lame_free(gfp);
         }
+        // power for quantizize
+        if (gquantp){
+            lame_free(gquantp);
+            gquantp = NULL;
+        }
     }
     return ret;
 }
@@ -2552,6 +2557,13 @@ lame_init(void)
     if (ret != 0) {
         ERRORF(gfc, "lame_init_old failed\n");
         lame_free(gfp);
+        return NULL;
+    }
+
+    // initialze power for quantizie
+    gquantp = lame_calloc(quant_t, 1);
+    if (gquantp == NULL){
+        ERRORF(gfc, "lame_global_flags failed\n");
         return NULL;
     }
 

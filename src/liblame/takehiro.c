@@ -169,10 +169,10 @@ quantize_lines_xrpow(unsigned int l, FLOAT istep, const FLOAT * xp, int *pi)
         x3 += MAGIC_FLOAT;
         fi[3].f = x3;
 
-        fi[0].f = x0 + adj43asm[fi[0].i - MAGIC_INT];
-        fi[1].f = x1 + adj43asm[fi[1].i - MAGIC_INT];
-        fi[2].f = x2 + adj43asm[fi[2].i - MAGIC_INT];
-        fi[3].f = x3 + adj43asm[fi[3].i - MAGIC_INT];
+        fi[0].f = x0 + gquantp->adj43asm[fi[0].i - MAGIC_INT];
+        fi[1].f = x1 + gquantp->adj43asm[fi[1].i - MAGIC_INT];
+        fi[2].f = x2 + gquantp->adj43asm[fi[2].i - MAGIC_INT];
+        fi[3].f = x3 + gquantp->adj43asm[fi[3].i - MAGIC_INT];
 
         fi[0].i -= MAGIC_INT;
         fi[1].i -= MAGIC_INT;
@@ -190,8 +190,8 @@ quantize_lines_xrpow(unsigned int l, FLOAT istep, const FLOAT * xp, int *pi)
         x1 += MAGIC_FLOAT;
         fi[1].f = x1;
 
-        fi[0].f = x0 + adj43asm[fi[0].i - MAGIC_INT];
-        fi[1].f = x1 + adj43asm[fi[1].i - MAGIC_INT];
+        fi[0].f = x0 + gquantp->adj43asm[fi[0].i - MAGIC_INT];
+        fi[1].f = x1 + gquantp->adj43asm[fi[1].i - MAGIC_INT];
 
         fi[0].i -= MAGIC_INT;
         fi[1].i -= MAGIC_INT;
@@ -204,7 +204,7 @@ quantize_lines_xrpow(unsigned int l, FLOAT istep, const FLOAT * xp, int *pi)
 
 /*********************************************************************
  * XRPOW_FTOI is a macro to convert floats to ints.  
- * if XRPOW_FTOI(x) = nearest_int(x), then QUANTFAC(x)=adj43asm[x]
+ * if XRPOW_FTOI(x) = nearest_int(x), then QUANTFAC(x)=gquantp->adj43asm[x]
  *                                         ROUNDFAC= -0.0946
  *
  * if XRPOW_FTOI(x) = floor(x), then QUANTFAC(x)=asj43[x]   
@@ -215,7 +215,7 @@ quantize_lines_xrpow(unsigned int l, FLOAT istep, const FLOAT * xp, int *pi)
  * to write some ASM for XRPOW_FTOI().  
  *********************************************************************/
 #define XRPOW_FTOI(src,dest) ((dest) = (int)(src))
-#define QUANTFAC(rx)  adj43[rx]
+#define QUANTFAC(rx)  gquantp->adj43[rx]
 #define ROUNDFAC 0.4054
 
 

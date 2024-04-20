@@ -165,19 +165,19 @@ const scalefac_struct sfBandIndex[9] = {
      , {0, 0, 0, 0, 0, 0, 0} /*  sfb12 pseudo sub bands */
      }
 };
+// /* FIXME: move global variables in some struct */
 
+// FLOAT   pow20[Q_MAX + Q_MAX2 + 1];
+// FLOAT   ipow20[Q_MAX];
+// FLOAT   pow43[PRECALC_SIZE];
+// /* initialized in first call to iteration_init */
+// #if USE_HIRO_IEEE754_HACK
+// FLOAT   adj43asm[PRECALC_SIZE];
+// #else
+// FLOAT   adj43[PRECALC_SIZE];
+// #endif
 
-/* FIXME: move global variables in some struct */
-
-FLOAT   pow20[Q_MAX + Q_MAX2 + 1];
-FLOAT   ipow20[Q_MAX];
-FLOAT   pow43[PRECALC_SIZE];
-/* initialized in first call to iteration_init */
-#if USE_HIRO_IEEE754_HACK
-FLOAT   adj43asm[PRECALC_SIZE];
-#else
-FLOAT   adj43[PRECALC_SIZE];
-#endif
+quant_t *gquantp = NULL;
 
 /* 
 compute the ATH for each scalefactor band 
@@ -348,23 +348,23 @@ iteration_init(lame_internal_flags * gfc)
         l3_side->main_data_begin = 0;
         compute_ath(gfc);
 
-        pow43[0] = 0.0;
+        gquantp->pow43[0] = 0.0;
         for (i = 1; i < PRECALC_SIZE; i++)
-            pow43[i] = pow((FLOAT) i, 4.0 / 3.0);
+            gquantp->pow43[i] = pow((FLOAT) i, 4.0 / 3.0);
 
 #if USE_HIRO_IEEE754_HACK
-        adj43asm[0] = 0.0;
+        gquantp->adj43asm[0] = 0.0;
         for (i = 1; i < PRECALC_SIZE; i++)
-            adj43asm[i] = i - 0.5 - pow(0.5 * (pow43[i - 1] + pow43[i]), 0.75);
+            gquantp->adj43asm[i] = i - 0.5 - pow(0.5 * (gquantp->pow43[i - 1] + gquantp->pow43[i]), 0.75);
 #else
         for (i = 0; i < PRECALC_SIZE - 1; i++)
-            adj43[i] = (i + 1) - pow(0.5 * (pow43[i] + pow43[i + 1]), 0.75);
-        adj43[i] = 0.5;
+            gquantp->adj43[i] = (i + 1) - pow(0.5 * (gquantp->pow43[i] + gquantp->pow43[i + 1]), 0.75);
+        gquantp->adj43[i] = 0.5;
 #endif
         for (i = 0; i < Q_MAX; i++)
-            ipow20[i] = pow(2.0, (double) (i - 210) * -0.1875);
+            gquantp->ipow20[i] = pow(2.0, (double) (i - 210) * -0.1875);
         for (i = 0; i <= Q_MAX + Q_MAX2; i++)
-            pow20[i] = pow(2.0, (double) (i - 210 - Q_MAX2) * 0.25);
+            gquantp->pow20[i] = pow(2.0, (double) (i - 210 - Q_MAX2) * 0.25);
 
         huffman_init(gfc);
         init_xrpow_core_init(gfc);
@@ -783,10 +783,10 @@ calc_noise_core_c(const gr_info * const cod_info, int *startline, int l, FLOAT s
     else {
         while (l--) {
             FLOAT   temp;
-            temp = fabs(cod_info->xr[j]) - pow43[ix[j]] * step;
+            temp = fabs(cod_info->xr[j]) - gquantp->pow43[ix[j]] * step;
             j++;
             noise += temp * temp;
-            temp = fabs(cod_info->xr[j]) - pow43[ix[j]] * step;
+            temp = fabs(cod_info->xr[j]) - gquantp->pow43[ix[j]] * step;
             j++;
             noise += temp * temp;
         }

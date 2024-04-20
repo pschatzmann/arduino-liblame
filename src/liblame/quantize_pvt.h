@@ -37,12 +37,13 @@ extern const int slen2_tab[16];
 
 extern const scalefac_struct sfBandIndex[9];
 
-extern FLOAT pow43[PRECALC_SIZE];
-#if USE_HIRO_IEEE754_HACK
-extern FLOAT adj43asm[PRECALC_SIZE];
-#else
-extern FLOAT adj43[PRECALC_SIZE];
-#endif
+// extern FLOAT gquantp->pow43[PRECALC_SIZE];
+// #if USE_HIRO_IEEE754_HACK
+// extern FLOAT gquantp->adj43asm[PRECALC_SIZE];
+// #else
+// extern FLOAT gquantp->adj43[PRECALC_SIZE];
+// #endif
+/* FIXME: move global variables in some struct */
 
 #define Q_MAX (256+1)
 #define Q_MAX2 116      /* minimum possible number of
@@ -55,8 +56,8 @@ extern FLOAT adj43[PRECALC_SIZE];
                            for short block, 0+(15<<2)+7*8 = 15*4+56 = 116
                          */
 
-extern FLOAT pow20[Q_MAX + Q_MAX2 + 1];
-extern FLOAT ipow20[Q_MAX];
+// extern FLOAT gquantp->pow20[Q_MAX + Q_MAX2 + 1];
+// extern FLOAT gquantp->igquantp->pow20[Q_MAX];
 
 typedef struct calc_noise_result_t {
     FLOAT   over_noise;      /* sum of quantization noise > masking */
@@ -79,6 +80,20 @@ typedef struct calc_noise_data_t {
     FLOAT   noise[39];
     FLOAT   noise_log[39];
 } calc_noise_data;
+
+typedef struct  {
+    FLOAT   pow20[Q_MAX + Q_MAX2 + 1];
+    FLOAT   ipow20[Q_MAX];
+    FLOAT   pow43[PRECALC_SIZE];
+    /* initialized in first call to iteration_init */
+    #if USE_HIRO_IEEE754_HACK
+    FLOAT   adj43asm[PRECALC_SIZE];
+    #else
+    FLOAT   adj43[PRECALC_SIZE];
+    #endif
+} quant_t;
+
+extern quant_t *gquantp;
 
 
 int     on_pe(lame_internal_flags * gfc, const FLOAT pe[2][2],
