@@ -1524,7 +1524,7 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
     EncResult_t *const eov = &gfc->ov_enc;
 
 #if USE_STACK_HACK 
-    struct struct_VBR_iteration_loop *data = (struct struct_VBR_iteration_loop*) lame_calloc(struct struct_VBR_iteration_loop, 1);
+    struct struct_VBR_iteration_loop *data = (struct struct_VBR_iteration_loop*) stackhack_alloc(sizeof(struct struct_VBR_iteration_loop));
 #else
     struct struct_VBR_iteration_loop loop;
     struct struct_VBR_iteration_loop *data = &loop;
@@ -1611,7 +1611,7 @@ VBR_old_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
     ResvFrameEnd(gfc, mean_bits);
 
 #if USE_STACK_HACK 
-    lame_free(data);
+    stackhack_free(data);
 #endif
 }
 
@@ -1688,7 +1688,7 @@ VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
     SessionConfig_t const *const cfg = &gfc->cfg;
     EncResult_t *const eov = &gfc->ov_enc;
 #if USE_STACK_HACK 
-    struct struct_VBR_iteration_loop *data = (struct struct_VBR_iteration_loop*) lame_calloc(struct struct_VBR_iteration_loop, 1);
+    struct struct_VBR_iteration_loop *data = (struct struct_VBR_iteration_loop*) stackhack_alloc(sizeof(struct struct_VBR_iteration_loop));
 #else
     struct struct_VBR_iteration_loop loop_data;
     struct struct_VBR_iteration_loop *data = &loop_data;
@@ -1792,7 +1792,7 @@ VBR_new_iteration_loop(lame_internal_flags * gfc, const FLOAT pe[2][2],
         lame_abort();
     }
 #if USE_STACK_HACK 
-    lame_free(data);
+    stackhack_free(data);
 #endif
 }
 

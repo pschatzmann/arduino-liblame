@@ -792,7 +792,7 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
 {
     DEBUGF(gfc,__FUNCTION__);
 #if USE_STACK_HACK
-    struct struct_attack *data = lame_calloc(struct struct_attack,1);
+    struct struct_attack *data = (struct struct_attack*) stackhack_alloc(sizeof(struct struct_attack));
 #else
     struct struct_attack arrays;
     struct struct_attack *data = &arrays;
@@ -973,7 +973,7 @@ vbrpsy_attack_detection(lame_internal_flags * gfc, const sample_t * const buffer
     }
 
 #if USE_STACK_HACK
-    lame_free(data);
+    stackhack_free(data);
 #endif
 
 }
@@ -1476,7 +1476,7 @@ int L3psycho_anal_vbr(lame_internal_flags * gfc,
 
 
 #if USE_STACK_HACK
-    struct struct_psycho_anal *data =  lame_calloc(struct struct_psycho_anal, 1);
+    struct struct_psycho_anal *data =  stackhack_alloc(sizeof(struct struct_psycho_anal));
 #else
     struct struct_psycho_anal arrays;
     struct struct_psycho_anal *data = &arrays;
@@ -1656,7 +1656,7 @@ int L3psycho_anal_vbr(lame_internal_flags * gfc,
     }
 
 #if USE_STACK_HACK
-    lame_free(data);
+    stackhack_free(data);
 #endif
     return 0;
 }
@@ -1894,7 +1894,7 @@ init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
     DEBUGF(gfc,__FUNCTION__);
 
 #if USE_STACK_HACK
-    struct_s3 *data = lame_calloc(struct_s3, 1);
+    struct_s3 *data = (struct_s3 *) stackhack_alloc(sizeof(struct_s3));
 #else
     struct_s3 tmp;
     struct_s3 *data = &tmp;
@@ -1945,7 +1945,7 @@ init_s3_values(FLOAT ** p, int (*s3ind)[2], int npart,
             (*p)[k++] = data->s3[i][j];
 
 #if USE_STACK_HACK
-    lame_free(data);
+    stackhack_free(data);
 #endif
 
     return 0;
@@ -1973,7 +1973,7 @@ psymodel_init(lame_global_flags const *gfp)
     FLOAT   snr_s_a = -8.25, snr_s_b = -4.5;
 
 #if USE_STACK_HACK
-    struct struct_psy *data = (struct struct_psy *) lame_calloc(struct struct_psy, 1);
+    struct struct_psy *data = (struct struct_psy *) stackhack_alloc(sizeof(struct struct_psy));
 #else
     struct struct_psy arrays;
     struct struct_psy *data = &arrays;
@@ -2044,7 +2044,7 @@ psymodel_init(lame_global_flags const *gfp)
     i = init_s3_values(&gd->l.s3, gd->l.s3ind, gd->l.npart, data->bval, data->bval_width, data->norm);
     if (i) {
         #if USE_STACK_HACK
-            lame_free(data);
+            stackhack_free(data);
         #endif
         return i;
     }
@@ -2147,7 +2147,7 @@ psymodel_init(lame_global_flags const *gfp)
     i = init_s3_values(&gd->s.s3, gd->s.s3ind, gd->s.npart, data->bval, data->bval_width, data->norm);
     if (i) {
         #if USE_STACK_HACK
-            lame_free(data);
+            stackhack_free(data);
         #endif
         return i;
     }
@@ -2263,7 +2263,7 @@ psymodel_init(lame_global_flags const *gfp)
     init_numline(&gd->l_to_s, sfreq, BLKSIZE, 192, SBMAX_s, gfc->scalefac_band.s);
 
 #if USE_STACK_HACK
-    lame_free(data);
+    stackhack_free(data);
 #endif
 
     return 0;

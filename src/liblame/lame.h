@@ -29,6 +29,8 @@
 #include <stddef.h>
 /* for va_list typedef */
 #include <stdarg.h>
+// stack hack
+#include "stackhack.h"
 
 #if HAVE_STRING_H
 #include <string.h>

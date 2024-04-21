@@ -893,7 +893,7 @@ best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
 {
     SessionConfig_t const *const cfg = &gfc->cfg;
 #if USE_STACK_HACK 
-    struct struct_best_huffman_divide *p_data = lame_calloc(struct struct_best_huffman_divide, 1);
+    struct struct_best_huffman_divide *p_data = (struct struct_best_huffman_divide*) stackhack_alloc(sizeof(struct struct_best_huffman_divide));
 #else
     struct struct_best_huffman_divide data;
     struct struct_best_huffman_divide *p_data = &data;
@@ -904,7 +904,7 @@ best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
     /* SHORT BLOCK stuff fails for MPEG2 */
     if (gi->block_type == SHORT_TYPE && cfg->mode_gr == 1){
         #if USE_STACK_HACK
-            lame_free(p_data);
+            stackhack_free(p_data);
         #endif
         return;
     }
@@ -919,7 +919,7 @@ best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
     i = p_data->cod_info2.big_values;
     if (i == 0 || (unsigned int) (ix[i - 2] | ix[i - 1]) > 1){
         #if USE_STACK_HACK
-            lame_free(p_data);
+            stackhack_free(p_data);
         #endif
         return;
     }
@@ -927,7 +927,7 @@ best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
     i = gi->count1 + 2;
     if (i > 576) {
         #if USE_STACK_HACK
-            lame_free(p_data);
+            stackhack_free(p_data);
         #endif
         return;
     }   
@@ -973,7 +973,7 @@ best_huffman_divide(const lame_internal_flags * const gfc, gr_info * const gi)
             memcpy(gi, &p_data->cod_info2, sizeof(gr_info));
     }
 #if USE_STACK_HACK
-    lame_free(p_data);
+    stackhack_free(p_data);
 #endif
 
 }

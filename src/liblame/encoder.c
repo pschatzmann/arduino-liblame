@@ -201,15 +201,8 @@ lame_encode_frame_init(lame_internal_flags * gfc, const sample_t *const inbuf[2]
 
     if (gfc->lame_encode_frame_init == 0) {
 #if USE_STACK_HACK
-#if USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED
-        if (primebuff0 == NULL)
-            primebuff0 = lame_calloc(sample_t, 286 + 1152 + 576);
-        if (primebuff1 == NULL)
-            primebuff1 = lame_calloc(sample_t, 286 + 1152 + 576);
-#else
-        primebuff0 = lame_calloc(sample_t, 286 + 1152 + 576);
-        primebuff1 = lame_calloc(sample_t, 286 + 1152 + 576);
-#endif
+        primebuff0 = stackhack_alloc(sizeof(sample_t) * (286 + 1152 + 576));
+        primebuff1 = stackhack_alloc(sizeof(sample_t) * (286 + 1152 + 576));
 #else
         sample_t primebuff0[286 + 1152 + 576];
         sample_t primebuff1[286 + 1152 + 576];
@@ -248,15 +241,10 @@ lame_encode_frame_init(lame_internal_flags * gfc, const sample_t *const inbuf[2]
 
 
 #if USE_STACK_HACK
-#if USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED
-        memset(primebuff0, 0, sizeof(sample_t) * (286 + 1152 + 576));
-        memset(primebuff1, 0, sizeof(sample_t) * (286 + 1152 + 576));
-#else
-        lame_free(primebuff0);
-        lame_free(primebuff1);
+        stackhack_free(primebuff0);
+        stackhack_free(primebuff1);
         primebuff1 = NULL;
         primebuff0 = NULL;
-#endif
 #endif
 
         /* check if we have enough data for FFT */
@@ -346,10 +334,10 @@ lame_encode_mp3_frame(       /* Output */
     static III_psy_ratio (*p_masking_LR)[2][2] = NULL; // pointer to 2 dim array
     static III_psy_ratio (*p_masking_MS)[2][2] = NULL; //
     if (p_masking_LR==NULL){
-        p_masking_LR = (III_psy_ratio(*)[2][2]) lame_calloc(III_psy_ratio, 4);
+        p_masking_LR = (III_psy_ratio(*)[2][2]) stackhack_alloc(sizeof(III_psy_ratio)* 4);
     }
     if (p_masking_MS==NULL){
-        p_masking_MS = (III_psy_ratio(*)[2][2]) lame_calloc(III_psy_ratio, 4);
+        p_masking_MS = (III_psy_ratio(*)[2][2]) stackhack_alloc(sizeof(III_psy_ratio)* 4);
     }
 
 #else

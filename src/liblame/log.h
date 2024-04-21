@@ -1,4 +1,5 @@
 #pragma once
+#include <stdio.h>
 #include "config.h"
 #define MAX_LOG_LEN 512
 #ifdef __cplusplus

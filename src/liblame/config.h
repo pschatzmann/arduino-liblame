@@ -4,51 +4,49 @@
 
 // use precalculated log table
 #ifndef USE_FAST_LOG
-#define USE_FAST_LOG 1
+#  define USE_FAST_LOG 1
 #endif
 
 // use precalculated log table as const -> in the ESP32 this will end up in flash memory
 #ifndef USE_FAST_LOG_CONST
-#define USE_FAST_LOG_CONST 1
+#  define USE_FAST_LOG_CONST 1
 #endif
 
 // Avoid big memory allocations in replaygain_data
 #ifndef USE_MEMORY_HACK
-#define USE_MEMORY_HACK 0
+#  define USE_MEMORY_HACK 0
 #endif
 
 // The stack on microcontrollers is very limited and we should avoid big objects on the stack in psymodel.c
 #ifndef USE_STACK_HACK
-#define USE_STACK_HACK 1
+#  define USE_STACK_HACK 1
 #endif
 
-// If you know the encoder will be used in a single threaded environment, you can use this hack to just
-// recycle the memory. This will prevent memory fragmentation. Only use this if you are sure that the
-// encoder will be called from a single thread.
-#ifndef USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED
-#define USE_STACK_HACK_RECYCLE_ALLOCATION_SINGLE_THREADED 1
+// Defines the memory size which is allocated for the stack
+#ifndef STACKHACK_SIZE
+#  define STACKHACK_SIZE 1024 * 30
 #endif
 
 // If the device is ESP32 and ESP_PSRAM_ENABLE_LIMIT is > 0, then the ESP32 will
 // be configured to use allocate any allocation above ESP_PSRAM_ENABLE_LIMIT using
 // psram, rather than scarce main memory.
 #ifndef ESP_PSRAM_ENABLE_LIMIT
-#define ESP_PSRAM_ENABLE_LIMIT 1024
+#  define ESP_PSRAM_ENABLE_LIMIT 1024
 #endif
 
 // Not all microcontroller support vararg methods: alternative impelemtation of logging using the preprocessor
 #ifndef USE_LOGGING_HACK
-#define USE_LOGGING_HACK 1
+#  define USE_LOGGING_HACK 1
 #endif
 
 // Print debug messages
 #ifndef USE_DEBUG
-#define USE_DEBUG 0
+#  define USE_DEBUG 0
 #endif
 
 // Print memory allocation
 #ifndef USE_DEBUG_ALLOC
-#define USE_DEBUG_ALLOC 0
+#  define USE_DEBUG_ALLOC 0
 #endif
 
 // ==> Standard Config

@@ -2328,15 +2328,7 @@ lame_close(lame_global_flags * gfp)
         }
 
 #if USE_STACK_HACK
-        if (primebuff0){
-            lame_free(primebuff0);
-            primebuff0 = NULL;
-        }
-
-        if (primebuff1){
-            lame_free(primebuff1);
-            primebuff1 = NULL;
-        }
+        stackhack_end();
 #endif
     }
     return ret;
@@ -2578,6 +2570,10 @@ lame_init(void)
         ERRORF(gfc, "lame_global_flags failed\n");
         return NULL;
     }
+
+#if USE_STACK_HACK
+    stackhack_setup(STACKHACK_SIZE);
+#endif
 
     gfp->lame_allocated_gfp = 1;
     MSGF(gfc,"lame_init - success")
