@@ -38,10 +38,14 @@
 # include <machine/floatingpoint.h>
 #endif
 
-// Ugliy hack to get rid of linker error 
+// Ugly hack to get rid of linker error in old esp32 versions 
 #if defined(ARDUINO) && defined(ESP32) 
+#include "esp_idf_version.h"
+#if (ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(5, 3 , 2))
 struct _reent *_impure_ptr __ATTRIBUTE_IMPURE_PTR__ = NULL;
 #endif
+#endif
+
 
 /***********************************************************************
 *
