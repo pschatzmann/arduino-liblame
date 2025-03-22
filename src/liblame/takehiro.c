@@ -34,6 +34,8 @@
 #include "quantize_pvt.h"
 #include "tables.h"
 
+// forward declaration
+static int all_scalefactors_not_negative(int const *scalefac, int n);
 
 static const struct {
     const int region0_count;
@@ -1116,7 +1118,7 @@ best_scalefac_store(const lame_internal_flags * gfc,
 }
 
 
-#ifndef NDEBUG
+//#ifndef NDEBUG
 static int
 all_scalefactors_not_negative(int const *scalefac, int n)
 {
@@ -1127,7 +1129,7 @@ all_scalefactors_not_negative(int const *scalefac, int n)
     }
     return 1;
 }
-#endif
+//#endif
 
 
 /* number of bits used to encode scalefacs */

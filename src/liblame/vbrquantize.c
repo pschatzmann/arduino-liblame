@@ -34,8 +34,8 @@
 #include "vbrquantize.h"
 #include "quantize_pvt.h"
 
-
-
+// forward declaration
+static int checkScalefactor(const gr_info * cod_info, const int vbrsfmin[SFBMAX]);
 
 struct algo_s;
 typedef struct algo_s algo_t;
@@ -728,7 +728,7 @@ set_scalefacs(gr_info * cod_info, const int *vbrsfmin, int sf[], const uint8_t *
 }
 
 
-#ifndef NDEBUG
+//#ifndef NDEBUG
 static int
 checkScalefactor(const gr_info * cod_info, const int vbrsfmin[SFBMAX])
 {
@@ -757,7 +757,7 @@ checkScalefactor(const gr_info * cod_info, const int vbrsfmin[SFBMAX])
     }
     return 1;
 }
-#endif
+//#endif
 
 
 /******************************************************************
