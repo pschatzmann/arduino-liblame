@@ -29,7 +29,7 @@ class VariableStack {
     current_data += size;
     if (current_data >= end_data) {
       // increase STACKHACK_SIZE
-      lame_msgf(NULL,"stack-size: %d / requested %d", current_data - start_data, size);
+      lame_msgf(NULL,"stack-size: %d / requested %d", static_cast<int>(current_data - start_data), static_cast<int>(size));
       assert(false);
       return nullptr;
     }
