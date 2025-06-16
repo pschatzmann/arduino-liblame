@@ -166,7 +166,7 @@ public:
     lame = nullptr;
   }
 
-  operator boolean() { return active; }
+  operator bool() { return active; }
 
 protected:
   bool active;
